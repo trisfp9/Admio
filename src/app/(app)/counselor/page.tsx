@@ -176,7 +176,7 @@ export default function CounselorPage() {
             <Sparkles className="w-6 h-6 text-purple" />
             AI Counselor
           </h1>
-          <p className="text-text-muted text-sm">Your personal college admissions advisor</p>
+          <p className="text-text-muted text-sm">AI-powered guidance — informational, not a substitute for a school counselor.</p>
         </div>
         <Badge variant={messagesUsed >= messagesMax * 0.8 ? "warning" : "muted"}>
           {messagesUsed}/{messagesMax} messages

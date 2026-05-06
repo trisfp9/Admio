@@ -101,7 +101,6 @@ const HeroSection = () => {
         <div className="hidden md:flex items-center space-x-8">
           <a href="#features" onClick={(e) => smoothScroll(e, "#features")} className="hover:text-[#00B4D8] transition-colors cursor-pointer">Features</a>
           <a href="#pricing" onClick={(e) => smoothScroll(e, "#pricing")} className="hover:text-[#00B4D8] transition-colors cursor-pointer">Pricing</a>
-          <a href="#testimonials" onClick={(e) => smoothScroll(e, "#testimonials")} className="hover:text-[#00B4D8] transition-colors cursor-pointer">Success Stories</a>
           <a href="#faq" onClick={(e) => smoothScroll(e, "#faq")} className="hover:text-[#00B4D8] transition-colors cursor-pointer">FAQ</a>
           <Link href="/auth?mode=signin" className="text-white/80 hover:text-white transition-colors">Sign In</Link>
         </div>
@@ -114,7 +113,6 @@ const HeroSection = () => {
           <div className="flex flex-col space-y-4">
             <a href="#features" onClick={(e) => smoothScroll(e, "#features")} className="hover:text-[#00B4D8] transition-colors">Features</a>
             <a href="#pricing" onClick={(e) => smoothScroll(e, "#pricing")} className="hover:text-[#00B4D8] transition-colors">Pricing</a>
-            <a href="#testimonials" onClick={(e) => smoothScroll(e, "#testimonials")} className="hover:text-[#00B4D8] transition-colors">Success Stories</a>
             <a href="#faq" onClick={(e) => smoothScroll(e, "#faq")} className="hover:text-[#00B4D8] transition-colors">FAQ</a>
             <Link href="/auth?mode=signin" className="hover:text-[#00B4D8] transition-colors">Sign In</Link>
           </div>
@@ -523,7 +521,6 @@ const Footer = () => (
           <ul className="space-y-2 text-white/60 text-sm">
             <li><a href="#features" className="hover:text-[#00B4D8] transition-colors">Features</a></li>
             <li><a href="#pricing" className="hover:text-[#00B4D8] transition-colors">Pricing</a></li>
-            <li><a href="#testimonials" className="hover:text-[#00B4D8] transition-colors">Success Stories</a></li>
             <li><a href="#faq" className="hover:text-[#00B4D8] transition-colors">FAQ</a></li>
           </ul>
         </div>

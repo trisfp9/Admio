@@ -9,6 +9,7 @@ import ProgressBar from "@/components/ui/ProgressBar";
 import Badge from "@/components/ui/Badge";
 import Skeleton from "@/components/ui/Skeleton";
 import { createBrowserClient } from "@/lib/supabase";
+import { COUNTRY_OPTIONS } from "@/lib/countries";
 import { User, Crown, Trash2, RotateCw, Shield, Mail, Lock, LogOut, ChevronDown, ChevronUp, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -303,8 +304,8 @@ export default function ProfilePage() {
 
         <Field label="Name" value={localProfile.name || ""} onChange={(v) => updateField("name", v)} />
         <SelectField label="Grade" options={GRADES} value={localProfile.grade || ""} onChange={(v) => updateField("grade", v)} />
-        <Field label="Country" value={localProfile.country || ""} onChange={(v) => updateField("country", v)} />
-        <Field label="Target Country" value={localProfile.target_country || ""} onChange={(v) => updateField("target_country", v)} />
+        <CountrySelectField label="Country" value={localProfile.country || ""} onChange={(v) => updateField("country", v)} />
+        <CountrySelectField label="Target Country" value={localProfile.target_country || ""} onChange={(v) => updateField("target_country", v)} />
         <Field label="Dream College" value={localProfile.dream_college || ""} onChange={(v) => updateField("dream_college", v)} />
         <SelectField label="Aiming Level" options={AIMING} value={localProfile.aiming_level || ""} onChange={(v) => updateField("aiming_level", v)} />
         <SelectField label="Major Interest" options={MAJORS} value={localProfile.major_interest || ""} onChange={(v) => updateField("major_interest", v)} />
@@ -407,6 +408,28 @@ function Field({ label, value, onChange }: { label: string; value: string; onCha
         onChange={(e) => onChange(e.target.value)}
         className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary focus:outline-none focus:border-purple/50 transition-colors text-sm"
       />
+    </div>
+  );
+}
+
+function CountrySelectField({ label, value, onChange }: {
+  label: string; value: string; onChange: (v: string) => void;
+}) {
+  return (
+    <div>
+      <label className="block text-sm text-text-muted mb-2">{label}</label>
+      <select
+        value={value}
+        onChange={(e) => { if (e.target.value !== "──────────") onChange(e.target.value); }}
+        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary focus:outline-none focus:border-purple/50 transition-colors text-sm appearance-none cursor-pointer"
+      >
+        <option value="" className="bg-surface">Select a country…</option>
+        {COUNTRY_OPTIONS.map((c) => (
+          <option key={c} value={c} disabled={c === "──────────"} className="bg-surface">
+            {c}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
