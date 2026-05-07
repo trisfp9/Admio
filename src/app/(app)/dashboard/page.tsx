@@ -208,8 +208,8 @@ export default function DashboardPage() {
           </div>
           {breakdown?.dream_college_target != null && (
             <div className="text-right flex-shrink-0">
-              <p className="text-text-muted text-xs">Target score</p>
-              <p className="font-heading font-bold text-xl text-pop">{breakdown.dream_college_target}</p>
+              <p className="text-text-muted text-xs">Target profile strength</p>
+              <p className="font-heading font-bold text-xl text-pop">{breakdown.dream_college_target}%</p>
             </div>
           )}
         </motion.div>

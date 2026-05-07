@@ -338,9 +338,9 @@ export default function OpportunitiesPage() {
                                 <div className="text-center px-2">
                                   <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Fit</p>
                                   <p className={`font-heading font-bold text-xl ${fitColor}`}>
-                                    {fitScore != null ? fitScore : "—"}
+                                    {fitScore != null ? `${fitScore}%` : "—"}
                                   </p>
-                                  <p className="text-text-muted text-[10px]">{fitScore != null ? "/ 100" : "regen list"}</p>
+                                  <p className="text-text-muted text-[10px]">{fitScore != null ? "match" : "regen list"}</p>
                                 </div>
                                 {/* Odds */}
                                 <div className="text-center px-2">
@@ -354,9 +354,9 @@ export default function OpportunitiesPage() {
                                 <div className="text-center px-2">
                                   <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Required</p>
                                   <p className={`font-heading font-bold text-xl ${needed != null ? "text-text-primary" : "text-text-muted/40"}`}>
-                                    {needed != null ? needed : "—"}
+                                    {needed != null ? `${needed}%` : "—"}
                                   </p>
-                                  <p className="text-text-muted text-[10px]">score</p>
+                                  <p className="text-text-muted text-[10px]">profile strength</p>
                                 </div>
                                 {/* Info icon */}
                                 <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-surface border border-white/10 flex items-center justify-center cursor-default">
@@ -368,8 +368,8 @@ export default function OpportunitiesPage() {
                                 <ul className="space-y-2 text-xs">
                                   {fitScore != null && (
                                     <li className="flex gap-2">
-                                      <span className={`font-bold shrink-0 ${fitColor}`}>Fit {fitScore}</span>
-                                      <span className="text-text-muted">How well this college matches your major, goals, and environment preferences (0 = poor match, 100 = ideal match).</span>
+                                      <span className={`font-bold shrink-0 ${fitColor}`}>Fit {fitScore}%</span>
+                                      <span className="text-text-muted">How well this college matches your major, goals, and environment preferences (0% = poor match, 100% = ideal match).</span>
                                     </li>
                                   )}
                                   <li className="flex gap-2">
@@ -377,8 +377,8 @@ export default function OpportunitiesPage() {
                                     <span className="text-text-muted">Estimated admission probability combining your profile strength and fit score. {!hasMeasured && "Calculate your profile strength first."}</span>
                                   </li>
                                   <li className="flex gap-2">
-                                    <span className="font-bold text-text-primary shrink-0">Required {needed ?? "—"}</span>
-                                    <span className="text-text-muted">Minimum profile score competitive applicants typically have. Your score: {hasMeasured ? profile.profile_strength : "not measured yet"}.</span>
+                                    <span className="font-bold text-text-primary shrink-0">Required {needed != null ? `${needed}%` : "—"}</span>
+                                    <span className="text-text-muted">Minimum profile strength competitive applicants typically have. Your profile strength: {hasMeasured ? `${profile.profile_strength}%` : "not measured yet"}.</span>
                                   </li>
                                 </ul>
                                 {!hasMeasured && (
