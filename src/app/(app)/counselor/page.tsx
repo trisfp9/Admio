@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth-context";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-import { Send, Sparkles, Lock, AlertCircle, Map, X } from "lucide-react";
+import { Send, Sparkles, Lock, AlertCircle, Map, X, Trash2 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -165,12 +165,37 @@ export default function CounselorPage() {
     }
   };
 
+  const handleClearHistory = async () => {
+    if (!session?.access_token) return;
+    if (messages.length === 0) return;
+    const ok = confirm(
+      "Clear all chat history?\n\nThis only deletes the messages — your message quota will NOT be refilled."
+    );
+    if (!ok) return;
+    try {
+      const { createBrowserClient } = await import("@/lib/supabase");
+      const supabase = createBrowserClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      // Delete chat history only — does NOT touch ai_messages_used / ai_messages_this_month
+      const { error } = await supabase
+        .from("chat_messages")
+        .delete()
+        .eq("user_id", user.id);
+      if (error) throw error;
+      setMessages([]);
+      toast.success("Chat history cleared.");
+    } catch {
+      toast.error("Failed to clear history. Please try again.");
+    }
+  };
+
   if (!profile) return null;
 
   return (
     <div className="flex flex-col h-[calc(100vh-120px)] lg:h-[calc(100vh-80px)]">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 flex-shrink-0">
+      <div className="flex items-center justify-between mb-2 flex-shrink-0">
         <div>
           <h1 className="font-heading font-bold text-2xl text-text-primary flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-purple" />
@@ -181,6 +206,21 @@ export default function CounselorPage() {
         <Badge variant={messagesUsed >= messagesMax * 0.8 ? "warning" : "muted"}>
           {messagesUsed}/{messagesMax} messages
         </Badge>
+      </div>
+
+      {/* Privacy disclosure + clear history */}
+      <div className="flex items-center justify-between mb-4 flex-shrink-0 text-xs">
+        <p className="text-text-muted/70">
+          Conversations are saved so the AI can remember context across sessions.
+        </p>
+        {messages.length > 0 && (
+          <button
+            onClick={handleClearHistory}
+            className="text-text-muted hover:text-red-400 transition-colors flex items-center gap-1 flex-shrink-0 ml-3"
+          >
+            <Trash2 className="w-3 h-3" /> Clear history
+          </button>
+        )}
       </div>
 
       {/* Roadmap context banner */}
