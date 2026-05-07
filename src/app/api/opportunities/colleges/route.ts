@@ -47,12 +47,19 @@ export async function POST(request: Request) {
 Generate a personalized college list for this student.
 The student's current universal profile strength score is ${studentStrength}/100.
 
-CRITICAL — define reach / target / safety relative to THIS student's profile score (${studentStrength}):
-  SAFETY  → profile_strength_needed < ${studentStrength} - 8   (student is clearly above the bar — high chance of admission)
-  TARGET  → profile_strength_needed is within ±12 of ${studentStrength}  (competitive but realistic)
-  REACH   → profile_strength_needed > ${studentStrength} + 12  (student is below typical bar — admission is uncertain)
+CRITICAL — define reach / target / safety so that admission ODDS land in these ranges:
+  SAFETY  → admission odds 60-100%  (student is clearly above the bar)
+  TARGET  → admission odds 30-60%   (competitive but realistic)
+  REACH   → admission odds below 30% (student is below typical bar)
 
-Pick schools accordingly. A safety must have a profile_strength_needed that is genuinely below this student's score.
+These odds are computed from the gap between the student's profile strength (${studentStrength}) and the school's profile_strength_needed using a sigmoid curve. To produce the right odds, set profile_strength_needed in these ranges (NON-OVERLAPPING):
+
+  SAFETY  → profile_strength_needed ≤ ${studentStrength - 5}     (at least 5 BELOW student's score)
+  TARGET  → profile_strength_needed = ${studentStrength - 4} to ${studentStrength + 8}
+  REACH   → profile_strength_needed ≥ ${studentStrength + 9}    (at least 9 ABOVE student's score)
+
+The resulting admission odds MUST fall in the bands above. Double-check each school: for a safety the school must be one this student would clearly get into; for a target it should be a roughly even or modestly stretched chance; for a reach it should be aspirational.
+
 If profile_strength is 0 or very low (student hasn't measured yet), use their GPA and test scores to estimate placement.
 
 STATS ACCURACY — use the most recent publicly available data (Class of 2028/2029 or the most recent admitted class):
