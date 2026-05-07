@@ -120,6 +120,9 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
             <LogOut className="w-5 h-5" />
             Sign Out
           </button>
+          <p className="text-text-muted/40 text-[10px] leading-relaxed pt-2 px-1">
+            Pathly uses AI to provide guidance. Outputs are informational, not professional advice.
+          </p>
         </div>
       </aside>
 
@@ -167,6 +170,9 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
                   );
                 })}
               </nav>
+              <p className="text-text-muted/40 text-[10px] leading-relaxed mt-6 px-1">
+                Pathly uses AI to provide guidance. Outputs are informational, not professional advice.
+              </p>
             </motion.aside>
           </>
         )}

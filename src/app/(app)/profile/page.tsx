@@ -185,6 +185,9 @@ export default function ProfilePage() {
               ? "Update grades, activities, and awards in the Progress tab to improve this score."
               : "Not yet graded. Head to the Progress tab and hit Recalculate for your first AI-scored assessment."}
           </p>
+          <p className="text-text-muted/50 text-[11px] mt-2 italic">
+            AI-estimated. Real admissions outcomes depend on factors not visible here.
+          </p>
         </motion.div>
       </Link>
 

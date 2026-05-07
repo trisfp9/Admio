@@ -777,6 +777,10 @@ export default function ProgressPage() {
                   })()}
                 </div>
 
+                <p className="text-text-muted/60 text-xs italic">
+                  AI-worded based on your inputs. Always review and edit before sharing with any application.
+                </p>
+
                 {/* Loading skeleton */}
                 {resumeLoading && (
                   <div className="glass-card p-8 space-y-4">

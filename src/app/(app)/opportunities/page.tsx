@@ -274,6 +274,15 @@ export default function OpportunitiesPage() {
             </div>
           ) : (
             <div className="space-y-8">
+              <div className="flex items-start gap-2 p-3 rounded-button bg-amber-500/8 border border-amber-500/20">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400 flex-shrink-0 mt-0.5">
+                  <path d="M12 9v4" /><path d="M12 17h.01" />
+                  <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                </svg>
+                <p className="text-amber-200/80 text-xs leading-relaxed">
+                  AI-generated suggestions. Acceptance rates and stats may be outdated or approximate — always verify on each school&apos;s official site before making decisions.
+                </p>
+              </div>
               {(["reach", "target", "safety"] as const).map((tier) => (
                 <div key={tier}>
                   <h3 className="font-heading font-semibold text-lg text-text-primary mb-3 capitalize flex items-center gap-2">

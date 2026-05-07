@@ -75,6 +75,9 @@ export default function EssayPage() {
         <p className="text-text-muted mt-1">
           Get a brutally honest AI critique of your personal statement or supplements. One submission per week.
         </p>
+        <p className="text-text-muted/60 text-xs mt-2 italic">
+          AI feedback is for guidance only. Always get a second opinion from a teacher, mentor, or counselor before submitting.
+        </p>
       </div>
 
       {!profile.is_pro ? (
