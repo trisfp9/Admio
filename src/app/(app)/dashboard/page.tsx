@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const [tip, setTip] = useState<string | null>(null);
   const [tipLoading, setTipLoading] = useState(true);
   const [savedCount, setSavedCount] = useState<number | null>(null);
+  const activationStarted = useRef(false);
 
   // Fallback Pro activation: if we just came back from a successful checkout,
   // verify the subscription with Stripe directly and flip is_pro. This way
@@ -35,6 +36,8 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!session?.access_token) return;
     if (searchParams.get("checkout") !== "success") return;
+    if (activationStarted.current) return;
+    activationStarted.current = true;
 
     const activate = async () => {
       const toastId = toast.loading("Activating Pro...");
