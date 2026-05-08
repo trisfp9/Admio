@@ -627,13 +627,13 @@ function RequirementsChecklist() {
   const [open, setOpen] = useState(false);
 
   const items = [
-    { label: "English proficiency", detail: "IELTS, TOEFL, Duolingo English Test — required by most schools for non-native speakers. Minimum scores vary." },
-    { label: "Standardised tests", detail: "Check each school's SAT/ACT policy (required, optional, or test-free). Some schools outside the US use their own exams." },
+    { label: "Language requirements", detail: "Schools may require proof of proficiency in their instruction language (e.g. IELTS/TOEFL for English, TestDaF for German, DELF for French). Minimum scores vary by school and program." },
+    { label: "Standardised tests", detail: "Check each school's entrance exam policy — SAT/ACT for US schools, or country-specific exams elsewhere. Some schools are test-optional; others require their own admissions test." },
     { label: "Application deadlines", detail: "Early Decision, Early Action, Regular Decision, and Rolling deadlines differ by school and year." },
     { label: "Required materials", detail: "Transcripts, letters of recommendation, personal statement / essays, CV or activities list." },
-    { label: "Country-specific requirements", detail: "Some countries require national exams (A-Levels, IB, Gaokao, etc.) or credential evaluations (WES, NACES)." },
-    { label: "Financial aid & scholarship deadlines", detail: "Aid deadlines often fall earlier than admissions deadlines. CSS Profile, FAFSA, or institutional forms may be needed." },
-    { label: "Visa & immigration requirements", detail: "International students need to confirm visa eligibility (F-1, Tier 4, etc.) and check health insurance requirements." },
+    { label: "Country-specific requirements", detail: "Some countries require national exams or qualifications (A-Levels, IB, Gaokao, Abitur, etc.) or credential evaluations (WES, NACES) for foreign applicants." },
+    { label: "Financial aid & scholarship deadlines", detail: "Aid deadlines often fall earlier than admissions deadlines. Check whether the school requires FAFSA, CSS Profile, or its own financial aid application." },
+    { label: "Visa & immigration requirements", detail: "Confirm visa eligibility for your nationality and the country you're applying to, and check health insurance requirements for international students." },
   ];
 
   return (
@@ -657,15 +657,15 @@ function RequirementsChecklist() {
           <p className="text-blue-200/60 text-[11px] mb-3">
             Pathly doesn&apos;t verify admission requirements — they change every cycle and vary by school and nationality. Visit each school&apos;s official admissions page to confirm what applies to you.
           </p>
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {items.map((item) => (
-              <li key={item.label} className="flex items-start gap-2">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400 flex-shrink-0 mt-0.5">
+              <li key={item.label} className="flex items-start gap-2.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400 flex-shrink-0 mt-[3px]">
                   <polyline points="9 11 12 14 22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
                 </svg>
                 <div>
-                  <span className="text-blue-100/80 text-xs font-medium">{item.label}</span>
-                  <span className="text-blue-200/50 text-xs"> — {item.detail}</span>
+                  <p className="text-blue-100/80 text-xs font-medium leading-snug">{item.label}</p>
+                  <p className="text-blue-200/50 text-xs leading-relaxed mt-0.5">{item.detail}</p>
                 </div>
               </li>
             ))}
