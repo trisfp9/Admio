@@ -10,7 +10,7 @@ import Badge from "@/components/ui/Badge";
 import Skeleton from "@/components/ui/Skeleton";
 import { createBrowserClient } from "@/lib/supabase";
 import { COUNTRY_OPTIONS } from "@/lib/countries";
-import { User, Crown, Trash2, RotateCw, Shield, Mail, Lock, LogOut, ChevronDown, ChevronUp, Settings } from "lucide-react";
+import { User, Crown, Trash2, Shield, Mail, Lock, LogOut, ChevronDown, ChevronUp, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -373,21 +373,15 @@ export default function ProfilePage() {
       )}
 
       {/* Actions */}
-      <div className="glass-card p-6 space-y-4">
-        <Link href="/onboarding">
-          <Button variant="secondary" className="w-full">
-            <RotateCw className="w-4 h-4" /> Retake Onboarding Survey
-          </Button>
-        </Link>
-
-        {!localProfile.is_pro && (
+      {!localProfile.is_pro && (
+        <div className="glass-card p-6">
           <Link href="/pricing">
             <Button variant="pop" className="w-full">
               <Crown className="w-4 h-4" /> Upgrade to Pro
             </Button>
           </Link>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Danger zone */}
       <div className="glass-card p-6 border-red-500/20">

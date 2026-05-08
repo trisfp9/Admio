@@ -204,7 +204,7 @@ export default function OpportunitiesPage() {
     return matchSearch && matchFilter && matchRegion;
   });
 
-  const scholarshipTags = ["all", "need-based", "merit", "STEM", "arts", "first-gen", "international"];
+  const scholarshipTags = ["all", "need-based", "merit", "STEM", "arts", "first-gen"];
   const competitionFields = ["all", ...Array.from(new Set(allCompetitions.map((c) => c.field)))];
 
   if (!profile) return <CardSkeleton />;
@@ -280,9 +280,12 @@ export default function OpportunitiesPage() {
                   <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                 </svg>
                 <p className="text-amber-200/80 text-xs leading-relaxed">
-                  AI-generated suggestions. Acceptance rates and stats may be outdated or approximate — always verify on each school&apos;s official site before making decisions.
+                  AI-generated suggestions — this is a starting point, not a complete list. Many great schools may not appear here. Acceptance rates and stats may be outdated or approximate. Always verify on each school&apos;s official site and consult a counselor before making decisions.
                 </p>
               </div>
+
+              {/* Requirements checklist */}
+              <RequirementsChecklist />
               {(["reach", "target", "safety"] as const).map((tier) => (
                 <div key={tier}>
                   <h3 className="font-heading font-semibold text-lg text-text-primary mb-3 capitalize flex items-center gap-2">
@@ -293,7 +296,7 @@ export default function OpportunitiesPage() {
                   </h3>
                   <div className="grid md:grid-cols-2 gap-4">
                     {collegeList[tier]?.map((college, i) => (
-                      <motion.div key={college.name} initial="hidden" animate="visible" variants={fadeUp} custom={i} className="glass-card p-5">
+                      <motion.div key={college.name} initial="hidden" animate="visible" variants={fadeUp} custom={i} className="glass-card p-5 relative z-0 hover:z-10">
                         {/* Header */}
                         <div className="flex items-start justify-between mb-1 gap-2">
                           <h4 className="font-heading font-semibold text-text-primary leading-tight">{college.name}</h4>
@@ -476,9 +479,10 @@ export default function OpportunitiesPage() {
 
           {/* Browse all */}
           <div>
-            <p className="text-text-muted text-xs font-medium uppercase tracking-wide mb-3">Browse All Scholarships</p>
+            <p className="text-text-muted text-xs font-medium uppercase tracking-wide mb-1">Browse All Scholarships</p>
+            <p className="text-text-muted/50 text-xs mb-3">This is a curated starting point — not a complete list. Do your own research to find additional scholarships that may fit you.</p>
             <div className="flex gap-2 flex-wrap mb-2">
-              {["all", "need-based", "merit", "STEM", "arts", "first-gen", "international"].map((tag) => (
+              {["all", "need-based", "merit", "STEM", "arts", "first-gen"].map((tag) => (
                 <button key={tag} onClick={() => setScholarshipFilter(tag)}
                   className={`px-3 py-1.5 rounded-badge text-xs font-medium transition-all border ${scholarshipFilter === tag ? "bg-purple/15 text-purple border-purple/30" : "bg-white/5 text-text-muted border-white/10 hover:border-white/20"}`}>
                   {tag === "all" ? "All" : tag}
@@ -577,7 +581,8 @@ export default function OpportunitiesPage() {
 
           {/* Browse all */}
           <div>
-            <p className="text-text-muted text-xs font-medium uppercase tracking-wide mb-3">Browse All Competitions</p>
+            <p className="text-text-muted text-xs font-medium uppercase tracking-wide mb-1">Browse All Competitions</p>
+            <p className="text-text-muted/50 text-xs mb-3">This is a curated starting point — not a complete list. Do your own research to find additional competitions relevant to your field.</p>
             <div className="flex gap-2 flex-wrap mb-2">
               {["all", ...Array.from(new Set(allCompetitions.map((c) => c.field)))].map((f) => (
                 <button key={f} onClick={() => setCompetitionFilter(f)}
@@ -612,6 +617,59 @@ export default function OpportunitiesPage() {
               </div>
             )}
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RequirementsChecklist() {
+  const [open, setOpen] = useState(false);
+
+  const items = [
+    { label: "English proficiency", detail: "IELTS, TOEFL, Duolingo English Test — required by most schools for non-native speakers. Minimum scores vary." },
+    { label: "Standardised tests", detail: "Check each school's SAT/ACT policy (required, optional, or test-free). Some schools outside the US use their own exams." },
+    { label: "Application deadlines", detail: "Early Decision, Early Action, Regular Decision, and Rolling deadlines differ by school and year." },
+    { label: "Required materials", detail: "Transcripts, letters of recommendation, personal statement / essays, CV or activities list." },
+    { label: "Country-specific requirements", detail: "Some countries require national exams (A-Levels, IB, Gaokao, etc.) or credential evaluations (WES, NACES)." },
+    { label: "Financial aid & scholarship deadlines", detail: "Aid deadlines often fall earlier than admissions deadlines. CSS Profile, FAFSA, or institutional forms may be needed." },
+    { label: "Visa & immigration requirements", detail: "International students need to confirm visa eligibility (F-1, Tier 4, etc.) and check health insurance requirements." },
+  ];
+
+  return (
+    <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 overflow-hidden">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left"
+      >
+        <div className="flex items-center gap-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400 flex-shrink-0">
+            <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+          </svg>
+          <p className="text-blue-200/90 text-xs font-medium">Before you apply — check these requirements yourself</p>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`text-blue-400 flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}>
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      {open && (
+        <div className="px-4 pb-4 space-y-2 border-t border-blue-500/15 pt-3">
+          <p className="text-blue-200/60 text-[11px] mb-3">
+            Pathly doesn&apos;t verify admission requirements — they change every cycle and vary by school and nationality. Visit each school&apos;s official admissions page to confirm what applies to you.
+          </p>
+          <ul className="space-y-2">
+            {items.map((item) => (
+              <li key={item.label} className="flex items-start gap-2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400 flex-shrink-0 mt-0.5">
+                  <polyline points="9 11 12 14 22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+                <div>
+                  <span className="text-blue-100/80 text-xs font-medium">{item.label}</span>
+                  <span className="text-blue-200/50 text-xs"> — {item.detail}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
