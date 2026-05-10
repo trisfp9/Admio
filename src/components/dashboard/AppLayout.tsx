@@ -179,7 +179,7 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
       </AnimatePresence>
 
       {/* Main content */}
-      <main className="flex-1 lg:ml-64 pb-20 lg:pb-0">
+      <main className="flex-1 lg:ml-64">
         {/* Mobile top bar */}
         <div className="lg:hidden flex items-center justify-between px-6 py-4 border-b border-white/5">
           <button onClick={() => setSidebarOpen(true)} className="text-text-muted">
@@ -196,26 +196,6 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
         </div>
       </main>
 
-      {/* Mobile bottom tab bar */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-xl border-t border-white/5 z-40">
-        <div className="flex items-center justify-around py-2">
-          {navItems.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex flex-col items-center gap-1 py-2 px-3 ${
-                  active ? "text-purple" : "text-text-muted"
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="text-[10px] font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
     </div>
   );
 }
