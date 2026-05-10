@@ -450,6 +450,8 @@ export default function ExtracurricularsPage() {
           adjusting={adjusting}
           selectedCategories={selectedCategories}
           messagesLeft={messagesLeft}
+          messagesUsed={messagesUsed}
+          messagesMax={messagesMax}
         />
       )}
 
@@ -695,6 +697,8 @@ interface RoadmapsTabProps {
   adjusting: boolean;
   selectedCategories: string[];
   messagesLeft: number;
+  messagesUsed: number;
+  messagesMax: number;
 }
 
 function RoadmapsTab(props: RoadmapsTabProps) {
@@ -704,7 +708,7 @@ function RoadmapsTab(props: RoadmapsTabProps) {
     chosenIdea, setChosenIdea, customIdea, setCustomIdea,
     startCreatingRoadmap, saveRoadmap, toggleTask, deleteRoadmap,
     adjustInstruction, setAdjustInstruction, adjustRoadmap, adjusting,
-    selectedCategories, messagesLeft,
+    selectedCategories, messagesLeft, messagesUsed, messagesMax,
   } = props;
 
   // Pro paywall for non-Pro
@@ -832,6 +836,8 @@ function RoadmapsTab(props: RoadmapsTabProps) {
         adjustRoadmap={adjustRoadmap}
         adjusting={adjusting}
         messagesLeft={messagesLeft}
+        messagesUsed={messagesUsed}
+        messagesMax={messagesMax}
       />
     );
   }
@@ -938,11 +944,13 @@ interface RoadmapDetailProps {
   adjustRoadmap: (roadmap: SavedRoadmap) => void;
   adjusting: boolean;
   messagesLeft: number;
+  messagesUsed: number;
+  messagesMax: number;
 }
 
 function RoadmapDetail({
   roadmap, onBack, toggleTask, deleteRoadmap,
-  adjustInstruction, setAdjustInstruction, adjustRoadmap, adjusting, messagesLeft,
+  adjustInstruction, setAdjustInstruction, adjustRoadmap, adjusting, messagesLeft, messagesUsed, messagesMax,
 }: RoadmapDetailProps) {
   const done = roadmap.tasks.filter((t) => t.done).length;
   const pct = roadmap.tasks.length ? Math.round((done / roadmap.tasks.length) * 100) : 0;
@@ -1069,7 +1077,7 @@ function RoadmapDetail({
           Tell the AI what to change — swap the project, add tasks, stretch the timeline. Completed tasks stay completed.
         </p>
         <p className="text-text-muted/50 text-xs mb-3">
-          Uses 1 AI message · <span className={messagesLeft <= 5 ? "text-amber-400" : ""}>{messagesLeft} message{messagesLeft === 1 ? "" : "s"} remaining</span>
+          Uses 1 AI message · <span className={messagesLeft <= 5 ? "text-amber-400" : ""}>{messagesUsed}/{messagesMax} messages used, {messagesLeft} remaining</span>
         </p>
         <textarea
           value={adjustInstruction}
