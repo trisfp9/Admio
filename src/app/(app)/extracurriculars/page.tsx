@@ -323,9 +323,18 @@ export default function ExtracurricularsPage() {
         },
         body: JSON.stringify({ roadmap, instruction: adjustInstruction.trim() }),
       });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Failed to adjust.");
+      const resData = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(resData.error || "Failed to adjust.");
+
+      // Write updated roadmap directly via browser client (same pattern as toggleTask)
+      // so the UI refreshes immediately without racing on refreshProfile.
+      if (resData.roadmap && profile) {
+        const { createBrowserClient } = await import("@/lib/supabase");
+        const supabase = createBrowserClient();
+        const nextRoadmaps = (profile.roadmaps || []).map((r) =>
+          r.id === roadmap.id ? resData.roadmap : r
+        );
+        await supabase.from("profiles").update({ roadmaps: nextRoadmaps }).eq("id", profile.id);
       }
       await refreshProfile();
       setAdjustInstruction("");
@@ -342,6 +351,9 @@ export default function ExtracurricularsPage() {
 
   const completedActivities: CompletedActivity[] = profile.completed_activities || [];
   const roadmaps: SavedRoadmap[] = profile.roadmaps || [];
+  const messagesUsed = profile.is_pro ? (profile.ai_messages_this_month || 0) : (profile.ai_messages_used || 0);
+  const messagesMax = profile.is_pro ? 500 : 7;
+  const messagesLeft = Math.max(0, messagesMax - messagesUsed);
   const activeRoadmap = roadmaps.find((r) => r.id === activeRoadmapId) || null;
 
   return (
@@ -437,6 +449,7 @@ export default function ExtracurricularsPage() {
           adjustRoadmap={adjustRoadmap}
           adjusting={adjusting}
           selectedCategories={selectedCategories}
+          messagesLeft={messagesLeft}
         />
       )}
 
@@ -681,6 +694,7 @@ interface RoadmapsTabProps {
   adjustRoadmap: (roadmap: SavedRoadmap) => void;
   adjusting: boolean;
   selectedCategories: string[];
+  messagesLeft: number;
 }
 
 function RoadmapsTab(props: RoadmapsTabProps) {
@@ -690,7 +704,7 @@ function RoadmapsTab(props: RoadmapsTabProps) {
     chosenIdea, setChosenIdea, customIdea, setCustomIdea,
     startCreatingRoadmap, saveRoadmap, toggleTask, deleteRoadmap,
     adjustInstruction, setAdjustInstruction, adjustRoadmap, adjusting,
-    selectedCategories,
+    selectedCategories, messagesLeft,
   } = props;
 
   // Pro paywall for non-Pro
@@ -817,6 +831,7 @@ function RoadmapsTab(props: RoadmapsTabProps) {
         setAdjustInstruction={setAdjustInstruction}
         adjustRoadmap={adjustRoadmap}
         adjusting={adjusting}
+        messagesLeft={messagesLeft}
       />
     );
   }
@@ -922,11 +937,12 @@ interface RoadmapDetailProps {
   setAdjustInstruction: (s: string) => void;
   adjustRoadmap: (roadmap: SavedRoadmap) => void;
   adjusting: boolean;
+  messagesLeft: number;
 }
 
 function RoadmapDetail({
   roadmap, onBack, toggleTask, deleteRoadmap,
-  adjustInstruction, setAdjustInstruction, adjustRoadmap, adjusting,
+  adjustInstruction, setAdjustInstruction, adjustRoadmap, adjusting, messagesLeft,
 }: RoadmapDetailProps) {
   const done = roadmap.tasks.filter((t) => t.done).length;
   const pct = roadmap.tasks.length ? Math.round((done / roadmap.tasks.length) * 100) : 0;
@@ -1045,12 +1061,15 @@ function RoadmapDetail({
 
       {/* Adjust with AI */}
       <div className="glass-card p-6">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-1">
           <Wand2 className="w-4 h-4 text-purple" />
           <h3 className="font-heading font-semibold text-text-primary">Ask AI to adjust this roadmap</h3>
         </div>
-        <p className="text-text-muted text-xs mb-3">
+        <p className="text-text-muted text-xs mb-1">
           Tell the AI what to change — swap the project, add tasks, stretch the timeline. Completed tasks stay completed.
+        </p>
+        <p className="text-text-muted/50 text-xs mb-3">
+          Uses 1 AI message · <span className={messagesLeft <= 5 ? "text-amber-400" : ""}>{messagesLeft} message{messagesLeft === 1 ? "" : "s"} remaining</span>
         </p>
         <textarea
           value={adjustInstruction}
@@ -1060,17 +1079,19 @@ function RoadmapDetail({
           className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-purple/50 text-sm resize-none mb-3"
           disabled={adjusting}
         />
-        <div className="flex justify-end">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => adjustRoadmap(roadmap)}
-            loading={adjusting}
-            disabled={!adjustInstruction.trim() || adjusting}
-          >
-            {adjusting ? "Adjusting..." : "Apply adjustment"}
-          </Button>
-        </div>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => adjustRoadmap(roadmap)}
+          loading={adjusting}
+          disabled={!adjustInstruction.trim() || adjusting || messagesLeft === 0}
+          className="w-full sm:w-auto sm:ml-auto sm:flex sm:ml-auto"
+        >
+          {adjusting ? "Adjusting..." : "Apply adjustment"}
+        </Button>
+        {messagesLeft === 0 && (
+          <p className="text-amber-400 text-xs mt-2">You&apos;ve used all your AI messages for this period.</p>
+        )}
       </div>
     </div>
   );
