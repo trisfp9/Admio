@@ -80,12 +80,18 @@ What I did / achievements: ${activity.description || "not specified"}
 Write both a Common App description (≤150 chars) and UC description (≤350 chars).`;
 
     const result = await callClaudeHaiku(systemPrompt, userMessage, 600);
+    console.log("Haiku polish raw result:", JSON.stringify(result).slice(0, 500));
 
     let parsed;
     try {
       const jsonMatch = result.match(/\{[\s\S]*\}/);
-      parsed = JSON.parse(jsonMatch ? jsonMatch[0] : result);
-    } catch {
+      if (!jsonMatch) {
+        console.error("No JSON object found in Haiku response:", result);
+        return NextResponse.json({ error: "Failed to parse response. Try again." }, { status: 500 });
+      }
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseErr) {
+      console.error("JSON parse failed:", parseErr, "Raw:", result);
       return NextResponse.json({ error: "Failed to parse response. Try again." }, { status: 500 });
     }
 
