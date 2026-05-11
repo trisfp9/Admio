@@ -79,20 +79,28 @@ What I did / achievements: ${activity.description || "not specified"}
 
 Write both a Common App description (≤150 chars) and UC description (≤350 chars).`;
 
-    const result = await callClaudeHaiku(systemPrompt, userMessage, 600);
-    console.log("Haiku polish raw result:", JSON.stringify(result).slice(0, 500));
+    const result = await callClaudeHaiku(systemPrompt, userMessage, 800);
 
     let parsed;
     try {
-      const jsonMatch = result.match(/\{[\s\S]*\}/);
+      // Strip markdown fences if present
+      const cleaned = result.replace(/```(?:json)?\s*/g, "").trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        console.error("No JSON object found in Haiku response:", result);
+        console.error("No JSON found in polish response:", result.slice(0, 300));
         return NextResponse.json({ error: "Failed to parse response. Try again." }, { status: 500 });
       }
       parsed = JSON.parse(jsonMatch[0]);
-    } catch (parseErr) {
-      console.error("JSON parse failed:", parseErr, "Raw:", result);
-      return NextResponse.json({ error: "Failed to parse response. Try again." }, { status: 500 });
+    } catch {
+      // Last resort: try to extract fields manually
+      const caMatch = result.match(/"common_app"\s*:\s*"([^"]+)"/);
+      const ucMatch = result.match(/"uc"\s*:\s*"([^"]+)"/);
+      if (caMatch && ucMatch) {
+        parsed = { common_app: caMatch[1], uc: ucMatch[1], tips: [] };
+      } else {
+        console.error("Polish parse failed. Raw:", result.slice(0, 500));
+        return NextResponse.json({ error: "Failed to parse response. Try again." }, { status: 500 });
+      }
     }
 
     // Enforce character limits server-side (trim if AI went over)
