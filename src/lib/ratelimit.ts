@@ -9,6 +9,7 @@ type RateLimitConfig = { limit: number; windowMs: number };
 const configs: Record<string, RateLimitConfig> = {
   counselor: { limit: 10, windowMs: 60_000 },        // 10 per minute
   analyze: { limit: 3, windowMs: 3_600_000 },         // 3 per hour
+  polish: { limit: 20, windowMs: 3_600_000 },         // 20 per hour — cheap Haiku calls
   colleges: { limit: 3, windowMs: 3_600_000 },        // 3 per hour
   opportunities: { limit: 3, windowMs: 3_600_000 },   // 3 per hour (AI scholarships/competitions)
   strength: { limit: 10, windowMs: 3_600_000 },       // 10 per hour — cheap, fired on events
@@ -20,7 +21,7 @@ const configs: Record<string, RateLimitConfig> = {
 // In-memory store: key -> array of timestamps
 const store = new Map<string, number[]>();
 
-export type RateLimitType = "counselor" | "analyze" | "colleges" | "opportunities" | "strength" | "essay" | "auth" | "general";
+export type RateLimitType = "counselor" | "analyze" | "polish" | "colleges" | "opportunities" | "strength" | "essay" | "auth" | "general";
 
 export async function checkRateLimit(
   userId: string,
