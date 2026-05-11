@@ -41,9 +41,9 @@ export default function ProgressPage() {
   const [strengthInfoOpen, setStrengthInfoOpen] = useState(false);
 
   // Common App writer state
-  const [polishResults, setPolishResults] = useState<Record<number, PolishResult>>({});
-  const [polishing, setPolishing] = useState<number | null>(null);
-  const [expandedPolish, setExpandedPolish] = useState<Record<number, boolean>>({});
+  const [polishResults, setPolishResults] = useState<Record<string, PolishResult>>({});
+  const [polishing, setPolishing] = useState<string | null>(null);
+  const [expandedPolish, setExpandedPolish] = useState<Record<string, boolean>>({});
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   // Resume state
@@ -58,6 +58,7 @@ export default function ProgressPage() {
       setActivities(profile.current_activities || []);
       setAwards(profile.awards || []);
       if (profile.resume_cache) setResumeCache(profile.resume_cache);
+      if (profile.polish_cache) setPolishResults(profile.polish_cache);
     }
   }, [profile]);
 
@@ -143,14 +144,10 @@ export default function ProgressPage() {
     }
   };
 
-  const polishActivity = async (idx: number) => {
-    if (!session?.access_token || !profile) return;
-    const act = (profile.current_activities || [])[idx] ??
-      (profile.completed_activities || []).map((c: CompletedActivity) => ({
-        name: c.name, description: c.description || `Completed via Admio (${c.category})`
-      }))[idx - (profile.current_activities || []).length];
-    if (!act?.name) { toast.error("Activity not found."); return; }
-    setPolishing(idx);
+  const polishActivity = async (activity: CurrentActivity) => {
+    if (!session?.access_token || !profile || !activity.name) return;
+    const key = activity.name;
+    setPolishing(key);
     try {
       const res = await fetch("/api/activity-polish", {
         method: "POST",
@@ -158,12 +155,12 @@ export default function ProgressPage() {
           Authorization: `Bearer ${session.access_token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ activity: act }),
+        body: JSON.stringify({ activity }),
       });
       const data = await res.json().catch(() => ({ error: `Server error (${res.status})` }));
       if (!res.ok) throw new Error(data.error || "Polish failed.");
-      setPolishResults((prev) => ({ ...prev, [idx]: data }));
-      setExpandedPolish((prev) => ({ ...prev, [idx]: true }));
+      setPolishResults((prev) => ({ ...prev, [key]: data }));
+      setExpandedPolish((prev) => ({ ...prev, [key]: true }));
       await refreshProfile();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong.");
@@ -661,11 +658,13 @@ export default function ProgressPage() {
             ) : (
               <div className="space-y-4">
                 {allActivities.map((a, i) => {
-                  const result = polishResults[i];
-                  const expanded = expandedPolish[i];
+                  const key = a.name;
+                  const result = polishResults[key];
+                  const expanded = expandedPolish[key];
+                  const hasMinimalDetail = !a.role && !a.hours_per_week && !a.years && (!a.description || a.description.startsWith("Completed via Admio"));
                   return (
                     <motion.div
-                      key={i}
+                      key={key || i}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.05 }}
@@ -685,12 +684,18 @@ export default function ProgressPage() {
                           {a.description && (
                             <p className="text-text-muted/70 text-xs mt-1 italic">&ldquo;{a.description}&rdquo;</p>
                           )}
+                          {hasMinimalDetail && !result && (
+                            <p className="text-amber-400/80 text-xs mt-2 flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3" />
+                              Low detail — add a role, hours, duration, and achievements in My Profile for a stronger result.
+                            </p>
+                          )}
                         </div>
                         <Button
                           variant="primary"
                           size="sm"
-                          onClick={() => polishActivity(i)}
-                          loading={polishing === i}
+                          onClick={() => polishActivity(a)}
+                          loading={polishing === key}
                           disabled={limitReached}
                           className="flex-shrink-0"
                         >
@@ -702,31 +707,26 @@ export default function ProgressPage() {
                       {/* Results */}
                       {result && (
                         <div className="space-y-3 border-t border-white/5 pt-4">
-                          {/* Common App */}
                           <PolishCard
                             label="Common App"
                             limit={150}
                             text={result.common_app}
-                            copyKey={`ca-${i}`}
+                            copyKey={`ca-${key}`}
                             copiedKey={copiedKey}
                             onCopy={copyText}
                           />
-
-                          {/* UC */}
                           <PolishCard
                             label="UC Application"
                             limit={350}
                             text={result.uc}
-                            copyKey={`uc-${i}`}
+                            copyKey={`uc-${key}`}
                             copiedKey={copiedKey}
                             onCopy={copyText}
                           />
-
-                          {/* Tips */}
                           {result.tips.length > 0 && (
                             <div>
                               <button
-                                onClick={() => setExpandedPolish((prev) => ({ ...prev, [i]: !expanded }))}
+                                onClick={() => setExpandedPolish((prev) => ({ ...prev, [key]: !expanded }))}
                                 className="flex items-center gap-1.5 text-text-muted text-xs hover:text-text-primary transition-colors"
                               >
                                 {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}

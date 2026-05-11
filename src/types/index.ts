@@ -28,6 +28,7 @@ export interface Profile {
   ai_scholarships_cache: AIScholarshipsCache | null;
   ai_competitions_cache: AICompetitionsCache | null;
   resume_cache: ResumeCache | null;
+  polish_cache: Record<string, { common_app: string; uc: string; tips: string[] }> | null;
   detailed_profile: DetailedProfile | null;
   current_activities: CurrentActivity[] | null;
   completed_activities: CompletedActivity[] | null;
