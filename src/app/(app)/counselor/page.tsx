@@ -209,7 +209,7 @@ export default function CounselorPage() {
       </div>
 
       {/* Privacy disclosure + clear history */}
-      <div className="flex items-center justify-between mb-4 flex-shrink-0 text-xs">
+      <div className="flex items-center justify-between mb-2 flex-shrink-0 text-xs">
         <p className="text-text-muted/70">
           Conversations are saved so the AI can remember context across sessions.
         </p>
@@ -222,6 +222,9 @@ export default function CounselorPage() {
           </button>
         )}
       </div>
+      <p className="text-text-muted/40 text-[10px] mb-4 flex-shrink-0">
+        Message count is shared across all AI features (counselor, roadmap adjustments, essay review). {messagesUsed}/{messagesMax} used this period.
+      </p>
 
       {/* Roadmap context banner */}
       {roadmapContext && !roadmapBannerDismissed && (

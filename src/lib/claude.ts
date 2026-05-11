@@ -185,6 +185,10 @@ export class TruncatedError extends Error {
   }
 }
 
+// callClaude is used for server-side constructed prompts (college list,
+// roadmap generation, profile strength). The userMessage is built from
+// validated data, NOT raw user input — so we do NOT apply sanitize()
+// (which truncates to 2000 chars and would cut off important context).
 export async function callClaude(
   systemPrompt: string,
   userMessage: string,
@@ -209,7 +213,7 @@ export async function callClaude(
               cache_control: { type: "ephemeral" },
             },
           ],
-          messages: [{ role: "user", content: sanitize(userMessage) }],
+          messages: [{ role: "user", content: userMessage }],
         },
         { signal: controller.signal }
       );

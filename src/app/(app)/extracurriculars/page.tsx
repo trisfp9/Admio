@@ -1080,18 +1080,9 @@ function RoadmapDetail({
           Uses 1 AI message · <span className={messagesLeft <= 5 ? "text-amber-400" : ""}>{messagesUsed}/{messagesMax} messages used, {messagesLeft} remaining</span>
         </p>
 
-        {/* Adjustment history */}
+        {/* Adjustment history (collapsible) */}
         {roadmap.adjustments && roadmap.adjustments.length > 0 && (
-          <div className="mb-4 space-y-1.5">
-            <p className="text-text-muted/60 text-[10px] font-medium uppercase tracking-wide">Previous adjustments</p>
-            {roadmap.adjustments.map((adj, i) => (
-              <div key={i} className="flex items-center gap-2 text-xs">
-                <span className="text-purple">•</span>
-                <span className="text-text-muted">{adj.summary}</span>
-                <span className="text-text-muted/40 ml-auto text-[10px] shrink-0">{timeAgo(adj.at)}</span>
-              </div>
-            ))}
-          </div>
+          <AdjustmentHistory adjustments={roadmap.adjustments} />
         )}
 
         <textarea
@@ -1116,6 +1107,39 @@ function RoadmapDetail({
           <p className="text-amber-400 text-xs mt-2">You&apos;ve used all your AI messages for this period.</p>
         )}
       </div>
+    </div>
+  );
+}
+
+function AdjustmentHistory({ adjustments }: { adjustments: { summary: string; at: string }[] }) {
+  const [open, setOpen] = useState(false);
+  const latest = adjustments[adjustments.length - 1];
+
+  return (
+    <div className="mb-4">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-2 text-[11px] text-text-muted/60 hover:text-text-muted transition-colors w-full"
+      >
+        <span className="font-medium uppercase tracking-wide">
+          {adjustments.length} previous adjustment{adjustments.length === 1 ? "" : "s"}
+        </span>
+        {!open && <span className="text-text-muted/40 truncate flex-1 text-left">— latest: {latest.summary}</span>}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}>
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      {open && (
+        <div className="mt-2 space-y-1.5 pl-1">
+          {adjustments.map((adj, i) => (
+            <div key={i} className="flex items-center gap-2 text-xs">
+              <span className="text-purple">•</span>
+              <span className="text-text-muted flex-1">{adj.summary}</span>
+              <span className="text-text-muted/40 text-[10px] shrink-0">{timeAgo(adj.at)}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
