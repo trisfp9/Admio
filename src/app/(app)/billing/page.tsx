@@ -94,7 +94,7 @@ export default function BillingPage() {
             <h2 className="font-heading font-semibold text-text-primary mb-4">What&apos;s included</h2>
             <ul className="space-y-2">
               {[
-                "500 AI counselor messages per month",
+                "400 AI counselor messages per month",
                 "Full roadmaps with weekly checklists",
                 "AI-powered Common App Writer",
                 "Essay review with AI scoring",
@@ -117,7 +117,7 @@ export default function BillingPage() {
           </div>
           <h2 className="font-heading font-bold text-xl text-text-primary mb-2">You&apos;re on the free plan</h2>
           <p className="text-text-muted text-sm mb-6 max-w-sm mx-auto">
-            Upgrade to Pro to unlock roadmaps, essay review, Common App Writer, and 500 monthly AI messages.
+            Upgrade to Pro to unlock roadmaps, essay review, Common App Writer, and 400 monthly AI messages.
           </p>
           <Link href="/pricing">
             <Button variant="pop">Upgrade to Pro</Button>

@@ -49,7 +49,7 @@ export async function POST(request: Request) {
             currency: "usd",
             product_data: {
               name: "Admio Pro",
-              description: "Full access to all Admio features — 500 AI messages/mo, detailed roadmaps, and more.",
+              description: "Full access to all Admio features — 400 AI messages/mo, detailed roadmaps, and more.",
             },
             unit_amount: 1000, // $10.00
             recurring: { interval: "month" },

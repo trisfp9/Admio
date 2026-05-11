@@ -24,7 +24,7 @@ export async function POST(request: Request) {
   if (!profile.is_pro) return NextResponse.json({ error: "Pro subscription required" }, { status: 403 });
 
   const messagesUsed = profile.ai_messages_this_month || 0;
-  if (messagesUsed >= 500) {
+  if (messagesUsed >= 400) {
     return NextResponse.json({ error: "Message limit reached" }, { status: 403 });
   }
 

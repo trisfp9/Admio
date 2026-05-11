@@ -113,7 +113,7 @@ export default function DashboardPage() {
 
   const xpInfo = getXPLevel(profile.xp);
   const messagesUsed = profile.is_pro ? profile.ai_messages_this_month : profile.ai_messages_used;
-  const messagesMax = profile.is_pro ? 500 : 7;
+  const messagesMax = profile.is_pro ? 400 : 7;
   const breakdown = profile.profile_strength_breakdown as { dream_college_target?: number } | null;
 
   return (
@@ -275,7 +275,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <p className="font-heading font-semibold text-text-primary">Unlock the full experience</p>
-              <p className="text-text-muted text-sm">Get detailed roadmaps, real competition names, and 500 monthly AI messages.</p>
+              <p className="text-text-muted text-sm">Get detailed roadmaps, real competition names, and 400 monthly AI messages.</p>
             </div>
             <Link href="/pricing">
               <Button variant="pop" size="sm">Upgrade to Pro</Button>

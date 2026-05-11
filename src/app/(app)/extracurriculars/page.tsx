@@ -352,7 +352,7 @@ export default function ExtracurricularsPage() {
   const completedActivities: CompletedActivity[] = profile.completed_activities || [];
   const roadmaps: SavedRoadmap[] = profile.roadmaps || [];
   const messagesUsed = profile.is_pro ? (profile.ai_messages_this_month || 0) : (profile.ai_messages_used || 0);
-  const messagesMax = profile.is_pro ? 500 : 7;
+  const messagesMax = profile.is_pro ? 400 : 7;
   const messagesLeft = Math.max(0, messagesMax - messagesUsed);
   const activeRoadmap = roadmaps.find((r) => r.id === activeRoadmapId) || null;
 
