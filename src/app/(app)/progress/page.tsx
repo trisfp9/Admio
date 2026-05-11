@@ -144,7 +144,12 @@ export default function ProgressPage() {
   };
 
   const polishActivity = async (idx: number) => {
-    if (!session?.access_token) return;
+    if (!session?.access_token || !profile) return;
+    const act = (profile.current_activities || [])[idx] ??
+      (profile.completed_activities || []).map((c: CompletedActivity) => ({
+        name: c.name, description: c.description || `Completed via Admio (${c.category})`
+      }))[idx - (profile.current_activities || []).length];
+    if (!act?.name) { toast.error("Activity not found."); return; }
     setPolishing(idx);
     try {
       const res = await fetch("/api/activity-polish", {
@@ -153,19 +158,15 @@ export default function ProgressPage() {
           Authorization: `Bearer ${session.access_token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ activity: allActivities[idx] }),
+        body: JSON.stringify({ activity: act }),
       });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Polish failed.");
-      }
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: `Server error (${res.status})` }));
+      if (!res.ok) throw new Error(data.error || "Polish failed.");
       setPolishResults((prev) => ({ ...prev, [idx]: data }));
       setExpandedPolish((prev) => ({ ...prev, [idx]: true }));
       await refreshProfile();
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong.";
-      toast.error(message);
+      toast.error(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setPolishing(null);
     }

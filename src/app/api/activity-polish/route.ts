@@ -1,116 +1,101 @@
 import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/supabase";
 import { checkRateLimit } from "@/lib/ratelimit";
-import { callClaudeHaiku, buildProfilePrompt } from "@/lib/claude";
+import { callClaudeHaiku } from "@/lib/claude";
 
 export const maxDuration = 60;
 
-// Polishes a single activity into ready-to-paste Common App (150 char) and
-// UC Application (350 char) descriptions. Counts against AI message quota.
 export async function POST(request: Request) {
-  const auth = await getAuthenticatedUser(request);
-  if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { user, supabase } = auth;
-  const rateCheck = await checkRateLimit(user.id, "polish");
-  if (!rateCheck.success) return rateCheck.response!;
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
-
-  // Check message limits
-  const messagesUsed = profile.is_pro ? profile.ai_messages_this_month : profile.ai_messages_used;
-  const messagesMax = profile.is_pro ? 400 : 7;
-  if (messagesUsed >= messagesMax) {
-    return NextResponse.json({ error: "Message limit reached" }, { status: 403 });
-  }
-
-  let body: {
-    activity?: {
-      name?: string;
-      role?: string;
-      description?: string;
-      hours_per_week?: string;
-      years?: string;
-    };
-  };
   try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-  }
+    const auth = await getAuthenticatedUser(request);
+    if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { activity } = body;
-  if (!activity?.name) {
-    return NextResponse.json({ error: "Activity name is required" }, { status: 400 });
-  }
+    const { user, supabase } = auth;
+    const rateCheck = await checkRateLimit(user.id, "polish");
+    if (!rateCheck.success) return rateCheck.response!;
 
-  try {
-    const systemPrompt = buildProfilePrompt(profile) + `
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_pro, ai_messages_this_month, ai_messages_used, dream_college, major_interest")
+      .eq("id", user.id)
+      .single();
 
-You are an expert college application writer specializing in activity descriptions. Your job is to transform raw activity info into powerful, polished application descriptions that maximize impact with admissions officers.
+    if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
-Key principles:
-- Start with a strong, specific action verb (Led, Founded, Designed, Coached, Published, etc.)
-- Quantify everything possible: member count, hours, rankings, percentages, money raised, events organized
-- Show impact and scope, not just what you did
+    const messagesUsed = profile.is_pro ? profile.ai_messages_this_month : profile.ai_messages_used;
+    const messagesMax = profile.is_pro ? 400 : 7;
+    if (messagesUsed >= messagesMax) {
+      return NextResponse.json({ error: "Message limit reached" }, { status: 403 });
+    }
+
+    let body: { activity?: { name?: string; role?: string; description?: string; hours_per_week?: string; years?: string } };
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+
+    const { activity } = body;
+    if (!activity?.name) {
+      return NextResponse.json({ error: "Activity name is required" }, { status: 400 });
+    }
+
+    const systemPrompt = `You are an expert college application writer. Transform activity info into polished descriptions for admissions officers.
+
+Rules:
+- Start with a strong action verb (Led, Founded, Designed, etc.)
+- Quantify impact: numbers, rankings, percentages
 - No filler words, no "I", no passive voice
-- Every word earns its spot
+- common_app must be ≤150 characters including spaces
+- uc must be ≤350 characters including spaces
 
-Return ONLY valid JSON (no markdown, no backticks):
-{
-  "common_app": "Max 150 characters. Tight, punchy, verb-first. Counts spaces. Must be ≤150 chars.",
-  "uc": "Max 350 characters. More room for context and impact. Must be ≤350 chars.",
-  "tips": ["1-2 short tips for how the student can strengthen this activity further before applying"]
-}`;
+${profile.dream_college ? `Student is targeting ${profile.dream_college}.` : ""}
+${profile.major_interest ? `Intended major: ${profile.major_interest}.` : ""}
 
-    const userMessage = `Polish this activity for college applications:
+Respond with ONLY a raw JSON object. No markdown, no backticks, no explanation:
+{"common_app":"...","uc":"...","tips":["..."]}`;
 
-Name: ${activity.name}
-Role: ${activity.role || "not specified"}
-Hours per week: ${activity.hours_per_week || "not specified"}
-Duration: ${activity.years || "not specified"}
-What I did / achievements: ${activity.description || "not specified"}
-
-Write both a Common App description (≤150 chars) and UC description (≤350 chars).`;
+    const userMessage = [
+      `Activity: ${activity.name}`,
+      activity.role ? `Role: ${activity.role}` : null,
+      activity.hours_per_week ? `Hours/week: ${activity.hours_per_week}` : null,
+      activity.years ? `Duration: ${activity.years}` : null,
+      activity.description ? `Details: ${activity.description}` : null,
+    ].filter(Boolean).join("\n");
 
     const result = await callClaudeHaiku(systemPrompt, userMessage, 800);
 
-    let parsed;
+    // Parse JSON — handle markdown fences, extract JSON object
+    let parsed: { common_app?: string; uc?: string; tips?: string[] };
+    const cleaned = result.replace(/```[\s\S]*?```/g, (match) => {
+      return match.replace(/```(?:json)?\n?/g, "").replace(/```/g, "");
+    }).replace(/```(?:json)?\s*/g, "").replace(/```/g, "").trim();
+
     try {
-      // Strip markdown fences if present
-      const cleaned = result.replace(/```(?:json)?\s*/g, "").trim();
-      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        console.error("No JSON found in polish response:", result.slice(0, 300));
-        return NextResponse.json({ error: "Failed to parse response. Try again." }, { status: 500 });
-      }
-      parsed = JSON.parse(jsonMatch[0]);
+      // Try direct parse first
+      parsed = JSON.parse(cleaned);
     } catch {
-      // Last resort: try to extract fields manually
-      const caMatch = result.match(/"common_app"\s*:\s*"([^"]+)"/);
-      const ucMatch = result.match(/"uc"\s*:\s*"([^"]+)"/);
-      if (caMatch && ucMatch) {
-        parsed = { common_app: caMatch[1], uc: ucMatch[1], tips: [] };
+      // Try extracting JSON object
+      const jsonMatch = cleaned.match(/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/);
+      if (jsonMatch) {
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch {
+          parsed = {};
+        }
       } else {
-        console.error("Polish parse failed. Raw:", result.slice(0, 500));
-        return NextResponse.json({ error: "Failed to parse response. Try again." }, { status: 500 });
+        parsed = {};
       }
     }
 
-    // Enforce character limits server-side (trim if AI went over)
-    const commonApp = typeof parsed.common_app === "string"
-      ? parsed.common_app.slice(0, 150)
-      : "";
-    const uc = typeof parsed.uc === "string"
-      ? parsed.uc.slice(0, 350)
-      : "";
-    const tips = Array.isArray(parsed.tips) ? parsed.tips.slice(0, 2) : [];
+    const commonApp = typeof parsed.common_app === "string" ? parsed.common_app.slice(0, 150) : "";
+    const uc = typeof parsed.uc === "string" ? parsed.uc.slice(0, 350) : "";
+    const tips = Array.isArray(parsed.tips) ? parsed.tips.slice(0, 3) : [];
+
+    if (!commonApp && !uc) {
+      console.error("Polish returned empty results. Raw:", result.slice(0, 500));
+      return NextResponse.json({ error: "AI returned an empty response. Try again." }, { status: 500 });
+    }
 
     // Increment message counter
     const updateField = profile.is_pro ? "ai_messages_this_month" : "ai_messages_used";
@@ -122,9 +107,7 @@ Write both a Common App description (≤150 chars) and UC description (≤350 ch
     return NextResponse.json({ common_app: commonApp, uc, tips });
   } catch (err) {
     console.error("Activity polish error:", err);
-    const message = err instanceof Error ? err.message : "Polish failed";
-    return NextResponse.json({
-      error: message.includes("API") ? message : "Polish failed. Please try again.",
-    }, { status: 500 });
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ error: `Polish failed: ${msg}` }, { status: 500 });
   }
 }
