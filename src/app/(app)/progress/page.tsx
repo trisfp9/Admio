@@ -153,7 +153,7 @@ export default function ProgressPage() {
           Authorization: `Bearer ${session.access_token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ activity: activities[idx] }),
+        body: JSON.stringify({ activity: allActivities[idx] }),
       });
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -214,6 +214,14 @@ export default function ProgressPage() {
   const breakdown = profile.profile_strength_breakdown as ProfileStrengthBreakdown | null;
   const strength = profile.profile_strength || 0;
   const completed: CompletedActivity[] = profile.completed_activities || [];
+
+  const allActivities: CurrentActivity[] = [
+    ...activities,
+    ...completed.map((c) => ({
+      name: c.name,
+      description: c.description || `Completed via Admio (${c.category})`,
+    })),
+  ];
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -611,11 +619,11 @@ export default function ProgressPage() {
               </div>
             </div>
 
-            {activities.length === 0 ? (
+            {allActivities.length === 0 ? (
               <div className="glass-card p-8 text-center">
                 <BookOpen className="w-10 h-10 text-text-muted/40 mx-auto mb-3" />
                 <p className="text-text-muted text-sm mb-3">
-                  No activities to polish yet. Add them in the My Profile tab first.
+                  No activities to polish yet. Add them in the My Profile tab or complete a roadmap activity.
                 </p>
                 <Button variant="ghost" size="sm" onClick={() => setPageTab("progress")}>
                   Go to My Profile
@@ -623,7 +631,7 @@ export default function ProgressPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {activities.map((a, i) => {
+                {allActivities.map((a, i) => {
                   const result = polishResults[i];
                   const expanded = expandedPolish[i];
                   return (
@@ -714,7 +722,7 @@ export default function ProgressPage() {
             )}
 
             {/* Tip: add more detail */}
-            {activities.length > 0 && (
+            {allActivities.length > 0 && (
               <div className="text-center text-text-muted/60 text-xs pb-4">
                 The more detail you add to each activity (numbers, achievements, context), the stronger the AI output.{" "}
                 <button className="text-purple hover:underline" onClick={() => setPageTab("progress")}>
