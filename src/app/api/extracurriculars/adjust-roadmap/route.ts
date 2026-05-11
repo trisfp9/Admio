@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/supabase";
 import { checkRateLimit } from "@/lib/ratelimit";
-import { callClaude, buildProfilePrompt } from "@/lib/claude";
+import { callClaude, buildProfilePrompt, TruncatedError } from "@/lib/claude";
 import type { SavedRoadmap, RoadmapTask } from "@/types";
 
 export const maxDuration = 60;
@@ -64,7 +64,9 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation) with this EXA
   "common_app_tip": "Updated tip if relevant, or same as before"
 }
 
-The student's country is ${profile.country || "unknown"}.`;
+The student's country is ${profile.country || "unknown"}.
+
+CONCISENESS: Keep task descriptions short (under 15 words each). Do not add explanations or commentary — just the JSON. Maximum 20 tasks total. If the student asks for many weeks, consolidate smaller actions into one task per week rather than multiple.`;
 
     const userMessage = `CURRENT ROADMAP (category: ${roadmap.category}):
 - Project idea: ${roadmap.project_idea}
@@ -135,6 +137,12 @@ INSTRUCTION (do exactly this): ${instruction.slice(0, 1000)}`;
     return NextResponse.json({ roadmap: updated });
   } catch (err) {
     console.error("Adjust roadmap error:", err);
+    if (err instanceof TruncatedError) {
+      return NextResponse.json(
+        { error: "The adjusted roadmap was too long to generate. Try a simpler change (e.g. fewer weeks or tasks)." },
+        { status: 422 }
+      );
+    }
     const message = err instanceof Error ? err.message : "Adjustment failed";
     return NextResponse.json({ error: message.includes("API") ? message : "Adjustment failed. Please try again." }, { status: 500 });
   }

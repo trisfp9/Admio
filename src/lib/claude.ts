@@ -176,7 +176,15 @@ export async function callClaudeHaiku(
   }
 }
 
-// Non-streaming call with retries for analysis endpoints
+// Non-streaming call with retries for analysis endpoints.
+// Throws TruncatedError if the response was cut off by max_tokens.
+export class TruncatedError extends Error {
+  constructor() {
+    super("Response was truncated — the output hit the token limit.");
+    this.name = "TruncatedError";
+  }
+}
+
 export async function callClaude(
   systemPrompt: string,
   userMessage: string,
@@ -208,10 +216,15 @@ export async function callClaude(
 
       clearTimeout(timeout);
 
+      if (response.stop_reason === "max_tokens") {
+        throw new TruncatedError();
+      }
+
       const block = response.content[0];
       if (block.type === "text") return block.text;
       return "";
     } catch (error) {
+      if (error instanceof TruncatedError) throw error;
       if (attempt === retries) throw error;
       // Exponential backoff
       await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, attempt)));
