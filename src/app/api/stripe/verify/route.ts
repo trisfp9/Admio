@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/supabase";
+import { checkRateLimit } from "@/lib/ratelimit";
 import Stripe from "stripe";
 
 // Fallback activation path. Called client-side right after a successful
@@ -17,6 +18,8 @@ export async function POST(request: Request) {
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { user, supabase } = auth;
+  const rateCheck = await checkRateLimit(user.id, "analyze");
+  if (!rateCheck.success) return rateCheck.response!;
 
   const { data: profile } = await supabase
     .from("profiles")
