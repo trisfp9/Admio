@@ -103,6 +103,11 @@ export interface ExtracurricularRoadmap {
 }
 
 // Persisted per-user roadmap with a checklist and a chosen project idea.
+export interface RoadmapAdjustment {
+  summary: string;
+  at: string;
+}
+
 export interface SavedRoadmap {
   id: string;
   category: string;
@@ -115,6 +120,7 @@ export interface SavedRoadmap {
   status: "planning" | "active" | "completed";
   created_at: string;
   updated_at: string;
+  adjustments?: RoadmapAdjustment[];
 }
 
 export interface RoadmapTask {

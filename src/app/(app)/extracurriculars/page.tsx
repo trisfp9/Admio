@@ -1079,10 +1079,25 @@ function RoadmapDetail({
         <p className="text-text-muted/50 text-xs mb-3">
           Uses 1 AI message · <span className={messagesLeft <= 5 ? "text-amber-400" : ""}>{messagesUsed}/{messagesMax} messages used, {messagesLeft} remaining</span>
         </p>
+
+        {/* Adjustment history */}
+        {roadmap.adjustments && roadmap.adjustments.length > 0 && (
+          <div className="mb-4 space-y-1.5">
+            <p className="text-text-muted/60 text-[10px] font-medium uppercase tracking-wide">Previous adjustments</p>
+            {roadmap.adjustments.map((adj, i) => (
+              <div key={i} className="flex items-center gap-2 text-xs">
+                <span className="text-purple">•</span>
+                <span className="text-text-muted">{adj.summary}</span>
+                <span className="text-text-muted/40 ml-auto text-[10px] shrink-0">{timeAgo(adj.at)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
         <textarea
           value={adjustInstruction}
           onChange={(e) => setAdjustInstruction(e.target.value)}
-          placeholder={`e.g. "Stretch this to 8 weeks and add more data-analysis tasks." or "Switch to a cheaper project that doesn't need hardware."`}
+          placeholder={`e.g. "Stretch this to 15 weeks" or "Switch to a cheaper project that doesn't need hardware" or "Add more data-analysis tasks"`}
           rows={3}
           className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-purple/50 text-sm resize-none mb-3"
           disabled={adjusting}
@@ -1093,7 +1108,7 @@ function RoadmapDetail({
           onClick={() => adjustRoadmap(roadmap)}
           loading={adjusting}
           disabled={!adjustInstruction.trim() || adjusting || messagesLeft === 0}
-          className="w-full sm:w-auto sm:ml-auto sm:flex sm:ml-auto"
+          className="w-full sm:w-auto sm:ml-auto sm:flex"
         >
           {adjusting ? "Adjusting..." : "Apply adjustment"}
         </Button>
@@ -1103,4 +1118,12 @@ function RoadmapDetail({
       </div>
     </div>
   );
+}
+
+function timeAgo(iso: string): string {
+  const hours = (Date.now() - new Date(iso).getTime()) / 3_600_000;
+  if (hours < 1) return "just now";
+  if (hours < 24) return `${Math.floor(hours)}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
 }

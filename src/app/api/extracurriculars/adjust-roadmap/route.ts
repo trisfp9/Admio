@@ -6,10 +6,6 @@ import type { SavedRoadmap, RoadmapTask } from "@/types";
 
 export const maxDuration = 60;
 
-// AI-powered adjustment of an existing roadmap.
-// The client sends the current roadmap + a free-text instruction
-// ("swap the project idea to something cheaper", "add more weeks on data analysis", etc.)
-// and we return the updated tasks / project_idea / competitions.
 export async function POST(request: Request) {
   const auth = await getAuthenticatedUser(request);
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -27,10 +23,8 @@ export async function POST(request: Request) {
   if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
   if (!profile.is_pro) return NextResponse.json({ error: "Pro subscription required" }, { status: 403 });
 
-  // Count against the monthly AI message cap — this is a real Claude call
-  const messagesUsed = profile.is_pro ? profile.ai_messages_this_month : profile.ai_messages_used;
-  const messagesMax = profile.is_pro ? 500 : 7;
-  if (messagesUsed >= messagesMax) {
+  const messagesUsed = profile.ai_messages_this_month || 0;
+  if (messagesUsed >= 500) {
     return NextResponse.json({ error: "Message limit reached" }, { status: 403 });
   }
 
@@ -49,39 +43,47 @@ export async function POST(request: Request) {
   try {
     const systemPrompt = buildProfilePrompt(profile) + `
 
-You are adjusting an existing roadmap based on the student's instruction. Preserve completed tasks (done=true) unless the instruction explicitly says to remove them. You may add, remove, reorder, or reword tasks. You may change the project_idea and competitions if the instruction calls for it.
+You are modifying a student's extracurricular roadmap. The student will give you a SPECIFIC instruction about what to change. You MUST follow that instruction exactly — do not ignore it, do not partially apply it, do not second-guess it.
 
-Return ONLY valid JSON (no markdown, no backticks) with this shape:
+RULES:
+1. FOLLOW THE INSTRUCTION LITERALLY. If they say "stretch to 15 weeks", the output MUST have tasks spanning weeks 1-15. If they say "remove all competitions", the competitions array must be empty. If they say "change the project to X", the project_idea must be X.
+2. Preserve any tasks marked done=true (keep their id, description, done state) UNLESS the instruction says to remove them.
+3. New tasks get fresh ids like "new-1", "new-2". Preserved tasks keep their original id.
+4. Every task must have a week number. If stretching the timeline, redistribute tasks across the new range.
+5. Only use real competition names — never invent competitions.
+
+Return ONLY valid JSON (no markdown, no backticks, no explanation) with this EXACT shape:
 {
-  "project_idea": "Updated project idea (or same as before)",
-  "competitions": [{"name": "Real name", "description": "...", "deadline": "Month Day or rolling"}],
+  "adjustment_summary": "Short 5-10 word summary of what changed, e.g. 'Stretched to 15 weeks, added 8 new tasks'",
+  "project_idea": "Updated project idea (or same as before if unchanged)",
+  "competitions": [{"name": "Real competition name", "description": "...", "deadline": "Month Year or rolling"}],
   "tasks": [
-    {"id": "existing-task-id-if-preserved-or-new-uuid", "week": 1, "description": "...", "done": false}
+    {"id": "existing-id-or-new-1", "week": 1, "description": "Concrete action step", "done": false}
   ],
   "weekly_hours": "X-Y hours",
-  "common_app_tip": "..."
+  "common_app_tip": "Updated tip if relevant, or same as before"
 }
 
-Keep ids stable for tasks you preserve (and their done state). Use a fresh id like "new-1", "new-2" for brand-new tasks.
+The student's country is ${profile.country || "unknown"}.`;
 
-If you add or change competitions, prioritize real ones available in the student's country (${profile.country || "their country"}), plus a couple of well-known international competitions open to international participants. No made-up names.`;
+    const userMessage = `CURRENT ROADMAP (category: ${roadmap.category}):
+- Project idea: ${roadmap.project_idea}
+- Weekly hours: ${roadmap.weekly_hours}
+- Total tasks: ${roadmap.tasks.length} (spanning weeks ${Math.min(...roadmap.tasks.map(t => t.week))} to ${Math.max(...roadmap.tasks.map(t => t.week))})
+- Competitions: ${JSON.stringify(roadmap.competitions)}
+- Tasks: ${JSON.stringify(roadmap.tasks)}
+- Common App tip: ${roadmap.common_app_tip}
 
-    const userMessage = `Current roadmap (category: ${roadmap.category}):
-Project idea: ${roadmap.project_idea}
-Weekly hours: ${roadmap.weekly_hours}
-Competitions: ${JSON.stringify(roadmap.competitions)}
-Tasks: ${JSON.stringify(roadmap.tasks)}
-Common App tip: ${roadmap.common_app_tip}
+INSTRUCTION (do exactly this): ${instruction.slice(0, 1000)}`;
 
-Student's adjustment request: ${instruction.slice(0, 1000)}`;
-
-    const result = await callClaude(systemPrompt, userMessage);
+    const result = await callClaude(systemPrompt, userMessage, 2, 3000);
 
     let parsed;
     try {
       const jsonMatch = result.match(/\{[\s\S]*\}/);
       parsed = JSON.parse(jsonMatch ? jsonMatch[0] : result);
     } catch {
+      console.error("Adjust parse failure, raw:", result.slice(0, 500));
       return NextResponse.json({ error: "Failed to parse adjustment. Try again." }, { status: 500 });
     }
 
@@ -101,6 +103,10 @@ Student's adjustment request: ${instruction.slice(0, 1000)}`;
           })
       : roadmap.tasks;
 
+    const adjustmentSummary = typeof parsed.adjustment_summary === "string"
+      ? parsed.adjustment_summary
+      : instruction.slice(0, 60);
+
     const updated: SavedRoadmap = {
       ...roadmap,
       project_idea: typeof parsed.project_idea === "string" ? parsed.project_idea : roadmap.project_idea,
@@ -109,17 +115,20 @@ Student's adjustment request: ${instruction.slice(0, 1000)}`;
       weekly_hours: typeof parsed.weekly_hours === "string" ? parsed.weekly_hours : roadmap.weekly_hours,
       common_app_tip: typeof parsed.common_app_tip === "string" ? parsed.common_app_tip : roadmap.common_app_tip,
       updated_at: new Date().toISOString(),
+      adjustments: [
+        ...(roadmap.adjustments || []),
+        { summary: adjustmentSummary, at: new Date().toISOString() },
+      ],
     };
 
-    // Persist back to profile.roadmaps + increment the AI message counter
+    // Persist + increment counter
     const allRoadmaps: SavedRoadmap[] = Array.isArray(profile.roadmaps) ? profile.roadmaps : [];
     const nextRoadmaps = allRoadmaps.map((r) => (r.id === roadmap.id ? updated : r));
-    const updateField = profile.is_pro ? "ai_messages_this_month" : "ai_messages_used";
     await supabase
       .from("profiles")
       .update({
         roadmaps: nextRoadmaps,
-        [updateField]: messagesUsed + 1,
+        ai_messages_this_month: messagesUsed + 1,
       })
       .eq("id", user.id);
 
