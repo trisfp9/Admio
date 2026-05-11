@@ -98,14 +98,22 @@ export default function ProfilePage() {
         .eq("id", user.id);
       if (error) throw error;
 
-      toast.success("Profile saved! Your college list, recommendations, and profile strength will refresh with your new info.");
       await refreshProfile();
 
       if (session?.access_token) {
-        fetch("/api/profile-strength", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        }).catch(() => {});
+        toast.success("Profile saved! Recalculating your profile strength...");
+        try {
+          await fetch("/api/profile-strength", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
+          await refreshProfile();
+          toast.success("Profile strength updated!", { duration: 2000 });
+        } catch {
+          toast.success("Profile saved! Profile strength will update shortly.");
+        }
+      } else {
+        toast.success("Profile saved!");
       }
     } catch {
       toast.error("Failed to save changes.");

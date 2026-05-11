@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth-context";
+import { createBrowserClient } from "@/lib/supabase";
 import {
   ExtracurricularRecommendation,
   CompletedActivity,
@@ -37,6 +38,7 @@ function makeId() {
 
 export default function ExtracurricularsPage() {
   const { profile, session, refreshProfile } = useAuth();
+  const supabase = useMemo(() => createBrowserClient(), []);
   const [mainTab, setMainTab] = useState<MainTab>("active");
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [recommendations, setRecommendations] = useState<ExtracurricularRecommendation[] | null>(null);
@@ -114,8 +116,6 @@ export default function ExtracurricularsPage() {
   const confirmSelection = async () => {
     if (!session?.access_token || selectedCategories.length === 0) return;
     try {
-      const { createBrowserClient } = await import("@/lib/supabase");
-      const supabase = createBrowserClient();
       await supabase.from("profiles").update({
         selected_extracurricular_categories: selectedCategories,
       }).eq("id", profile!.id);
@@ -132,8 +132,6 @@ export default function ExtracurricularsPage() {
     setCompleting(category);
     try {
       const rec = recommendations?.find((r) => r.category === category);
-      const { createBrowserClient } = await import("@/lib/supabase");
-      const supabase = createBrowserClient();
 
       const newCompleted: CompletedActivity[] = [
         ...(profile.completed_activities || []),
@@ -240,8 +238,6 @@ export default function ExtracurricularsPage() {
     };
 
     try {
-      const { createBrowserClient } = await import("@/lib/supabase");
-      const supabase = createBrowserClient();
       const next = [...(profile.roadmaps || []), newRoadmap];
       const { error } = await supabase.from("profiles").update({ roadmaps: next }).eq("id", profile.id);
       if (error) {
@@ -280,8 +276,6 @@ export default function ExtracurricularsPage() {
       };
     });
     try {
-      const { createBrowserClient } = await import("@/lib/supabase");
-      const supabase = createBrowserClient();
       const { error } = await supabase.from("profiles").update({ roadmaps: next }).eq("id", profile.id);
       if (error) {
         console.error("Task toggle error:", error);
@@ -299,8 +293,6 @@ export default function ExtracurricularsPage() {
     if (!profile) return;
     if (!confirm("Delete this roadmap? This can't be undone.")) return;
     try {
-      const { createBrowserClient } = await import("@/lib/supabase");
-      const supabase = createBrowserClient();
       const next = (profile.roadmaps || []).filter((r) => r.id !== roadmapId);
       await supabase.from("profiles").update({ roadmaps: next }).eq("id", profile.id);
       await refreshProfile();
