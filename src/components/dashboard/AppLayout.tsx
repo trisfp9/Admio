@@ -69,7 +69,7 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
               <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
             </svg>
           </div>
-          <span className="font-heading font-bold text-lg text-text-primary">Pathly</span>
+          <span className="font-heading font-bold text-lg text-text-primary">Admio</span>
         </Link>
 
         <nav className="flex-1 space-y-1">
@@ -121,7 +121,7 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
             Sign Out
           </button>
           <p className="text-text-muted/40 text-[10px] leading-relaxed pt-2 px-1">
-            Pathly uses AI to provide guidance. Outputs are informational, not professional advice.
+            Admio uses AI to provide guidance. Outputs are informational, not professional advice.
           </p>
         </div>
       </aside>
@@ -145,7 +145,7 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
               className="fixed left-0 top-0 h-full w-72 bg-surface border-r border-white/5 z-50 lg:hidden p-6"
             >
               <div className="flex items-center justify-between mb-8">
-                <span className="font-heading font-bold text-lg text-text-primary">Pathly</span>
+                <span className="font-heading font-bold text-lg text-text-primary">Admio</span>
                 <button onClick={() => setSidebarOpen(false)} className="text-text-muted">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -171,7 +171,7 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
                 })}
               </nav>
               <p className="text-text-muted/40 text-[10px] leading-relaxed mt-6 px-1">
-                Pathly uses AI to provide guidance. Outputs are informational, not professional advice.
+                Admio uses AI to provide guidance. Outputs are informational, not professional advice.
               </p>
             </motion.aside>
           </>
@@ -185,7 +185,7 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
           <button onClick={() => setSidebarOpen(true)} className="text-text-muted">
             <Menu className="w-5 h-5" />
           </button>
-          <span className="font-heading font-bold text-text-primary">Pathly</span>
+          <span className="font-heading font-bold text-text-primary">Admio</span>
           <Link href="/profile">
             <User className="w-5 h-5 text-text-muted" />
           </Link>

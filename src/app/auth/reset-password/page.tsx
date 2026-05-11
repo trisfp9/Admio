@@ -46,7 +46,7 @@ export default function ResetPasswordPage() {
                 <path d="M2 12l10 5 10-5" />
               </svg>
             </div>
-            <span className="font-heading font-bold text-xl text-text-primary">Pathly</span>
+            <span className="font-heading font-bold text-xl text-text-primary">Admio</span>
           </Link>
 
           <div className="glass-card p-8 md:p-10">

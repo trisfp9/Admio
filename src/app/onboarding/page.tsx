@@ -180,7 +180,7 @@ export default function OnboardingPage() {
                 <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
               </svg>
             </div>
-            <span className="font-heading font-bold text-lg text-text-primary">Pathly</span>
+            <span className="font-heading font-bold text-lg text-text-primary">Admio</span>
           </div>
           {step > 0 && (
             <>
@@ -203,7 +203,7 @@ export default function OnboardingPage() {
               <div className="space-y-6">
                 <div className="text-center space-y-2">
                   <h2 className="font-heading font-bold text-3xl text-text-primary leading-tight">
-                    Welcome to <span className="text-gradient">Pathly</span>
+                    Welcome to <span className="text-gradient">Admio</span>
                   </h2>
                   <p className="text-text-muted text-sm leading-relaxed">
                     Your AI-powered college admissions counselor. We&apos;ll help you build the strongest application possible — step by step.

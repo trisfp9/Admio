@@ -550,12 +550,12 @@ export default function ProgressPage() {
               </div>
             </div>
 
-            {/* Completed via Pathly */}
+            {/* Completed via Admio */}
             {completed.length > 0 && (
               <div className="glass-card p-6 space-y-3">
                 <div className="flex items-center gap-3">
                   <CheckCircle2 className="w-5 h-5 text-pop" />
-                  <h2 className="font-heading font-semibold text-text-primary">Completed via Pathly</h2>
+                  <h2 className="font-heading font-semibold text-text-primary">Completed via Admio</h2>
                 </div>
                 <ul className="space-y-2">
                   {completed.map((c, i) => (

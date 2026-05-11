@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth-context";
-import { useDebouncedCallback } from "@/hooks/useDebounce";
 import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/ui/ProgressBar";
 import Badge from "@/components/ui/Badge";
 import Skeleton from "@/components/ui/Skeleton";
 import { createBrowserClient } from "@/lib/supabase";
 import { COUNTRY_OPTIONS } from "@/lib/countries";
-import { User, Crown, Trash2, Shield, Mail, Lock, LogOut, ChevronDown, ChevronUp, Settings } from "lucide-react";
+import { User, Crown, Trash2, Shield, Mail, Lock, LogOut, ChevronDown, ChevronUp, Settings, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -22,12 +21,19 @@ const GPA_RANGES = ["Below 2.5", "2.5 - 3.0", "3.0 - 3.5", "3.5 - 3.8", "3.8 - 4
 const EC_INTERESTS = ["Sports", "Arts", "Tech", "Research", "Community Service", "Business", "Writing", "Music", "Science", "Math", "Other"];
 const TIME_OPTIONS = ["Less than 2 hours", "2-5 hours", "5-10 hours", "10+ hours"];
 
+const PROFILE_FIELDS = [
+  "name", "grade", "country", "target_country", "dream_college",
+  "aiming_level", "major_interest", "gpa_range", "test_scores",
+  "time_available", "extracurricular_interests", "detailed_profile",
+] as const;
+
 export default function ProfilePage() {
-  const { profile, refreshProfile, user, loading } = useAuth();
+  const { profile, refreshProfile, user, loading, session } = useAuth();
   const router = useRouter();
-  const supabase = createBrowserClient();
+  const supabase = useMemo(() => createBrowserClient(), []);
   const [deleting, setDeleting] = useState(false);
   const [localProfile, setLocalProfile] = useState(profile);
+  const [saving, setSaving] = useState(false);
 
   // Account settings state
   const [emailOpen, setEmailOpen] = useState(false);
@@ -45,26 +51,67 @@ export default function ProfilePage() {
     }
   }, [profile]);
 
-  const debouncedSave = useDebouncedCallback(
-    useCallback(async (field: string, value: unknown) => {
-      if (!user) return;
-      const { error } = await supabase
-        .from("profiles")
-        .update({ [field]: value })
-        .eq("id", user.id);
-      if (error) {
-        toast.error("Failed to save changes.");
-      } else {
-        toast.success("Saved", { duration: 1500 });
-        refreshProfile();
-      }
-    }, [user, supabase, refreshProfile]),
-    800
-  );
+  const isDirty = useMemo(() => {
+    if (!profile || !localProfile) return false;
+    return PROFILE_FIELDS.some((f) => JSON.stringify(profile[f]) !== JSON.stringify(localProfile[f]));
+  }, [profile, localProfile]);
+
+  const lastEditedAt = profile?.profile_last_edited_at ?? null;
+  const canEdit = useMemo(() => {
+    if (!lastEditedAt) return true;
+    const msSince = Date.now() - new Date(lastEditedAt).getTime();
+    return msSince >= 7 * 24 * 60 * 60 * 1000;
+  }, [lastEditedAt]);
+
+  const nextEditDate = useMemo(() => {
+    if (!lastEditedAt) return null;
+    const next = new Date(new Date(lastEditedAt).getTime() + 7 * 24 * 60 * 60 * 1000);
+    return next.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }, [lastEditedAt]);
 
   const updateField = (field: string, value: unknown) => {
     setLocalProfile((p) => p ? { ...p, [field]: value } : p);
-    debouncedSave(field, value);
+  };
+
+  const handleSave = async () => {
+    if (!user || !localProfile || !isDirty) return;
+    if (!canEdit) {
+      toast.error(`You can update your profile once per week. Next edit available ${nextEditDate}.`);
+      return;
+    }
+    setSaving(true);
+    try {
+      const updates: Record<string, unknown> = { profile_last_edited_at: new Date().toISOString() };
+      for (const f of PROFILE_FIELDS) {
+        updates[f] = localProfile[f];
+      }
+      updates.college_list_cache = null;
+      updates.profile_strength_updated_at = null;
+      updates.extracurricular_recommendations = null;
+      updates.ai_scholarships_cache = null;
+      updates.ai_competitions_cache = null;
+      updates.daily_tip_cache = null;
+
+      const { error } = await supabase
+        .from("profiles")
+        .update(updates)
+        .eq("id", user.id);
+      if (error) throw error;
+
+      toast.success("Profile saved! Your college list, recommendations, and profile strength will refresh with your new info.");
+      await refreshProfile();
+
+      if (session?.access_token) {
+        fetch("/api/profile-strength", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        }).catch(() => {});
+      }
+    } catch {
+      toast.error("Failed to save changes.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -301,20 +348,28 @@ export default function ProfilePage() {
 
       {/* Editable fields */}
       <div className="glass-card p-6 space-y-6">
-        <h2 className="font-heading font-semibold text-text-primary flex items-center gap-2">
-          <User className="w-5 h-5 text-purple" /> Personal Info
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="font-heading font-semibold text-text-primary flex items-center gap-2">
+            <User className="w-5 h-5 text-purple" /> Personal Info
+          </h2>
+          {!canEdit && (
+            <span className="text-xs text-text-muted">Next edit: {nextEditDate}</span>
+          )}
+        </div>
+        <p className="text-text-muted/60 text-xs -mt-2">
+          You can update your profile once per week. Saving will refresh your college list, recommendations, and profile strength.
+        </p>
 
-        <Field label="Name" value={localProfile.name || ""} onChange={(v) => updateField("name", v)} />
-        <SelectField label="Grade" options={GRADES} value={localProfile.grade || ""} onChange={(v) => updateField("grade", v)} />
-        <CountrySelectField label="Country" value={localProfile.country || ""} onChange={(v) => updateField("country", v)} />
-        <CountrySelectField label="Target Country" value={localProfile.target_country || ""} onChange={(v) => updateField("target_country", v)} />
-        <Field label="Dream College" value={localProfile.dream_college || ""} onChange={(v) => updateField("dream_college", v)} />
-        <SelectField label="Aiming Level" options={AIMING} value={localProfile.aiming_level || ""} onChange={(v) => updateField("aiming_level", v)} />
-        <SelectField label="Major Interest" options={MAJORS} value={localProfile.major_interest || ""} onChange={(v) => updateField("major_interest", v)} />
-        <SelectField label="GPA Range" options={GPA_RANGES} value={localProfile.gpa_range || ""} onChange={(v) => updateField("gpa_range", v)} />
-        <Field label="Test Scores" value={localProfile.test_scores || ""} onChange={(v) => updateField("test_scores", v)} />
-        <SelectField label="Time Available" options={TIME_OPTIONS} value={localProfile.time_available || ""} onChange={(v) => updateField("time_available", v)} />
+        <Field label="Name" value={localProfile.name || ""} onChange={(v) => updateField("name", v)} disabled={!canEdit} />
+        <SelectField label="Grade" options={GRADES} value={localProfile.grade || ""} onChange={(v) => updateField("grade", v)} disabled={!canEdit} />
+        <CountrySelectField label="Country" value={localProfile.country || ""} onChange={(v) => updateField("country", v)} disabled={!canEdit} />
+        <CountrySelectField label="Target Country" value={localProfile.target_country || ""} onChange={(v) => updateField("target_country", v)} disabled={!canEdit} />
+        <Field label="Dream College" value={localProfile.dream_college || ""} onChange={(v) => updateField("dream_college", v)} disabled={!canEdit} />
+        <SelectField label="Aiming Level" options={AIMING} value={localProfile.aiming_level || ""} onChange={(v) => updateField("aiming_level", v)} disabled={!canEdit} />
+        <SelectField label="Major Interest" options={MAJORS} value={localProfile.major_interest || ""} onChange={(v) => updateField("major_interest", v)} disabled={!canEdit} />
+        <SelectField label="GPA Range" options={GPA_RANGES} value={localProfile.gpa_range || ""} onChange={(v) => updateField("gpa_range", v)} disabled={!canEdit} />
+        <Field label="Test Scores" value={localProfile.test_scores || ""} onChange={(v) => updateField("test_scores", v)} disabled={!canEdit} />
+        <SelectField label="Time Available" options={TIME_OPTIONS} value={localProfile.time_available || ""} onChange={(v) => updateField("time_available", v)} disabled={!canEdit} />
 
         <div>
           <label className="block text-sm text-text-muted mb-3">Extracurricular Interests</label>
@@ -324,6 +379,7 @@ export default function ProfilePage() {
               return (
                 <button
                   key={interest}
+                  disabled={!canEdit}
                   onClick={() => {
                     const newInterests = selected
                       ? (localProfile.extracurricular_interests || []).filter((i) => i !== interest)
@@ -332,7 +388,7 @@ export default function ProfilePage() {
                   }}
                   className={`px-3 py-1.5 rounded-badge text-xs font-medium transition-all border ${
                     selected ? "bg-purple/15 text-purple border-purple/30" : "bg-white/5 text-text-muted border-white/10"
-                  }`}
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {interest}
                 </button>
@@ -340,12 +396,19 @@ export default function ProfilePage() {
             })}
           </div>
         </div>
+
+        {isDirty && canEdit && (
+          <Button variant="primary" onClick={handleSave} loading={saving} className="w-full">
+            <Save className="w-4 h-4" /> Save &amp; Update
+          </Button>
+        )}
       </div>
 
       {/* Pro Detailed Profile */}
       {localProfile.is_pro ? (
         <DetailedProfileForm
           profile={localProfile}
+          disabled={!canEdit}
           onUpdate={(field, value) => {
             const current = (localProfile.detailed_profile || {}) as Record<string, string>;
             const updated = { ...current, [field]: value };
@@ -395,7 +458,7 @@ export default function ProfilePage() {
   );
 }
 
-function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function Field({ label, value, onChange, disabled }: { label: string; value: string; onChange: (v: string) => void; disabled?: boolean }) {
   return (
     <div>
       <label className="block text-sm text-text-muted mb-2">{label}</label>
@@ -403,14 +466,15 @@ function Field({ label, value, onChange }: { label: string; value: string; onCha
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary focus:outline-none focus:border-purple/50 transition-colors text-sm"
+        disabled={disabled}
+        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary focus:outline-none focus:border-purple/50 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
       />
     </div>
   );
 }
 
-function CountrySelectField({ label, value, onChange }: {
-  label: string; value: string; onChange: (v: string) => void;
+function CountrySelectField({ label, value, onChange, disabled }: {
+  label: string; value: string; onChange: (v: string) => void; disabled?: boolean;
 }) {
   return (
     <div>
@@ -418,7 +482,8 @@ function CountrySelectField({ label, value, onChange }: {
       <select
         value={value}
         onChange={(e) => { if (e.target.value !== "──────────") onChange(e.target.value); }}
-        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary focus:outline-none focus:border-purple/50 transition-colors text-sm appearance-none cursor-pointer"
+        disabled={disabled}
+        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary focus:outline-none focus:border-purple/50 transition-colors text-sm appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <option value="" className="bg-surface">Select a country…</option>
         {COUNTRY_OPTIONS.map((c) => (
@@ -431,8 +496,8 @@ function CountrySelectField({ label, value, onChange }: {
   );
 }
 
-function SelectField({ label, options, value, onChange }: {
-  label: string; options: string[]; value: string; onChange: (v: string) => void;
+function SelectField({ label, options, value, onChange, disabled }: {
+  label: string; options: string[]; value: string; onChange: (v: string) => void; disabled?: boolean;
 }) {
   return (
     <div>
@@ -440,7 +505,8 @@ function SelectField({ label, options, value, onChange }: {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary focus:outline-none focus:border-purple/50 transition-colors text-sm appearance-none"
+        disabled={disabled}
+        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary focus:outline-none focus:border-purple/50 transition-colors text-sm appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <option value="" className="bg-surface">Select...</option>
         {options.map((opt) => (
@@ -451,8 +517,8 @@ function SelectField({ label, options, value, onChange }: {
   );
 }
 
-function TextAreaField({ label, value, onChange, placeholder, hint }: {
-  label: string; value: string; onChange: (v: string) => void; placeholder?: string; hint?: string;
+function TextAreaField({ label, value, onChange, placeholder, hint, disabled }: {
+  label: string; value: string; onChange: (v: string) => void; placeholder?: string; hint?: string; disabled?: boolean;
 }) {
   return (
     <div>
@@ -462,8 +528,9 @@ function TextAreaField({ label, value, onChange, placeholder, hint }: {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        disabled={disabled}
         rows={3}
-        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary placeholder:text-text-muted/40 focus:outline-none focus:border-purple/50 transition-colors text-sm resize-none"
+        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary placeholder:text-text-muted/40 focus:outline-none focus:border-purple/50 transition-colors text-sm resize-none disabled:opacity-50 disabled:cursor-not-allowed"
       />
     </div>
   );
@@ -484,9 +551,10 @@ const DETAILED_FIELDS: { key: string; label: string; placeholder: string; hint: 
   { key: "special_circumstances", label: "Special Circumstances", placeholder: "e.g., International student, learning disability, athlete...", hint: "Anything else the AI should know about your situation." },
 ];
 
-function DetailedProfileForm({ profile, onUpdate }: {
+function DetailedProfileForm({ profile, onUpdate, disabled }: {
   profile: Profile;
   onUpdate: (field: string, value: string) => void;
+  disabled?: boolean;
 }) {
   const detailed = (profile.detailed_profile || {}) as Record<string, string>;
   const filledCount = DETAILED_FIELDS.filter(f => detailed[f.key]?.trim()).length;
@@ -513,6 +581,7 @@ function DetailedProfileForm({ profile, onUpdate }: {
           onChange={(v) => onUpdate(field.key, v)}
           placeholder={field.placeholder}
           hint={field.hint}
+          disabled={disabled}
         />
       ))}
     </div>

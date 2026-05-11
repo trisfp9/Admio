@@ -90,7 +90,7 @@ function AuthContent() {
                 <path d="M2 12l10 5 10-5" />
               </svg>
             </div>
-            <span className="font-heading font-bold text-2xl text-text-primary">Pathly</span>
+            <span className="font-heading font-bold text-2xl text-text-primary">Admio</span>
           </Link>
 
           <h1 className="font-heading font-bold text-4xl text-text-primary mb-4 leading-tight">
@@ -122,7 +122,7 @@ function AuthContent() {
                   <path d="M2 12l10 5 10-5" />
                 </svg>
               </div>
-              <span className="font-heading font-bold text-xl text-text-primary">Pathly</span>
+              <span className="font-heading font-bold text-xl text-text-primary">Admio</span>
             </div>
 
             {/* Toggle */}

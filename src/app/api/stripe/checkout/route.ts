@@ -48,8 +48,8 @@ export async function POST(request: Request) {
           price_data: {
             currency: "usd",
             product_data: {
-              name: "Pathly Pro",
-              description: "Full access to all Pathly features — 500 AI messages/mo, detailed roadmaps, and more.",
+              name: "Admio Pro",
+              description: "Full access to all Admio features — 500 AI messages/mo, detailed roadmaps, and more.",
             },
             unit_amount: 1000, // $10.00
             recurring: { interval: "month" },

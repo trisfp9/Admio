@@ -122,7 +122,7 @@ export default function DashboardPage() {
       <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
         <div className="flex items-center gap-3 flex-wrap">
           <h1 className="font-heading font-bold text-3xl md:text-4xl text-text-primary">
-            Hey {profile.name || "there"}, let&apos;s build your path
+            Hey {profile.name || "there"}, let&apos;s get you admitted
           </h1>
           {profile.is_pro && (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-pop/20 to-purple/20 border border-pop/30 text-pop text-xs font-bold uppercase tracking-wider">

@@ -50,7 +50,7 @@ export default function BillingPage() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="font-heading font-bold text-xl text-text-primary">Pathly Pro</p>
+                  <p className="font-heading font-bold text-xl text-text-primary">Admio Pro</p>
                   <Badge variant="pop">Active</Badge>
                 </div>
                 <p className="text-text-muted text-sm">You have access to all Pro features.</p>

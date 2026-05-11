@@ -50,7 +50,7 @@ export function buildProfilePrompt(profile: Profile): string {
     .join("\n");
 
   const activitiesSection = (currentActivities || completedActivities)
-    ? `\n\nStudent's Actual Track Record:\n${currentActivities ? `Current/Past Activities:\n${currentActivities}\n` : ""}${completedActivities ? `Activities Completed via Pathly:\n${completedActivities}\n` : ""}Use this to ground your advice in what they've actually done — don't recommend things they're already doing unless suggesting how to go deeper.`
+    ? `\n\nStudent's Actual Track Record:\n${currentActivities ? `Current/Past Activities:\n${currentActivities}\n` : ""}${completedActivities ? `Activities Completed via Admio:\n${completedActivities}\n` : ""}Use this to ground your advice in what they've actually done — don't recommend things they're already doing unless suggesting how to go deeper.`
     : "\n\nStudent has not yet logged any concrete activities or achievements.";
 
   // Awards — weight by level (International > National > State > Regional > School)
@@ -86,7 +86,7 @@ Detailed Student Background (Pro Profile):
 Use this detailed narrative information to give highly personalized, specific advice. Reference their actual experiences when relevant.`;
   }
 
-  return `You are Pathly AI, a warm, expert college admissions counselor for high school students. You know this student personally — use their name and reference their specific situation.
+  return `You are Admio AI, a warm, expert college admissions counselor for high school students. You know this student personally — use their name and reference their specific situation.
 
 Student Profile:
 - Name: ${name}

@@ -23,7 +23,7 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Pathly — Your Roadmap to the School of Your Dreams",
+  title: "Admio — Your AI Admission Counselor",
   description:
     "AI-powered college admissions assistant for high school students. Get personalized guidance on extracurriculars, college selection, and applications.",
   keywords: ["college admissions", "high school", "extracurriculars", "AI counselor"],

@@ -96,7 +96,7 @@ const HeroSection = () => {
           <div className="w-10 h-10 bg-gradient-to-br from-[#00B4D8] to-[#8B5CF6] rounded-lg flex items-center justify-center">
             <Target className="w-6 h-6 text-white" />
           </div>
-          <span className="text-2xl font-heading font-bold">Pathly</span>
+          <span className="text-2xl font-heading font-bold">Admio</span>
         </div>
         <div className="hidden md:flex items-center space-x-8">
           <a href="#features" onClick={(e) => smoothScroll(e, "#features")} className="hover:text-[#00B4D8] transition-colors cursor-pointer">Features</a>
@@ -328,9 +328,9 @@ const ProofSection = () => {
 
 const TestimonialsSection = () => {
   const testimonials: Testimonial[] = [
-    { name: "Sarah Chen", school: "Stanford University '27", quote: "Pathly helped me discover competitions I never knew existed. I went from having no extracurriculars to winning a national science fair!", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", rating: 5, results: ["National Science Fair Winner", "Top 10% GPA", "5 AP Classes"] },
+    { name: "Sarah Chen", school: "Stanford University '27", quote: "Admio helped me discover competitions I never knew existed. I went from having no extracurriculars to winning a national science fair!", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face", rating: 5, results: ["National Science Fair Winner", "Top 10% GPA", "5 AP Classes"] },
     { name: "Marcus Johnson", school: "MIT '28", quote: "The gamification kept me motivated every single day. Watching my XP grow and maintaining my streak made college prep actually fun.", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face", rating: 5, results: ["365-Day Streak", "Level 50 Achieved", "10+ Competitions"] },
-    { name: "Priya Patel", school: "Harvard '27", quote: "As an international student without access to counselors, Pathly was a game-changer. The AI counselor answered all my questions at 2am!", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face", rating: 5, results: ["International Student", "$50K Scholarship", "Perfect SAT Score"] },
+    { name: "Priya Patel", school: "Harvard '27", quote: "As an international student without access to counselors, Admio was a game-changer. The AI counselor answered all my questions at 2am!", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face", rating: 5, results: ["International Student", "$50K Scholarship", "Perfect SAT Score"] },
   ]
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState(0)
@@ -370,7 +370,7 @@ const TestimonialsSection = () => {
               Real Results
             </motion.span>
           </h2>
-          <p className="text-xl sm:text-2xl text-white/60 max-w-4xl mx-auto leading-relaxed">Join thousands of students already using Pathly to get into their dream schools</p>
+          <p className="text-xl sm:text-2xl text-white/60 max-w-4xl mx-auto leading-relaxed">Join thousands of students already using Admio to get into their dream schools</p>
         </motion.div>
         <div className="relative max-w-6xl mx-auto mb-16">
           <div className="relative h-[500px] md:h-[400px]" style={{ perspective: "1000px" }}>
@@ -438,10 +438,10 @@ const TestimonialsSection = () => {
 const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const faqs: FAQ[] = [
-    { question: "Is Pathly really free?", answer: "Yes! Our free tier includes AI college finder, basic scholarship search, progress tracking, and 5 AI counselor messages per month. Upgrade to Pro for unlimited access and detailed roadmaps." },
+    { question: "Is Admio really free?", answer: "Yes! Our free tier includes AI college finder, basic scholarship search, progress tracking, and 5 AI counselor messages per month. Upgrade to Pro for unlimited access and detailed roadmaps." },
     { question: "How does the AI extracurricular planner work?", answer: "Our AI analyzes your profile, target schools, and intended major to recommend specific competitions, projects, and activities. Pro users get detailed timelines with real competition names and deadlines." },
-    { question: "Can I use Pathly if I'm an international student?", answer: "Absolutely! Pathly is designed for students worldwide. Our AI counselor understands international admissions and can help with country-specific questions." },
-    { question: "What makes Pathly different from other college prep tools?", answer: "Pathly combines AI-powered personalization with gamification to make college prep engaging and effective. Plus, at $10/month, it's accessible to students who can't afford expensive private counselors." },
+    { question: "Can I use Admio if I'm an international student?", answer: "Absolutely! Admio is designed for students worldwide. Our AI counselor understands international admissions and can help with country-specific questions." },
+    { question: "What makes Admio different from other college prep tools?", answer: "Admio combines AI-powered personalization with gamification to make college prep engaging and effective. Plus, at $10/month, it's accessible to students who can't afford expensive private counselors." },
     { question: "How do XP points and streaks work?", answer: "Earn XP by completing tasks on your roadmap, checking in daily, and hitting milestones. Maintain daily streaks to unlock bonus rewards and level up from Freshman to Accepted!" },
   ]
   return (
@@ -477,7 +477,7 @@ const ContactSection = () => (
     <div className="max-w-7xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
         <h2 className="text-4xl md:text-6xl font-heading font-bold text-white mb-4">Ready to Start Your Journey?</h2>
-        <p className="text-xl text-white/60 mb-8">Join thousands of students already using Pathly to get into their dream schools</p>
+        <p className="text-xl text-white/60 mb-8">Join thousands of students already using Admio to get into their dream schools</p>
         <Link href="/auth">
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="bg-gradient-to-r from-[#FF8C42] to-[#FF6B35] text-white font-semibold px-8 py-4 rounded-full text-lg inline-flex items-center gap-2">
             Get Started Free <ArrowRight className="w-5 h-5" />
@@ -488,7 +488,7 @@ const ContactSection = () => (
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center">
           <div className="w-12 h-12 rounded-full bg-[#00B4D8]/20 flex items-center justify-center mx-auto mb-4"><Mail className="w-6 h-6 text-[#00B4D8]" /></div>
           <h3 className="text-white font-semibold mb-2">Email</h3>
-          <p className="text-white/60">support@pathly.com</p>
+          <p className="text-white/60">support@admio.io</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-center">
           <div className="w-12 h-12 rounded-full bg-[#8B5CF6]/20 flex items-center justify-center mx-auto mb-4"><MessageSquare className="w-6 h-6 text-[#8B5CF6]" /></div>
@@ -512,7 +512,7 @@ const Footer = () => (
         <div>
           <div className="flex items-center space-x-2 mb-4">
             <div className="w-10 h-10 bg-gradient-to-br from-[#00B4D8] to-[#8B5CF6] rounded-lg flex items-center justify-center"><Target className="w-6 h-6 text-white" /></div>
-            <span className="text-xl font-heading font-bold text-white">Pathly</span>
+            <span className="text-xl font-heading font-bold text-white">Admio</span>
           </div>
           <p className="text-white/60 text-sm">Your roadmap to the school of your dreams</p>
         </div>
@@ -543,7 +543,7 @@ const Footer = () => (
         </div>
       </div>
       <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
-        <p className="text-white/60 text-sm mb-4 md:mb-0">&copy; {new Date().getFullYear()} Pathly. All rights reserved.</p>
+        <p className="text-white/60 text-sm mb-4 md:mb-0">&copy; {new Date().getFullYear()} Admio. All rights reserved.</p>
         <div className="flex items-center gap-6">
           <a href="#" className="text-white/60 hover:text-[#00B4D8] transition-colors"><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" /></svg></a>
           <a href="#" className="text-white/60 hover:text-[#00B4D8] transition-colors"><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg></a>
@@ -554,7 +554,7 @@ const Footer = () => (
   </footer>
 )
 
-export default function PathlyLandingPage() {
+export default function AdmioLandingPage() {
   return (
     <div className="w-full bg-[#080E1A]">
       <HeroSection />

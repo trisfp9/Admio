@@ -655,7 +655,7 @@ function RequirementsChecklist() {
       {open && (
         <div className="px-4 pb-4 space-y-2 border-t border-blue-500/15 pt-3">
           <p className="text-blue-200/60 text-[11px] mb-3">
-            Pathly doesn&apos;t verify admission requirements — they change every cycle and vary by school and nationality. Visit each school&apos;s official admissions page to confirm what applies to you.
+            Admio doesn&apos;t verify admission requirements — they change every cycle and vary by school and nationality. Visit each school&apos;s official admissions page to confirm what applies to you.
           </p>
           <ul className="space-y-3">
             {items.map((item) => (
