@@ -223,7 +223,7 @@ export default function CounselorPage() {
         )}
       </div>
       <p className="text-text-muted/40 text-[10px] mb-4 flex-shrink-0">
-        Message count is shared across AI counselor and roadmap adjustments. {messagesUsed}/{messagesMax} used this period.
+        Message count is shared across AI Counselor, Common App Writer, and roadmap adjustments. {messagesUsed}/{messagesMax} used this period.
       </p>
 
       {/* Roadmap context banner */}

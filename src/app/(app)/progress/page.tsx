@@ -11,7 +11,7 @@ import ProgressBar from "@/components/ui/ProgressBar";
 import Skeleton from "@/components/ui/Skeleton";
 import {
   TrendingUp, Sparkles, Plus, Trash2, CheckCircle2, GraduationCap, Award,
-  BookOpen, PenLine, Lock, Copy, Check, ChevronDown, ChevronUp, Wand2, Info, FileText, Printer,
+  BookOpen, PenLine, Lock, Copy, Check, ChevronDown, ChevronUp, Wand2, Info, FileText, Printer, AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -222,6 +222,10 @@ export default function ProgressPage() {
       description: c.description || `Completed via Admio (${c.category})`,
     })),
   ];
+
+  const messagesUsed = profile.is_pro ? (profile.ai_messages_this_month ?? 0) : (profile.ai_messages_used ?? 0);
+  const messagesMax = profile.is_pro ? 400 : 7;
+  const limitReached = messagesUsed >= messagesMax;
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -605,19 +609,43 @@ export default function ProgressPage() {
             {/* Explainer banner */}
             {profile.is_pro && <>
             <div className="glass-card p-5 border-purple/15">
-              <div className="flex items-start gap-3">
-                <Info className="w-5 h-5 text-purple flex-shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <p className="text-text-primary text-sm font-medium">How this works</p>
-                  <p className="text-text-muted text-sm leading-relaxed">
-                    The AI rewrites each activity into a punchy, verb-first description that fits the Common App (150 chars) and UC Application (350 chars). It surfaces numbers, impact, and scope — the things admissions officers actually look for.
-                  </p>
-                  <p className="text-text-muted text-xs mt-1">
-                    Each polish uses 1 AI message. More detail in your activity description = better output.
-                  </p>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3 flex-1">
+                  <Info className="w-5 h-5 text-purple flex-shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="text-text-primary text-sm font-medium">How this works</p>
+                    <p className="text-text-muted text-sm leading-relaxed">
+                      The AI rewrites each activity into a punchy, verb-first description that fits the Common App (150 chars) and UC Application (350 chars). It surfaces numbers, impact, and scope — the things admissions officers actually look for.
+                    </p>
+                    <p className="text-text-muted text-xs mt-1">
+                      Each polish uses 1 AI message. Shared with AI Counselor — {messagesUsed}/{messagesMax} used this period.
+                    </p>
+                  </div>
                 </div>
+                <Badge variant={messagesUsed >= messagesMax * 0.8 ? "warning" : "muted"}>
+                  {messagesUsed}/{messagesMax}
+                </Badge>
               </div>
             </div>
+
+            {/* Message limit warning */}
+            {messagesUsed >= 320 && messagesUsed < 400 && (
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-button p-3 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <p className="text-amber-400 text-sm">
+                  You&apos;ve used {messagesUsed} of your {messagesMax} monthly messages. Each polish uses 1 message.
+                </p>
+              </div>
+            )}
+
+            {limitReached && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-button p-3 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                <p className="text-red-400 text-sm">
+                  You&apos;ve used all {messagesMax} messages this period. Polish is unavailable until your limit resets.
+                </p>
+              </div>
+            )}
 
             {allActivities.length === 0 ? (
               <div className="glass-card p-8 text-center">
@@ -662,6 +690,7 @@ export default function ProgressPage() {
                           size="sm"
                           onClick={() => polishActivity(i)}
                           loading={polishing === i}
+                          disabled={limitReached}
                           className="flex-shrink-0"
                         >
                           <Wand2 className="w-4 h-4" />
