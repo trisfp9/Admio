@@ -220,7 +220,7 @@ const KeyFeatures = () => {
     { icon: Brain, title: "AI Extracurricular Planner", description: "Get personalized recommendations for competitions, projects, and activities that match your target school and major.", gradient: "from-[#00B4D8]/20 to-[#0096C7]/20" },
     { icon: MessageSquare, title: "AI College Counselor", description: "24/7 access to personalized college advice. Ask anything about applications, essays, or admissions strategy.", gradient: "from-[#8B5CF6]/20 to-[#7C3AED]/20" },
     { icon: Target, title: "Smart College Finder", description: "Discover your perfect fit with AI-generated lists of Reach, Target, and Safety schools based on your profile.", gradient: "from-[#FFD700]/20 to-[#FFA500]/20" },
-    { icon: Trophy, title: "Gamified Progress", description: "Level up from Freshman to Accepted with XP points, daily streaks, and achievement badges that keep you motivated.", gradient: "from-[#FF8C42]/20 to-[#FF6B35]/20" },
+    { icon: Trophy, title: "Gamified Progress", description: "Level up from Explorer to Trailblazer with XP points, daily streaks, and progress tracking that keeps you motivated.", gradient: "from-[#FF8C42]/20 to-[#FF6B35]/20" },
   ]
   return (
     <section id="features" className="bg-gradient-to-b from-[#080E1A] to-[#0A1628] py-24 px-6">
@@ -442,7 +442,7 @@ const FAQSection = () => {
     { question: "How does the AI extracurricular planner work?", answer: "Our AI analyzes your profile, target schools, and intended major to recommend specific competitions, projects, and activities. Pro users get detailed timelines with real competition names and deadlines." },
     { question: "Can I use Admio if I'm an international student?", answer: "Absolutely! Admio is designed for students worldwide. Our AI counselor understands international admissions and can help with country-specific questions." },
     { question: "What makes Admio different from other college prep tools?", answer: "Admio combines AI-powered personalization with gamification to make college prep engaging and effective. Plus, at $10/month, it's accessible to students who can't afford expensive private counselors." },
-    { question: "How do XP points and streaks work?", answer: "Earn XP by completing tasks on your roadmap, checking in daily, and hitting milestones. Maintain daily streaks to unlock bonus rewards and level up from Freshman to Accepted!" },
+    { question: "How do XP points and streaks work?", answer: "Earn XP by completing activities, logging in daily, adding awards, and using the AI counselor. Keep your daily streak alive to build momentum. You level up through 6 ranks — Explorer, Builder, Challenger, Contender, Standout, and Trailblazer." },
   ]
   return (
     <section id="faq" className="bg-gradient-to-b from-[#080E1A] to-[#0A1628] py-24 px-6">
