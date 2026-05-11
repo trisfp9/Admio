@@ -31,7 +31,8 @@ interface OnboardingData {
   extracurricular_interests: string[];
   time_available: string;
   biggest_concern: string;
-  current_activities_raw: string; // free-text, parsed into current_activities array
+  current_activities_raw: string;
+  awards_raw: string;
 }
 
 const TOTAL_STEPS = 9;
@@ -44,7 +45,7 @@ export default function OnboardingPage() {
     dream_college: "", aiming_level: "", major_interest: "",
     major_other: "", gpa_range: "", test_scores: "",
     extracurricular_interests: [], time_available: "", biggest_concern: "",
-    current_activities_raw: "",
+    current_activities_raw: "", awards_raw: "",
   });
   const router = useRouter();
   const supabase = useMemo(() => createBrowserClient(), []);
@@ -63,6 +64,10 @@ export default function OnboardingPage() {
         const raw = currentAct.map((a: { name?: string; role?: string; description?: string }) =>
           `${a.name || ""}${a.role ? ` (${a.role})` : ""}${a.description ? ` — ${a.description}` : ""}`
         ).filter(Boolean).join("\n");
+        const existingAwards = Array.isArray(profile.awards) ? profile.awards : [];
+        const awardsRaw = existingAwards.map((a: { name?: string; level?: string; year?: string; description?: string }) =>
+          `${a.name || ""}${a.level ? ` [${a.level}]` : ""}${a.year ? ` (${a.year})` : ""}${a.description ? ` — ${a.description}` : ""}`
+        ).filter(Boolean).join("\n");
         setData((d) => ({
           ...d,
           name: profile.name || "",
@@ -78,6 +83,7 @@ export default function OnboardingPage() {
           time_available: profile.time_available || "",
           biggest_concern: profile.biggest_concern || "",
           current_activities_raw: raw,
+          awards_raw: awardsRaw,
         }));
       }
     };
@@ -112,9 +118,10 @@ export default function OnboardingPage() {
         case 7: await saveStep({ time_available: data.time_available }); break;
         case 8: {
           const parsed = parseCurrentActivities(data.current_activities_raw);
+          const parsedAwards = parseAwards(data.awards_raw);
           const { data: { user } } = await supabase.auth.getUser();
           if (user) {
-            await supabase.from("profiles").update({ current_activities: parsed }).eq("id", user.id);
+            await supabase.from("profiles").update({ current_activities: parsed, awards: parsedAwards }).eq("id", user.id);
           }
           break;
         }
@@ -351,24 +358,45 @@ export default function OnboardingPage() {
             {step === 8 && (
               <div className="space-y-5">
                 <h2 className="font-heading font-bold text-2xl text-text-primary">What have you already done?</h2>
-                <p className="text-text-muted text-sm">
-                  List any clubs, activities, awards, leadership roles, jobs, or projects you&apos;ve done.
-                  Put each on its own line. Leave blank if you&apos;re starting from scratch — that&apos;s totally fine.
-                </p>
-                <p className="text-text-muted/70 text-xs">
-                  Example: <span className="italic">Math team captain — 2 years</span><br />
-                  <span className="italic">Volunteered at food bank — 80 hours</span><br />
-                  <span className="italic">Started a coding club at school</span>
-                </p>
-                <textarea
-                  value={data.current_activities_raw}
-                  onChange={(e) => setData({ ...data, current_activities_raw: e.target.value })}
-                  placeholder="One activity per line..."
-                  rows={6}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary placeholder:text-text-muted/40 focus:outline-none focus:border-purple/50 transition-colors text-sm resize-none"
-                />
+
+                {/* Activities */}
+                <div className="space-y-2">
+                  <label className="block text-sm text-text-muted font-medium">Activities</label>
+                  <p className="text-text-muted/70 text-xs">
+                    Clubs, leadership roles, jobs, projects, volunteer work — one per line.
+                  </p>
+                  <p className="text-text-muted/50 text-xs">
+                    Example: <span className="italic">Math team captain — 2 years</span> · <span className="italic">Volunteered at food bank — 80 hours</span>
+                  </p>
+                  <textarea
+                    value={data.current_activities_raw}
+                    onChange={(e) => setData({ ...data, current_activities_raw: e.target.value })}
+                    placeholder="One activity per line..."
+                    rows={4}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary placeholder:text-text-muted/40 focus:outline-none focus:border-purple/50 transition-colors text-sm resize-none"
+                  />
+                </div>
+
+                {/* Awards */}
+                <div className="space-y-2">
+                  <label className="block text-sm text-text-muted font-medium">Awards &amp; Honors</label>
+                  <p className="text-text-muted/70 text-xs">
+                    Competitions, honors, certificates — one per line. Optionally add level and year.
+                  </p>
+                  <p className="text-text-muted/50 text-xs">
+                    Example: <span className="italic">AMC 10 — Distinguished Honor Roll (2025)</span> · <span className="italic">Science Fair 1st Place — Regional (2024)</span>
+                  </p>
+                  <textarea
+                    value={data.awards_raw}
+                    onChange={(e) => setData({ ...data, awards_raw: e.target.value })}
+                    placeholder="One award per line..."
+                    rows={3}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary placeholder:text-text-muted/40 focus:outline-none focus:border-purple/50 transition-colors text-sm resize-none"
+                  />
+                </div>
+
                 <p className="text-text-muted/60 text-xs">
-                  You&apos;ll be able to edit this anytime in your Progress tab.
+                  Both are optional — leave blank if starting from scratch. You can edit anytime in your Progress tab.
                 </p>
                 <div className="flex items-start gap-2 p-3 rounded-button bg-amber-500/8 border border-amber-500/20">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400 flex-shrink-0 mt-0.5">
@@ -376,7 +404,7 @@ export default function OnboardingPage() {
                     <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                   </svg>
                   <p className="text-amber-200/80 text-xs leading-relaxed">
-                    <span className="font-medium">Be honest.</span> The AI gives better, more useful advice when it knows the truth. Inflating activities won&apos;t help you — colleges verify these on the actual application.
+                    <span className="font-medium">Be honest.</span> The AI gives better, more useful advice when it knows the truth. Inflating activities or awards won&apos;t help you — colleges verify these on the actual application.
                   </p>
                 </div>
               </div>
@@ -510,5 +538,31 @@ function parseCurrentActivities(raw: string): { name: string; description?: stri
     });
 }
 
-// Note: we no longer compute profile strength client-side from onboarding.
-// The AI-powered /api/profile-strength route is the source of truth.
+function parseAwards(raw: string): { name: string; level?: string; year?: string; description?: string }[] {
+  if (!raw || !raw.trim()) return [];
+  return raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const award: { name: string; level?: string; year?: string; description?: string } = { name: line };
+      const yearMatch = line.match(/\((\d{4})\)/);
+      if (yearMatch) {
+        award.year = yearMatch[1];
+        line = line.replace(yearMatch[0], "").trim();
+      }
+      const levelMatch = line.match(/\[(International|National|State|Regional|School|Other)\]/i);
+      if (levelMatch) {
+        award.level = levelMatch[1];
+        line = line.replace(levelMatch[0], "").trim();
+      }
+      const sep = line.match(/\s[—-]\s/);
+      if (sep && sep.index !== undefined) {
+        award.name = line.slice(0, sep.index).trim();
+        award.description = line.slice(sep.index + sep[0].length).trim();
+      } else {
+        award.name = line;
+      }
+      return award;
+    });
+}
