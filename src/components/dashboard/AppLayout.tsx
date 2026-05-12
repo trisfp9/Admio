@@ -9,9 +9,11 @@ import { createBrowserClient } from "@/lib/supabase";
 import { updateStreak } from "@/lib/streak";
 import {
   LayoutDashboard, BookOpen, MessageSquare, Compass, User, LogOut,
-  Crown, ChevronLeft, Menu, Bookmark, TrendingUp, PenLine, Lock,
+  Crown, ChevronLeft, Menu, Bookmark, TrendingUp, PenLine, Lock, X, RefreshCw,
 } from "lucide-react";
 import Skeleton from "@/components/ui/Skeleton";
+
+const APP_VERSION = "1.0.0";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, pro: false },
@@ -29,6 +31,7 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showUpdateBanner, setShowUpdateBanner] = useState(false);
 
   // Streak check on mount
   useEffect(() => {
@@ -37,6 +40,15 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
       updateStreak(supabase, user.id).catch(() => {});
     }
   }, [user]);
+
+  // Version check
+  useEffect(() => {
+    const cached = localStorage.getItem("admio_version");
+    if (cached && cached !== APP_VERSION) {
+      setShowUpdateBanner(true);
+    }
+    localStorage.setItem("admio_version", APP_VERSION);
+  }, []);
 
   // Redirect if not authed
   useEffect(() => {
@@ -180,6 +192,27 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
 
       {/* Main content */}
       <main className="flex-1 lg:ml-64">
+        {/* Version update banner */}
+        {showUpdateBanner && (
+          <div className="bg-purple/10 border-b border-purple/20 px-6 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm">
+              <RefreshCw className="w-4 h-4 text-purple" />
+              <span className="text-text-primary">A new version of Admio is available.</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => { localStorage.setItem("admio_version", APP_VERSION); window.location.reload(); }}
+                className="text-xs font-medium text-purple hover:text-purple/80 transition-colors"
+              >
+                Refresh now
+              </button>
+              <button onClick={() => setShowUpdateBanner(false)} className="text-text-muted hover:text-text-primary">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Mobile top bar */}
         <div className="lg:hidden flex items-center justify-between px-6 py-4 border-b border-white/5">
           <button onClick={() => setSidebarOpen(true)} className="text-text-muted">
