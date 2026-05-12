@@ -15,7 +15,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto flex items-center justify-between bg-surface/60 backdrop-blur-2xl border border-white/5 rounded-[20px] px-6 py-3">
         <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple to-accent flex items-center justify-center">
-            <img src="/logo.png" alt="Admio" className="w-5 h-5 object-contain" />
+            <img src="/logo.png" alt="Admio" className="w-[80%] h-[80%] object-contain" />
           </div>
           <span className="font-heading font-bold text-xl text-text-primary">Admio</span>
         </Link>

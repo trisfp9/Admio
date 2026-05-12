@@ -84,7 +84,7 @@ function AuthContent() {
         >
           <Link href="/" className="flex items-center gap-2 mb-8">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple to-accent flex items-center justify-center">
-              <img src="/logo.png" alt="Admio" className="w-6 h-6 object-contain" />
+              <img src="/logo.png" alt="Admio" className="w-[80%] h-[80%] object-contain" />
             </div>
             <span className="font-heading font-bold text-2xl text-text-primary">Admio</span>
           </Link>
@@ -112,7 +112,7 @@ function AuthContent() {
           <div className="glass-card p-8 md:p-10">
             <div className="lg:hidden flex items-center gap-2 mb-8">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple to-accent flex items-center justify-center">
-                <img src="/logo.png" alt="Admio" className="w-5 h-5 object-contain" />
+                <img src="/logo.png" alt="Admio" className="w-[80%] h-[80%] object-contain" />
               </div>
               <span className="font-heading font-bold text-xl text-text-primary">Admio</span>
             </div>

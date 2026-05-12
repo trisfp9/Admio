@@ -80,7 +80,7 @@ function UpdatePasswordContent() {
         >
           <Link href="/" className="flex items-center gap-2 mb-8">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple to-accent flex items-center justify-center">
-              <img src="/logo.png" alt="Admio" className="w-5 h-5 object-contain" />
+              <img src="/logo.png" alt="Admio" className="w-[80%] h-[80%] object-contain" />
             </div>
             <span className="font-heading font-bold text-xl text-text-primary">Admio</span>
           </Link>
