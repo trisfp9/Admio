@@ -525,11 +525,9 @@ const Footer = () => (
           </ul>
         </div>
         <div>
-          <h4 className="text-white font-semibold mb-4">Company</h4>
+          <h4 className="text-white font-semibold mb-4">Connect</h4>
           <ul className="space-y-2 text-white/60 text-sm">
-            <li><a href="#" className="hover:text-[#00B4D8] transition-colors">About</a></li>
-            <li><a href="#" className="hover:text-[#00B4D8] transition-colors">Blog</a></li>
-            <li><a href="#" className="hover:text-[#00B4D8] transition-colors">Careers</a></li>
+            <li><a href="https://tristanpark.dev" target="_blank" rel="noopener noreferrer" className="hover:text-[#00B4D8] transition-colors">Built by Tristan</a></li>
             <li><a href="#contact" className="hover:text-[#00B4D8] transition-colors">Contact</a></li>
           </ul>
         </div>
