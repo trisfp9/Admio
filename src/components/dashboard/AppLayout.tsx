@@ -77,9 +77,7 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
       <aside className="hidden lg:flex flex-col w-64 border-r border-white/5 bg-surface/50 p-6 fixed h-full z-40">
         <Link href="/dashboard" className="flex items-center gap-2 mb-10">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple to-accent flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
-            </svg>
+            <img src="/logo.png" alt="Admio" className="w-5 h-5 object-contain" />
           </div>
           <span className="font-heading font-bold text-lg text-text-primary">Admio</span>
         </Link>

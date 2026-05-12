@@ -84,11 +84,7 @@ function AuthContent() {
         >
           <Link href="/" className="flex items-center gap-2 mb-8">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple to-accent flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
+              <img src="/logo.png" alt="Admio" className="w-6 h-6 object-contain" />
             </div>
             <span className="font-heading font-bold text-2xl text-text-primary">Admio</span>
           </Link>
@@ -116,11 +112,7 @@ function AuthContent() {
           <div className="glass-card p-8 md:p-10">
             <div className="lg:hidden flex items-center gap-2 mb-8">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple to-accent flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="M2 17l10 5 10-5" />
-                  <path d="M2 12l10 5 10-5" />
-                </svg>
+                <img src="/logo.png" alt="Admio" className="w-5 h-5 object-contain" />
               </div>
               <span className="font-heading font-bold text-xl text-text-primary">Admio</span>
             </div>

@@ -94,7 +94,7 @@ const HeroSection = () => {
       <nav className="relative z-20 flex justify-between items-center p-6 max-w-7xl mx-auto">
         <div className="flex items-center space-x-2">
           <div className="w-10 h-10 bg-gradient-to-br from-[#00B4D8] to-[#8B5CF6] rounded-lg flex items-center justify-center">
-            <Target className="w-6 h-6 text-white" />
+            <img src="/logo.png" alt="Admio" className="w-6 h-6 object-contain" />
           </div>
           <span className="text-2xl font-heading font-bold">Admio</span>
         </div>
@@ -513,7 +513,7 @@ const Footer = () => (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
         <div>
           <div className="flex items-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#00B4D8] to-[#8B5CF6] rounded-lg flex items-center justify-center"><Target className="w-6 h-6 text-white" /></div>
+            <div className="w-10 h-10 bg-gradient-to-br from-[#00B4D8] to-[#8B5CF6] rounded-lg flex items-center justify-center"><img src="/logo.png" alt="Admio" className="w-6 h-6 object-contain" /></div>
             <span className="text-xl font-heading font-bold text-white">Admio</span>
           </div>
           <p className="text-white/60 text-sm">Your roadmap to the school of your dreams</p>
