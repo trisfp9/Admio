@@ -24,7 +24,7 @@ const TIME_OPTIONS = ["Less than 2 hours", "2-5 hours", "5-10 hours", "10+ hours
 const PROFILE_FIELDS = [
   "name", "grade", "country", "target_country", "dream_college",
   "aiming_level", "major_interest", "gpa_range", "test_scores",
-  "time_available", "extracurricular_interests", "detailed_profile",
+  "time_available", "extracurricular_interests",
 ] as const;
 
 export default function ProfilePage() {
@@ -415,13 +415,9 @@ export default function ProfilePage() {
       {/* Pro Detailed Profile */}
       {localProfile.is_pro ? (
         <DetailedProfileForm
-          profile={localProfile}
-          disabled={!canEdit}
-          onUpdate={(field, value) => {
-            const current = (localProfile.detailed_profile || {}) as Record<string, string>;
-            const updated = { ...current, [field]: value };
-            updateField("detailed_profile", updated);
-          }}
+          profile={profile!}
+          session={session}
+          refreshProfile={refreshProfile}
         />
       ) : (
         <div className="glass-card p-6 border-purple/20 relative overflow-hidden">
@@ -559,13 +555,84 @@ const DETAILED_FIELDS: { key: string; label: string; placeholder: string; hint: 
   { key: "special_circumstances", label: "Special Circumstances", placeholder: "e.g., International student, learning disability, athlete...", hint: "Anything else the AI should know about your situation." },
 ];
 
-function DetailedProfileForm({ profile, onUpdate, disabled }: {
+function DetailedProfileForm({ profile, session, refreshProfile }: {
   profile: Profile;
-  onUpdate: (field: string, value: string) => void;
-  disabled?: boolean;
+  session: { access_token: string } | null;
+  refreshProfile: () => Promise<void>;
 }) {
-  const detailed = (profile.detailed_profile || {}) as Record<string, string>;
-  const filledCount = DETAILED_FIELDS.filter(f => detailed[f.key]?.trim()).length;
+  const supabase = useMemo(() => createBrowserClient(), []);
+  const saved = (profile.detailed_profile || {}) as Record<string, string>;
+  const [local, setLocal] = useState<Record<string, string>>(saved);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setLocal((profile.detailed_profile || {}) as Record<string, string>);
+  }, [profile.detailed_profile]);
+
+  const filledCount = DETAILED_FIELDS.filter(f => local[f.key]?.trim()).length;
+
+  // First-time fill: if the saved version of a field is empty, allow editing even on cooldown
+  const savedIsEmpty = DETAILED_FIELDS.every(f => !saved[f.key]?.trim());
+  const lastEditedAt = profile.profile_last_edited_at ?? null;
+  const canEdit = useMemo(() => {
+    if (savedIsEmpty) return true;
+    if (!lastEditedAt) return true;
+    const msSince = Date.now() - new Date(lastEditedAt).getTime();
+    return msSince >= 7 * 24 * 60 * 60 * 1000;
+  }, [lastEditedAt, savedIsEmpty]);
+
+  const nextEditDate = useMemo(() => {
+    if (!lastEditedAt || savedIsEmpty) return null;
+    const next = new Date(new Date(lastEditedAt).getTime() + 7 * 24 * 60 * 60 * 1000);
+    return next.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }, [lastEditedAt, savedIsEmpty]);
+
+  const isDirty = useMemo(() => {
+    return DETAILED_FIELDS.some(f => (local[f.key] || "") !== (saved[f.key] || ""));
+  }, [local, saved]);
+
+  const handleSave = async () => {
+    if (!isDirty) return;
+    if (!canEdit) {
+      toast.error(`You can update your detailed profile once per week. Next edit available ${nextEditDate}.`);
+      return;
+    }
+    setSaving(true);
+    try {
+      const updates: Record<string, unknown> = {
+        detailed_profile: local,
+        profile_last_edited_at: new Date().toISOString(),
+        college_list_cache: null,
+        profile_strength_updated_at: null,
+        extracurricular_recommendations: null,
+        ai_scholarships_cache: null,
+        ai_competitions_cache: null,
+        daily_tip_cache: null,
+      };
+      const { error } = await supabase.from("profiles").update(updates).eq("id", profile.id);
+      if (error) throw error;
+      await refreshProfile();
+      if (session?.access_token) {
+        toast.success("Detailed profile saved! Recalculating profile strength...");
+        try {
+          await fetch("/api/profile-strength", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
+          await refreshProfile();
+          toast.success("Profile strength updated!", { duration: 2000 });
+        } catch {
+          toast.success("Detailed profile saved!");
+        }
+      } else {
+        toast.success("Detailed profile saved!");
+      }
+    } catch {
+      toast.error("Failed to save detailed profile.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="glass-card p-6 space-y-6 border-purple/20 relative overflow-hidden">
@@ -576,22 +643,33 @@ function DetailedProfileForm({ profile, onUpdate, disabled }: {
           <h2 className="font-heading font-semibold text-text-primary">Detailed Profile</h2>
           <Badge variant="pop">Pro</Badge>
         </div>
-        <span className="text-xs text-text-muted">{filledCount}/{DETAILED_FIELDS.length} completed</span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-text-muted">{filledCount}/{DETAILED_FIELDS.length} completed</span>
+          {!canEdit && nextEditDate && (
+            <span className="text-xs text-text-muted">Next edit: {nextEditDate}</span>
+          )}
+        </div>
       </div>
       <p className="text-text-muted text-sm">
         The more you fill in, the more personalized and specific the AI counselor&apos;s advice will be.
+        {savedIsEmpty && " First-time setup — no cooldown."}
       </p>
       {DETAILED_FIELDS.map((field) => (
         <TextAreaField
           key={field.key}
           label={field.label}
-          value={detailed[field.key] || ""}
-          onChange={(v) => onUpdate(field.key, v)}
+          value={local[field.key] || ""}
+          onChange={(v) => setLocal((prev) => ({ ...prev, [field.key]: v }))}
           placeholder={field.placeholder}
           hint={field.hint}
-          disabled={disabled}
+          disabled={!canEdit}
         />
       ))}
+      {isDirty && canEdit && (
+        <Button variant="primary" onClick={handleSave} loading={saving} className="w-full">
+          <Save className="w-4 h-4" /> Save Detailed Profile
+        </Button>
+      )}
     </div>
   );
 }
