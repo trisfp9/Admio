@@ -303,6 +303,42 @@ export default function ExtracurricularsPage() {
     }
   };
 
+  const completeRoadmap = async (roadmap: SavedRoadmap) => {
+    if (!profile) return;
+    if (!confirm(`Mark "${roadmap.category}" roadmap as completed? It'll move to your completed activities.`)) return;
+    try {
+      const newCompleted: CompletedActivity[] = [
+        ...(profile.completed_activities || []),
+        {
+          category: roadmap.category,
+          name: roadmap.project_idea,
+          description: `Completed ${roadmap.tasks.length}-task roadmap for ${roadmap.category}`,
+          completed_at: new Date().toISOString(),
+        },
+      ];
+      const nextRoadmaps = (profile.roadmaps || []).filter((r) => r.id !== roadmap.id);
+
+      await supabase.from("profiles").update({
+        completed_activities: newCompleted,
+        roadmaps: nextRoadmaps,
+        xp: (profile.xp || 0) + 50,
+      }).eq("id", profile.id);
+
+      if (session?.access_token) {
+        fetch("/api/profile-strength", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        }).catch(() => {});
+      }
+
+      setActiveRoadmapId(null);
+      await refreshProfile();
+      toast.success("Roadmap completed! +50 XP. Moved to Completed tab.");
+    } catch {
+      toast.error("Failed to complete roadmap.");
+    }
+  };
+
   const adjustRoadmap = async (roadmap: SavedRoadmap) => {
     if (!session?.access_token || !adjustInstruction.trim()) return;
     setAdjusting(true);
@@ -436,6 +472,7 @@ export default function ExtracurricularsPage() {
           saveRoadmap={saveRoadmap}
           toggleTask={toggleTask}
           deleteRoadmap={deleteRoadmap}
+          completeRoadmap={completeRoadmap}
           adjustInstruction={adjustInstruction}
           setAdjustInstruction={setAdjustInstruction}
           adjustRoadmap={adjustRoadmap}
@@ -683,6 +720,7 @@ interface RoadmapsTabProps {
   saveRoadmap: () => void;
   toggleTask: (roadmapId: string, taskId: string) => void;
   deleteRoadmap: (roadmapId: string) => void;
+  completeRoadmap: (roadmap: SavedRoadmap) => void;
   adjustInstruction: string;
   setAdjustInstruction: (s: string) => void;
   adjustRoadmap: (roadmap: SavedRoadmap) => void;
@@ -698,7 +736,7 @@ function RoadmapsTab(props: RoadmapsTabProps) {
     isPro, roadmaps, activeRoadmap, setActiveRoadmapId,
     creatingFor, setCreatingFor, draftRoadmap, roadmapLoading,
     chosenIdea, setChosenIdea, customIdea, setCustomIdea,
-    startCreatingRoadmap, saveRoadmap, toggleTask, deleteRoadmap,
+    startCreatingRoadmap, saveRoadmap, toggleTask, deleteRoadmap, completeRoadmap,
     adjustInstruction, setAdjustInstruction, adjustRoadmap, adjusting,
     selectedCategories, messagesLeft, messagesUsed, messagesMax,
   } = props;
@@ -823,6 +861,7 @@ function RoadmapsTab(props: RoadmapsTabProps) {
         onBack={() => setActiveRoadmapId(null)}
         toggleTask={toggleTask}
         deleteRoadmap={deleteRoadmap}
+        completeRoadmap={completeRoadmap}
         adjustInstruction={adjustInstruction}
         setAdjustInstruction={setAdjustInstruction}
         adjustRoadmap={adjustRoadmap}
@@ -902,9 +941,19 @@ function RoadmapsTab(props: RoadmapsTabProps) {
                     <h3 className="font-heading font-semibold text-text-primary">{r.category}</h3>
                     <p className="text-text-muted text-sm truncate">{r.project_idea}</p>
                   </div>
-                  <Badge variant={r.status === "completed" ? "pop" : r.status === "active" ? "accent" : "muted"}>
-                    {r.status}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    {pct === 100 && (
+                      <span
+                        onClick={(e) => { e.stopPropagation(); completeRoadmap(r); }}
+                        className="flex items-center gap-1 text-xs font-medium text-pop hover:bg-pop/10 px-2 py-1 rounded-button transition-colors cursor-pointer"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Complete
+                      </span>
+                    )}
+                    <Badge variant={r.status === "completed" ? "pop" : r.status === "active" ? "accent" : "muted"}>
+                      {r.status}
+                    </Badge>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
@@ -931,6 +980,7 @@ interface RoadmapDetailProps {
   onBack: () => void;
   toggleTask: (roadmapId: string, taskId: string) => void;
   deleteRoadmap: (roadmapId: string) => void;
+  completeRoadmap: (roadmap: SavedRoadmap) => void;
   adjustInstruction: string;
   setAdjustInstruction: (s: string) => void;
   adjustRoadmap: (roadmap: SavedRoadmap) => void;
@@ -941,7 +991,7 @@ interface RoadmapDetailProps {
 }
 
 function RoadmapDetail({
-  roadmap, onBack, toggleTask, deleteRoadmap,
+  roadmap, onBack, toggleTask, deleteRoadmap, completeRoadmap,
   adjustInstruction, setAdjustInstruction, adjustRoadmap, adjusting, messagesLeft, messagesUsed, messagesMax,
 }: RoadmapDetailProps) {
   const done = roadmap.tasks.filter((t) => t.done).length;
@@ -974,13 +1024,23 @@ function RoadmapDetail({
             </div>
             <p className="text-text-muted text-sm">{roadmap.project_idea}</p>
           </div>
-          <button
-            onClick={() => deleteRoadmap(roadmap.id)}
-            className="text-text-muted hover:text-red-400 p-2 rounded-button hover:bg-red-500/5 transition-colors"
-            aria-label="Delete roadmap"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            {pct === 100 && (
+              <button
+                onClick={() => completeRoadmap(roadmap)}
+                className="flex items-center gap-1.5 text-sm font-medium text-pop hover:bg-pop/10 px-3 py-2 rounded-button transition-colors"
+              >
+                <CheckCircle2 className="w-4 h-4" /> Complete
+              </button>
+            )}
+            <button
+              onClick={() => deleteRoadmap(roadmap.id)}
+              className="text-text-muted hover:text-red-400 p-2 rounded-button hover:bg-red-500/5 transition-colors"
+              aria-label="Delete roadmap"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Progress */}
