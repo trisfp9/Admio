@@ -33,7 +33,7 @@ function PricingContent() {
     }
   };
 
-  // Handle return from Stripe checkout
+  // Handle return from checkout
   useEffect(() => {
     const checkout = searchParams.get("checkout");
     if (checkout === "cancelled") {
@@ -68,7 +68,7 @@ function PricingContent() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/stripe/checkout", {
+      const res = await fetch("/api/fastspring/checkout", {
         method: "POST",
         headers: { Authorization: `Bearer ${session.access_token}` },
       });

@@ -31,8 +31,8 @@ export default function DashboardPage() {
   const activationStarted = useRef(false);
 
   // Fallback Pro activation: if we just came back from a successful checkout,
-  // verify the subscription with Stripe directly and flip is_pro. This way
-  // Pro works even if the webhook didn't fire.
+  // verify the subscription directly and flip is_pro. This way Pro works
+  // even if the webhook didn't fire.
   useEffect(() => {
     if (!session?.access_token) return;
     if (searchParams.get("checkout") !== "success") return;
@@ -47,7 +47,7 @@ export default function DashboardPage() {
         await refreshProfile();
 
         // If webhook already flipped it, we're done
-        const res = await fetch("/api/stripe/verify", {
+        const res = await fetch("/api/fastspring/verify", {
           method: "POST",
           headers: { Authorization: `Bearer ${session.access_token}` },
         });

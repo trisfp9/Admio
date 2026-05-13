@@ -76,7 +76,7 @@ export default function TermsOfServicePage() {
               <h2 className="text-text-primary font-semibold text-lg mb-3">6. Subscriptions &amp; Payments</h2>
               <p>
                 Admio offers both free and paid (Pro) subscription tiers. Pro subscriptions are billed
-                through Stripe. You may cancel your subscription at any time. Refunds are handled on a
+                through FastSpring. You may cancel your subscription at any time. Refunds are handled on a
                 case-by-case basis. We reserve the right to change pricing with reasonable notice.
               </p>
             </section>

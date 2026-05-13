@@ -14,6 +14,8 @@ export interface Profile {
   biggest_concern: string | null;
   is_pro: boolean;
   stripe_customer_id: string | null;
+  fastspring_account_id: string | null;
+  fastspring_subscription_id: string | null;
   subscription_start: string | null;
   xp: number;
   streak: number;

@@ -16,7 +16,7 @@ export default function BillingPage() {
     if (!session?.access_token) return;
     setLoading(true);
     try {
-      const res = await fetch("/api/stripe/billing-portal", {
+      const res = await fetch("/api/fastspring/billing-portal", {
         method: "POST",
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
@@ -75,7 +75,7 @@ export default function BillingPage() {
               )}
               <div className="flex items-center gap-3 text-sm">
                 <CreditCard className="w-4 h-4 text-text-muted flex-shrink-0" />
-                <span className="text-text-muted">Billing managed securely through Stripe</span>
+                <span className="text-text-muted">Billing managed securely through FastSpring</span>
               </div>
             </div>
 

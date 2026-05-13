@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
               <ul className="list-disc pl-5 space-y-1">
                 <li><span className="text-text-primary font-medium">Supabase:</span> Authentication and database hosting</li>
                 <li><span className="text-text-primary font-medium">Anthropic (Claude AI):</span> AI-powered recommendations and guidance</li>
-                <li><span className="text-text-primary font-medium">Stripe:</span> Payment processing (for Pro subscriptions)</li>
+                <li><span className="text-text-primary font-medium">FastSpring:</span> Payment processing (for Pro subscriptions)</li>
                 <li><span className="text-text-primary font-medium">Vercel:</span> Website hosting</li>
               </ul>
             </section>
