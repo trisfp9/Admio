@@ -27,6 +27,7 @@ function AuthContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [agreed, setAgreed] = useState(false);
   const supabase = createBrowserClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -185,10 +186,28 @@ function AuthContent() {
                   />
                 </div>
 
+                {mode === "signup" && (
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={agreed}
+                      onChange={(e) => setAgreed(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 rounded border-white/20 bg-white/5 text-purple focus:ring-purple/50 accent-purple cursor-pointer"
+                    />
+                    <span className="text-xs text-text-muted leading-relaxed">
+                      I agree to the{" "}
+                      <Link href="/terms" target="_blank" className="text-purple hover:underline">Terms of Service</Link>,{" "}
+                      <Link href="/privacy" target="_blank" className="text-purple hover:underline">Privacy Policy</Link>, and{" "}
+                      <Link href="/cookies" target="_blank" className="text-purple hover:underline">Cookie Policy</Link>
+                    </span>
+                  </label>
+                )}
+
                 <Button
                   type="submit"
                   variant="purple"
                   loading={loading}
+                  disabled={mode === "signup" && !agreed}
                   className="w-full"
                   size="lg"
                 >
