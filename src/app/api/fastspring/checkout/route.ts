@@ -49,10 +49,18 @@ export async function POST(request: Request) {
       body: JSON.stringify(sessionPayload),
     });
 
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = { raw: text }; }
+
     if (!res.ok || !data.id) {
-      console.error("FastSpring session error:", data);
-      return NextResponse.json({ error: "FastSpring error: " + JSON.stringify(data) }, { status: 500 });
+      console.error("FastSpring session error:", res.status, data);
+      return NextResponse.json({
+        error: "FastSpring error",
+        detail: data,
+        status: res.status,
+        hasAuth: !!process.env.FASTSPRING_USERNAME,
+      }, { status: 500 });
     }
 
     if (data.account && !profile.fastspring_account_id) {

@@ -74,7 +74,8 @@ function PricingContent() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Checkout failed");
+        console.error("Checkout error:", data);
+        throw new Error(data.detail ? JSON.stringify(data.detail) : (data.error || "Checkout failed"));
       }
       const { url } = await res.json();
       if (url) {
