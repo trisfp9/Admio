@@ -92,7 +92,7 @@ export default function CookiePolicyPage() {
               <h2 className="text-text-primary font-semibold text-lg mb-3">6. Contact Us</h2>
               <p>
                 If you have questions about our use of cookies, please contact us at{" "}
-                <a href="mailto:admio.gen1@gmail.com" className="text-purple hover:underline">admio.gen1@gmail.com</a>.
+                <a href="mailto:support@admio.io" className="text-purple hover:underline">support@admio.io</a>.
               </p>
             </section>
           </div>

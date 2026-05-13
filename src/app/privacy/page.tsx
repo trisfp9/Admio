@@ -108,7 +108,7 @@ export default function PrivacyPolicyPage() {
               <p>
                 We retain your personal information for as long as your account is active. You may request
                 deletion of your account and associated data at any time by contacting us at{" "}
-                <a href="mailto:admio.gen1@gmail.com" className="text-purple hover:underline">admio.gen1@gmail.com</a>.
+                <a href="mailto:support@admio.io" className="text-purple hover:underline">support@admio.io</a>.
               </p>
             </section>
 
@@ -124,7 +124,7 @@ export default function PrivacyPolicyPage() {
               </ul>
               <p className="mt-2">
                 To exercise any of these rights, contact us at{" "}
-                <a href="mailto:admio.gen1@gmail.com" className="text-purple hover:underline">admio.gen1@gmail.com</a>.
+                <a href="mailto:support@admio.io" className="text-purple hover:underline">support@admio.io</a>.
               </p>
             </section>
 
@@ -149,7 +149,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-text-primary font-semibold text-lg mb-3">12. Contact Us</h2>
               <p>
                 If you have questions about this Privacy Policy, please contact us at{" "}
-                <a href="mailto:admio.gen1@gmail.com" className="text-purple hover:underline">admio.gen1@gmail.com</a>.
+                <a href="mailto:support@admio.io" className="text-purple hover:underline">support@admio.io</a>.
               </p>
             </section>
           </div>

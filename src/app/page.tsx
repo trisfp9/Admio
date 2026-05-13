@@ -486,10 +486,10 @@ const ContactSection = () => (
       </motion.div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center">
-          <a href="mailto:admio.gen1@gmail.com" onClick={(e) => { e.preventDefault(); window.open("mailto:admio.gen1@gmail.com", "_self"); }} className="block group cursor-pointer">
+          <a href="mailto:support@admio.io" onClick={(e) => { e.preventDefault(); window.open("mailto:support@admio.io", "_self"); }} className="block group cursor-pointer">
             <div className="w-12 h-12 rounded-full bg-[#00B4D8]/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-[#00B4D8]/30 transition-colors"><Mail className="w-6 h-6 text-[#00B4D8]" /></div>
             <h3 className="text-white font-semibold mb-2">Email Us</h3>
-            <p className="text-white/60 group-hover:text-[#00B4D8] transition-colors">admio.gen1@gmail.com</p>
+            <p className="text-white/60 group-hover:text-[#00B4D8] transition-colors">support@admio.io</p>
           </a>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-center">
@@ -530,7 +530,7 @@ const Footer = () => (
           <h4 className="text-white font-semibold mb-4">Connect</h4>
           <ul className="space-y-2 text-white/60 text-sm">
             <li><a href="https://tristanpark.dev" target="_blank" rel="noopener noreferrer" className="hover:text-[#00B4D8] transition-colors">Founder</a></li>
-            <li><a href="mailto:admio.gen1@gmail.com" className="hover:text-[#00B4D8] transition-colors">Contact</a></li>
+            <li><a href="mailto:support@admio.io" className="hover:text-[#00B4D8] transition-colors">Contact</a></li>
           </ul>
         </div>
         <div>
