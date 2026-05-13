@@ -2,9 +2,6 @@ import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/supabase";
 
 const FS_API = "https://api.fastspring.com";
-const FS_AUTH = Buffer.from(
-  `${process.env.FASTSPRING_USERNAME}:${process.env.FASTSPRING_PASSWORD}`
-).toString("base64");
 
 export async function POST(request: Request) {
   const auth = await getAuthenticatedUser(request);
@@ -27,9 +24,13 @@ export async function POST(request: Request) {
   }
 
   try {
+    const fsAuth = Buffer.from(
+      `${process.env.FASTSPRING_USERNAME}:${process.env.FASTSPRING_PASSWORD}`
+    ).toString("base64");
+
     const res = await fetch(
       `${FS_API}/accounts/${profile.fastspring_account_id}/authenticate`,
-      { headers: { Authorization: `Basic ${FS_AUTH}` } }
+      { headers: { Authorization: `Basic ${fsAuth}` } }
     );
 
     const data = await res.json();

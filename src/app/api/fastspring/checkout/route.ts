@@ -3,9 +3,6 @@ import { getAuthenticatedUser } from "@/lib/supabase";
 import { checkRateLimit } from "@/lib/ratelimit";
 
 const FS_API = "https://api.fastspring.com";
-const FS_AUTH = Buffer.from(
-  `${process.env.FASTSPRING_USERNAME}:${process.env.FASTSPRING_PASSWORD}`
-).toString("base64");
 
 export async function POST(request: Request) {
   const auth = await getAuthenticatedUser(request);
@@ -25,6 +22,10 @@ export async function POST(request: Request) {
   if (profile.is_pro) return NextResponse.json({ error: "Already subscribed" }, { status: 400 });
 
   try {
+    const fsAuth = Buffer.from(
+      `${process.env.FASTSPRING_USERNAME}:${process.env.FASTSPRING_PASSWORD}`
+    ).toString("base64");
+
     const sessionPayload: Record<string, unknown> = {
       items: [{ product: "admio-pro", quantity: 1 }],
       tags: { userId: user.id },
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
     const res = await fetch(`${FS_API}/sessions`, {
       method: "POST",
       headers: {
-        Authorization: `Basic ${FS_AUTH}`,
+        Authorization: `Basic ${fsAuth}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(sessionPayload),
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
     const data = await res.json();
     if (!res.ok || !data.id) {
       console.error("FastSpring session error:", data);
-      throw new Error("Failed to create checkout session");
+      return NextResponse.json({ error: "FastSpring error: " + JSON.stringify(data) }, { status: 500 });
     }
 
     if (data.account && !profile.fastspring_account_id) {
@@ -65,7 +66,8 @@ export async function POST(request: Request) {
     const checkoutUrl = `https://${storefront}/session/${data.id}`;
 
     return NextResponse.json({ url: checkoutUrl });
-  } catch {
+  } catch (err) {
+    console.error("Checkout error:", err);
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
   }
 }

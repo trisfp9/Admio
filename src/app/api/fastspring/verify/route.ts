@@ -3,9 +3,6 @@ import { getAuthenticatedUser } from "@/lib/supabase";
 import { checkRateLimit } from "@/lib/ratelimit";
 
 const FS_API = "https://api.fastspring.com";
-const FS_AUTH = Buffer.from(
-  `${process.env.FASTSPRING_USERNAME}:${process.env.FASTSPRING_PASSWORD}`
-).toString("base64");
 
 export async function POST(request: Request) {
   const auth = await getAuthenticatedUser(request);
@@ -29,10 +26,14 @@ export async function POST(request: Request) {
   }
 
   try {
+    const fsAuth = Buffer.from(
+      `${process.env.FASTSPRING_USERNAME}:${process.env.FASTSPRING_PASSWORD}`
+    ).toString("base64");
+
     if (profile.fastspring_subscription_id) {
       const res = await fetch(
         `${FS_API}/subscriptions/${profile.fastspring_subscription_id}`,
-        { headers: { Authorization: `Basic ${FS_AUTH}` } }
+        { headers: { Authorization: `Basic ${fsAuth}` } }
       );
       const data = await res.json();
       const sub = data.subscriptions?.[0] || data;
