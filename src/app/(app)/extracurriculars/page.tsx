@@ -945,9 +945,9 @@ function RoadmapsTab(props: RoadmapsTabProps) {
                     {pct === 100 && (
                       <span
                         onClick={(e) => { e.stopPropagation(); completeRoadmap(r); }}
-                        className="flex items-center gap-1 text-xs font-medium text-pop hover:bg-pop/10 px-2 py-1 rounded-button transition-colors cursor-pointer"
+                        className="flex items-center gap-1.5 text-xs font-semibold text-pop bg-pop/15 border border-pop/25 hover:bg-pop/25 px-3 py-1.5 rounded-button transition-colors cursor-pointer"
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Complete
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Mark Complete
                       </span>
                     )}
                     <Badge variant={r.status === "completed" ? "pop" : r.status === "active" ? "accent" : "muted"}>
@@ -1028,9 +1028,9 @@ function RoadmapDetail({
             {pct === 100 && (
               <button
                 onClick={() => completeRoadmap(roadmap)}
-                className="flex items-center gap-1.5 text-sm font-medium text-pop hover:bg-pop/10 px-3 py-2 rounded-button transition-colors"
+                className="flex items-center gap-1.5 text-sm font-semibold text-pop bg-pop/15 border border-pop/25 hover:bg-pop/25 px-4 py-2 rounded-button transition-colors"
               >
-                <CheckCircle2 className="w-4 h-4" /> Complete
+                <CheckCircle2 className="w-4 h-4" /> Mark Complete
               </button>
             )}
             <button
