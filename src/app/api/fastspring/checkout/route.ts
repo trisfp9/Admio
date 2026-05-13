@@ -58,8 +58,12 @@ export async function POST(request: Request) {
       return NextResponse.json({
         error: "FastSpring error",
         detail: data,
-        status: res.status,
-        hasAuth: !!process.env.FASTSPRING_USERNAME,
+        fsStatus: res.status,
+        hasUsername: !!process.env.FASTSPRING_USERNAME,
+        hasPassword: !!process.env.FASTSPRING_PASSWORD,
+        usernameLength: process.env.FASTSPRING_USERNAME?.length,
+        passwordLength: process.env.FASTSPRING_PASSWORD?.length,
+        payload: sessionPayload,
       }, { status: 500 });
     }
 
