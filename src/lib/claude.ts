@@ -137,7 +137,7 @@ export async function streamCounselorResponse(
   try {
     const stream = await anthropic.messages.stream(
       {
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-20250715",
         max_tokens: 1500,
         system: [
           {
@@ -217,7 +217,7 @@ export async function callClaude(
 
       const response = await anthropic.messages.create(
         {
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-20250715",
           max_tokens: maxTokens,
           system: [
             {
