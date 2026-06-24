@@ -54,7 +54,7 @@ export default function CookiePolicyPage() {
                 <p>Set by services we use to operate Admio.</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
                   <li><span className="text-text-primary">Supabase</span> — Authentication and session management</li>
-                  <li><span className="text-text-primary">FastSpring</span> — Payment processing for Pro subscriptions (only on payment pages)</li>
+                  <li><span className="text-text-primary">DOKU</span> — Payment processing for Pro subscriptions (only on payment pages)</li>
                   <li><span className="text-text-primary">Vercel</span> — Hosting and performance analytics</li>
                 </ul>
               </div>

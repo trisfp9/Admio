@@ -47,7 +47,7 @@ export default function DashboardPage() {
         await refreshProfile();
 
         // If webhook already flipped it, we're done
-        const res = await fetch("/api/fastspring/verify", {
+        const res = await fetch("/api/doku/verify", {
           method: "POST",
           headers: { Authorization: `Bearer ${session.access_token}` },
         });

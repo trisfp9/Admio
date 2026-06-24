@@ -16,13 +16,9 @@ export default function BillingPage() {
     if (!session?.access_token) return;
     setLoading(true);
     try {
-      const res = await fetch("/api/fastspring/billing-portal", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to open portal");
-      window.location.href = data.url;
+      // DOKU doesn't have a billing portal — redirect to pricing to manage subscription
+      window.location.href = "/pricing";
+      return;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       toast.error(message);
@@ -75,7 +71,7 @@ export default function BillingPage() {
               )}
               <div className="flex items-center gap-3 text-sm">
                 <CreditCard className="w-4 h-4 text-text-muted flex-shrink-0" />
-                <span className="text-text-muted">Billing managed securely through FastSpring</span>
+                <span className="text-text-muted">Billing managed securely through DOKU</span>
               </div>
             </div>
 

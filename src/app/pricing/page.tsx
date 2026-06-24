@@ -68,7 +68,7 @@ function PricingContent() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/fastspring/checkout", {
+      const res = await fetch("/api/doku/checkout", {
         method: "POST",
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
