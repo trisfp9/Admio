@@ -13,9 +13,6 @@ export interface Profile {
   time_available: string | null;
   biggest_concern: string | null;
   is_pro: boolean;
-  stripe_customer_id: string | null;
-  fastspring_account_id: string | null;
-  fastspring_subscription_id: string | null;
   doku_pending_invoice: string | null;
   subscription_start: string | null;
   xp: number;
