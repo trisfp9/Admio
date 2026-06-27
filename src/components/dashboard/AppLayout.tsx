@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/lib/auth-context";
 import { createBrowserClient } from "@/lib/supabase";
 import { updateStreak } from "@/lib/streak";
 import {
@@ -232,9 +232,5 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
 }
 
 export default function AppLayout({ children }: { children: ReactNode }) {
-  return (
-    <AuthProvider>
-      <AppLayoutInner>{children}</AppLayoutInner>
-    </AuthProvider>
-  );
+  return <AppLayoutInner>{children}</AppLayoutInner>;
 }

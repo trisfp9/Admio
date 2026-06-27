@@ -3,7 +3,7 @@
 import { useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/lib/auth-context";
 import Button from "@/components/ui/Button";
 import Navbar from "@/components/landing/Navbar";
 import { Check, Crown, Sparkles, Zap, ArrowLeft } from "lucide-react";
@@ -241,10 +241,8 @@ function PricingContent() {
 
 export default function PricingPage() {
   return (
-    <AuthProvider>
-      <Suspense>
-        <PricingContent />
-      </Suspense>
-    </AuthProvider>
+    <Suspense>
+      <PricingContent />
+    </Suspense>
   );
 }
