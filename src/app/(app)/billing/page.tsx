@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
@@ -11,6 +11,14 @@ import toast from "react-hot-toast";
 export default function BillingPage() {
   const { profile, session } = useAuth();
   const [loading, setLoading] = useState(false);
+
+  // If the user opens the Paddle portal and presses Back, the page can be
+  // restored from the bfcache with the loading flag still set. Reset it.
+  useEffect(() => {
+    const reset = () => setLoading(false);
+    window.addEventListener("pageshow", reset);
+    return () => window.removeEventListener("pageshow", reset);
+  }, []);
 
   const openPortal = async () => {
     if (!session?.access_token) return;

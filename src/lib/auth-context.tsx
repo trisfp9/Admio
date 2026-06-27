@@ -31,11 +31,21 @@ function withTimeout<T>(p: Promise<T>, ms: number, fallback: T): Promise<T> {
   ]);
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+export function AuthProvider({
+  children,
+  initialUser = null,
+  initialProfile = null,
+}: {
+  children: React.ReactNode;
+  initialUser?: User | null;
+  initialProfile?: Profile | null;
+}) {
+  const [user, setUser] = useState<User | null>(initialUser);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<Profile | null>(initialProfile);
+  // The server already resolved auth state from cookies, so don't start in a
+  // loading/skeleton state — render the correct logged-in/out UI immediately.
+  const [loading, setLoading] = useState(false);
 
   const supabase = createBrowserClient();
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);

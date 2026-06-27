@@ -14,11 +14,21 @@ function isValidUrl(url: string): boolean {
 // consistent across tabs and lets middleware refresh/guard sessions server-side.
 let browserClient: SupabaseClient | null = null;
 
+// Keep the session cookie for 30 days so users stay logged in across tabs and
+// browser restarts ("remember me").
+export const SESSION_MAX_AGE = 60 * 60 * 24 * 30; // 30 days in seconds
+
 export function createBrowserClient() {
   if (browserClient) return browserClient;
   const url = isValidUrl(SUPABASE_URL) ? SUPABASE_URL : "https://placeholder.supabase.co";
   const key = SUPABASE_ANON_KEY || "placeholder";
-  browserClient = createSSRBrowserClient(url, key);
+  // "Remember me" (default on): 30-day cookie. If the user opted out, use a
+  // session cookie that clears when the browser closes.
+  const remember =
+    typeof window === "undefined" || localStorage.getItem("admio_remember") !== "false";
+  browserClient = createSSRBrowserClient(url, key, {
+    cookieOptions: remember ? { maxAge: SESSION_MAX_AGE } : {},
+  });
   return browserClient;
 }
 

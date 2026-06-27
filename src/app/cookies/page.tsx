@@ -35,8 +35,8 @@ export default function CookiePolicyPage() {
                 <p className="text-text-primary font-medium mb-1">Essential Cookies</p>
                 <p>Required for the Service to function. These cannot be disabled.</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                  <li><span className="text-text-primary">Authentication tokens</span> — Keep you signed in to your account (managed by Supabase)</li>
-                  <li><span className="text-text-primary">Session data</span> — Maintain your active session across pages</li>
+                  <li><span className="text-text-primary">Authentication session cookies</span> — Keep you signed in to your account across pages and tabs (set by Supabase). When you choose &quot;Remember me for 30 days&quot; at sign-in, this cookie persists for up to 30 days; otherwise it clears when you close your browser.</li>
+                  <li><span className="text-text-primary">Session data</span> — Maintain your active session and refresh your login securely</li>
                 </ul>
               </div>
 
@@ -45,6 +45,7 @@ export default function CookiePolicyPage() {
                 <p>Used to remember your preferences and improve your experience.</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
                   <li><span className="text-text-primary">admio_version</span> — Tracks the app version to notify you of updates (localStorage)</li>
+                  <li><span className="text-text-primary">admio_remember</span> — Remembers your &quot;Remember me for 30 days&quot; choice at sign-in (localStorage)</li>
                   <li><span className="text-text-primary">Theme/UI preferences</span> — Remembers your display settings</li>
                 </ul>
               </div>

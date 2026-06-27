@@ -28,6 +28,7 @@ function AuthContent() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [remember, setRemember] = useState(true);
   const supabase = createBrowserClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,6 +47,11 @@ function AuthContent() {
         // Redirect to verification page — profile will be created after email confirm
         router.push("/auth/verify");
       } else {
+        // Persist the "remember me" choice before signing in so the Supabase
+        // client uses a 30-day cookie (checked) or a session cookie (unchecked).
+        if (typeof window !== "undefined") {
+          localStorage.setItem("admio_remember", remember ? "true" : "false");
+        }
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
 
@@ -185,6 +191,18 @@ function AuthContent() {
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-button text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-purple/50 transition-colors text-sm"
                   />
                 </div>
+
+                {mode === "signin" && (
+                  <label className="flex items-center gap-2.5 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={remember}
+                      onChange={(e) => setRemember(e.target.checked)}
+                      className="w-4 h-4 rounded border-white/20 bg-white/5 text-purple focus:ring-purple/50 accent-purple cursor-pointer"
+                    />
+                    <span className="text-xs text-text-muted">Remember me for 30 days</span>
+                  </label>
+                )}
 
                 {mode === "signup" && (
                   <label className="flex items-start gap-3 cursor-pointer group">
