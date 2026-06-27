@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
@@ -8,6 +8,7 @@ import Button from "@/components/ui/Button";
 import Navbar from "@/components/landing/Navbar";
 import { Check, Crown, Sparkles, Zap, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
+import { openProCheckout } from "@/lib/paddle-client";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -20,7 +21,6 @@ const fadeUp = {
 
 function PricingContent() {
   const { profile, session, refreshProfile } = useAuth();
-  const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -66,27 +66,12 @@ function PricingContent() {
       return;
     }
 
-    setLoading(true);
     try {
-      const res = await fetch("/api/doku/checkout", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        console.error("Checkout error:", data);
-        throw new Error(data.detail ? JSON.stringify(data.detail) : (data.error || "Checkout failed"));
-      }
-      const { url } = await res.json();
-      if (url) {
-        window.location.href = url;
-      } else {
-        throw new Error("No checkout URL returned");
-      }
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to start checkout. Please try again.");
+      await openProCheckout({ email: session.user?.email, userId: profile.id });
+    } catch {
+      // Paddle not configured yet (missing client token / price id) — fail gracefully.
+      toast("Subscriptions are temporarily unavailable while we finish setting up payments. Please check back soon.", { icon: "🛠️" });
     }
-    setLoading(false);
   };
 
   const free = [
@@ -229,7 +214,7 @@ function PricingContent() {
                   Current Plan
                 </Button>
               ) : (
-                <Button variant="purple" className="w-full" size="lg" onClick={handleCheckout} loading={loading}>
+                <Button variant="purple" className="w-full" size="lg" onClick={handleCheckout}>
                   <Zap className="w-4 h-4" />
                   Start Pro — $10/mo
                 </Button>

@@ -56,6 +56,13 @@ alter table profiles add column if not exists essay_feedback jsonb;
 alter table profiles add column if not exists essay_last_reviewed_at timestamp with time zone;
 alter table profiles add column if not exists roadmaps jsonb;
 
+-- Payment provider migration: remove DOKU, add Paddle subscription fields
+alter table profiles drop column if exists doku_pending_invoice;
+alter table profiles add column if not exists paddle_customer_id text;
+alter table profiles add column if not exists paddle_subscription_id text;
+alter table profiles add column if not exists subscription_status text; -- active, past_due, canceled, paused, trialing
+alter table profiles add column if not exists subscription_renews_at timestamp with time zone; -- next billing date from Paddle
+
 -- Saved items table
 create table if not exists saved_items (
   id uuid primary key default gen_random_uuid(),

@@ -25,7 +25,7 @@ export default function RefundPolicyPage() {
                 This Refund Policy explains when and how you can request a refund for an Admio Pro
                 subscription. By purchasing a subscription, you agree to this policy together with our{" "}
                 <Link href="/terms" className="text-purple hover:underline">Terms of Service</Link>. Payments
-                are processed securely through our payment provider, DOKU.
+                are processed securely through our third-party payment provider.
               </p>
             </section>
 
@@ -101,7 +101,7 @@ export default function RefundPolicyPage() {
               <h2 className="text-text-primary font-semibold text-lg mb-3">8. Processing Time</h2>
               <p>
                 We aim to review refund requests within <span className="text-text-primary">5 business
-                days</span>. Approved refunds are issued to your original payment method through DOKU. The
+                days</span>. Approved refunds are issued to your original payment method through our payment provider. The
                 time for funds to appear depends on your bank or payment provider and is outside our
                 control — it typically takes an additional 5–14 business days. Refunds are made in the
                 original currency of the transaction (IDR); we are not responsible for any exchange-rate

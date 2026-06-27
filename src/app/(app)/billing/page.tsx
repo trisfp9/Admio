@@ -16,9 +16,18 @@ export default function BillingPage() {
     if (!session?.access_token) return;
     setLoading(true);
     try {
-      // DOKU doesn't have a billing portal — redirect to pricing to manage subscription
-      window.location.href = "/pricing";
-      return;
+      // Open the Paddle-hosted customer portal (cancel, update card, invoices).
+      const res = await fetch("/api/paddle/portal", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      toast.error(data.error || "Couldn't open the billing portal. Please try again.");
+      setLoading(false);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       toast.error(message);
@@ -71,7 +80,7 @@ export default function BillingPage() {
               )}
               <div className="flex items-center gap-3 text-sm">
                 <CreditCard className="w-4 h-4 text-text-muted flex-shrink-0" />
-                <span className="text-text-muted">Billing managed securely through DOKU</span>
+                <span className="text-text-muted">Billing managed securely through our payment provider</span>
               </div>
             </div>
 

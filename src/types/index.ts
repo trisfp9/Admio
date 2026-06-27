@@ -13,8 +13,11 @@ export interface Profile {
   time_available: string | null;
   biggest_concern: string | null;
   is_pro: boolean;
-  doku_pending_invoice: string | null;
   subscription_start: string | null;
+  paddle_customer_id: string | null;
+  paddle_subscription_id: string | null;
+  subscription_status: string | null;
+  subscription_renews_at: string | null;
   xp: number;
   streak: number;
   last_active: string | null;
