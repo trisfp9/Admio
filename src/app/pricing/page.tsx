@@ -20,7 +20,7 @@ const fadeUp = {
 };
 
 function PricingContent() {
-  const { profile, session, refreshProfile } = useAuth();
+  const { profile, session, loading, refreshProfile } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -54,8 +54,22 @@ function PricingContent() {
       return;
     }
 
-    // Double-check that the user has a profile before proceeding
+    // Don't make decisions while auth is still resolving.
+    if (loading) {
+      toast("Loading your account…");
+      return;
+    }
+
+    // Logged in but profile didn't load — refresh and retry rather than
+    // wrongly assuming the user hasn't onboarded.
     if (!profile) {
+      await refreshProfile();
+      toast.error("Couldn't load your account. Please try again in a moment.");
+      return;
+    }
+
+    // Genuinely hasn't completed onboarding.
+    if (!profile.onboarding_completed) {
       toast.error("Please complete onboarding first.");
       window.location.href = "/onboarding";
       return;

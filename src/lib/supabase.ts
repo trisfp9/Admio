@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserClient as createSSRBrowserClient } from "@supabase/ssr";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
@@ -7,14 +8,17 @@ function isValidUrl(url: string): boolean {
   return url.startsWith("http://") || url.startsWith("https://");
 }
 
-// Singleton browser client — one instance shared across the whole app
+// Singleton browser client — one instance shared across the whole app.
+// Uses @supabase/ssr so the session is stored in cookies (readable by the
+// server + middleware), instead of localStorage. This keeps auth state
+// consistent across tabs and lets middleware refresh/guard sessions server-side.
 let browserClient: SupabaseClient | null = null;
 
 export function createBrowserClient() {
   if (browserClient) return browserClient;
   const url = isValidUrl(SUPABASE_URL) ? SUPABASE_URL : "https://placeholder.supabase.co";
   const key = SUPABASE_ANON_KEY || "placeholder";
-  browserClient = createClient(url, key);
+  browserClient = createSSRBrowserClient(url, key);
   return browserClient;
 }
 
