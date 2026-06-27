@@ -28,7 +28,7 @@ function AuthContent() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const [remember, setRemember] = useState(true);
+  const [remember, setRemember] = useState(false);
   const supabase = createBrowserClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
