@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { createBrowserClient } from "@/lib/supabase";
+import { createBrowserClient, applyRememberPreference } from "@/lib/supabase";
 import Button from "@/components/ui/Button";
 import GeometricGrid from "@/components/landing/GeometricGrid";
 import Link from "next/link";
@@ -47,29 +47,27 @@ function AuthContent() {
         // Redirect to verification page — profile will be created after email confirm
         router.push("/auth/verify");
       } else {
-        // Persist the "remember me" choice before signing in so the Supabase
-        // client uses a 30-day cookie (checked) or a session cookie (unchecked).
-        if (typeof window !== "undefined") {
-          localStorage.setItem("admio_remember", remember ? "true" : "false");
-        }
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        // Rebuild the client with the chosen persistence BEFORE signing in, so
+        // the auth cookie is written with the right lifetime (30-day vs session).
+        const client = applyRememberPreference(remember);
+        const { error } = await client.auth.signInWithPassword({ email, password });
         if (error) throw error;
 
         // Check if onboarding completed
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await client.auth.getUser();
+        let dest = "/onboarding";
         if (user) {
-          const { data: profile } = await supabase
+          const { data: profile } = await client
             .from("profiles")
             .select("onboarding_completed")
             .eq("id", user.id)
             .single();
-
-          if (profile?.onboarding_completed) {
-            router.push(redirectTo || "/dashboard");
-          } else {
-            router.push("/onboarding");
-          }
+          if (profile?.onboarding_completed) dest = redirectTo || "/dashboard";
         }
+        // Full-page navigation so the server re-renders with the new session
+        // cookie (seeds auth state) and the app uses the rebuilt client.
+        window.location.assign(dest);
+        return;
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong";
