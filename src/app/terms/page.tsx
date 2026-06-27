@@ -76,8 +76,9 @@ export default function TermsOfServicePage() {
               <h2 className="text-text-primary font-semibold text-lg mb-3">6. Subscriptions &amp; Payments</h2>
               <p>
                 Admio offers both free and paid (Pro) subscription tiers. Pro subscriptions are billed
-                through DOKU. You may cancel your subscription at any time. Refunds are handled on a
-                case-by-case basis. We reserve the right to change pricing with reasonable notice.
+                through DOKU. You may cancel your subscription at any time. Refunds are governed by our{" "}
+                <Link href="/refund" className="text-purple hover:underline">Refund Policy</Link>. We reserve
+                the right to change pricing with reasonable notice.
               </p>
             </section>
 
@@ -139,6 +140,7 @@ export default function TermsOfServicePage() {
           <div className="mt-12 pt-8 border-t border-white/5 flex gap-4 text-xs text-text-muted">
             <Link href="/privacy" className="hover:text-purple transition-colors">Privacy Policy</Link>
             <Link href="/cookies" className="hover:text-purple transition-colors">Cookie Policy</Link>
+            <Link href="/refund" className="hover:text-purple transition-colors">Refund Policy</Link>
             <Link href="/" className="hover:text-purple transition-colors">Back to Home</Link>
           </div>
         </motion.div>

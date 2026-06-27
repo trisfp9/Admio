@@ -100,6 +100,7 @@ export default function CookiePolicyPage() {
           <div className="mt-12 pt-8 border-t border-white/5 flex gap-4 text-xs text-text-muted">
             <Link href="/privacy" className="hover:text-purple transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-purple transition-colors">Terms of Service</Link>
+            <Link href="/refund" className="hover:text-purple transition-colors">Refund Policy</Link>
             <Link href="/" className="hover:text-purple transition-colors">Back to Home</Link>
           </div>
         </motion.div>
