@@ -21,7 +21,10 @@ export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    "";
   // If Supabase isn't configured (e.g. local placeholder), don't block anything.
   if (!url.startsWith("http") || !key) return response;
 
@@ -49,6 +52,12 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
+
+  // Logged-in users hitting the landing page or auth page go straight to the app.
+  if (user && (path === "/" || path === "/auth")) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   const isProtected = PROTECTED_PREFIXES.some(
     (p) => path === p || path.startsWith(`${p}/`)
   );
