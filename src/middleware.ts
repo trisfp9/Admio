@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { REMEMBER_COOKIE, applyAuthCookiePolicy } from "@/lib/auth-cookies";
 
 // Routes that require a logged-in user. Logged-out visitors are redirected to /auth.
 const PROTECTED_PREFIXES = [
@@ -30,10 +31,13 @@ export async function middleware(request: NextRequest) {
         return request.cookies.getAll();
       },
       setAll(cookiesToSet) {
+        const remember = request.cookies.get(REMEMBER_COOKIE)?.value;
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
         cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options)
+          // Enforce the remember-me lifetime so refreshed cookies don't get
+          // silently upgraded to long-lived ones.
+          response.cookies.set(name, value, applyAuthCookiePolicy(options, remember))
         );
       },
     },

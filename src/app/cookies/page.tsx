@@ -45,7 +45,7 @@ export default function CookiePolicyPage() {
                 <p>Used to remember your preferences and improve your experience.</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
                   <li><span className="text-text-primary">admio_version</span> — Tracks the app version to notify you of updates (localStorage)</li>
-                  <li><span className="text-text-primary">admio_remember</span> — Remembers your &quot;Remember me for 30 days&quot; choice at sign-in (localStorage)</li>
+                  <li><span className="text-text-primary">admio_remember</span> — Remembers your &quot;Remember me for 30 days&quot; choice so your session cookie uses the right lifetime (cookie)</li>
                   <li><span className="text-text-primary">Theme/UI preferences</span> — Remembers your display settings</li>
                 </ul>
               </div>
