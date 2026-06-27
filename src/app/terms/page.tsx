@@ -22,9 +22,11 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-text-primary font-semibold text-lg mb-3">1. Acceptance of Terms</h2>
               <p>
-                By accessing or using Admio (&quot;the Service&quot;), you agree to be bound by these Terms of Service.
-                If you do not agree to these terms, please do not use the Service. If you are under 18,
-                you represent that you have parental or guardian consent to use the Service.
+                Admio (&quot;the Service&quot;) is operated by <span className="text-text-primary">PT Multitritama Persada</span>
+                {" "}(&quot;Admio,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), a company registered in Indonesia. By accessing or using
+                the Service, you agree to be bound by these Terms of Service. If you do not agree to these terms,
+                please do not use the Service. If you are under 18, you represent that you have parental or
+                guardian consent to use the Service.
               </p>
             </section>
 
@@ -122,16 +124,17 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-text-primary font-semibold text-lg mb-3">11. Governing Law</h2>
               <p>
-                These Terms shall be governed by and construed in accordance with applicable laws.
-                Any disputes arising from these Terms or the Service shall be resolved through good-faith
-                negotiation.
+                These Terms shall be governed by and construed in accordance with the laws of the Republic
+                of Indonesia, without regard to its conflict-of-law provisions. Any disputes arising from
+                these Terms or the Service shall first be resolved through good-faith negotiation and,
+                failing that, before the competent courts of Indonesia.
               </p>
             </section>
 
             <section>
               <h2 className="text-text-primary font-semibold text-lg mb-3">12. Contact Us</h2>
               <p>
-                If you have questions about these Terms, please contact us at{" "}
+                If you have questions about these Terms, please contact PT Multitritama Persada at{" "}
                 <a href="mailto:support@admio.io" className="text-purple hover:underline">support@admio.io</a>.
               </p>
             </section>

@@ -17,7 +17,6 @@ create table if not exists profiles (
   time_available text,
   biggest_concern text,
   is_pro boolean default false,
-  stripe_customer_id text,
   subscription_start date,
   xp integer default 0,
   streak integer default 0,
@@ -56,8 +55,9 @@ alter table profiles add column if not exists essay_feedback jsonb;
 alter table profiles add column if not exists essay_last_reviewed_at timestamp with time zone;
 alter table profiles add column if not exists roadmaps jsonb;
 
--- Payment provider migration: remove DOKU, add Paddle subscription fields
+-- Payment provider migration: remove legacy providers, add Paddle subscription fields
 alter table profiles drop column if exists doku_pending_invoice;
+alter table profiles drop column if exists stripe_customer_id;
 alter table profiles add column if not exists paddle_customer_id text;
 alter table profiles add column if not exists paddle_subscription_id text;
 alter table profiles add column if not exists subscription_status text; -- active, past_due, canceled, paused, trialing
