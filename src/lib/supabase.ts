@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient, processLock } from "@supabase/supabase-js";
 import { createBrowserClient as createSSRBrowserClient } from "@supabase/ssr";
 import { parse, serialize } from "cookie";
 import { REMEMBER_COOKIE, REMEMBER_PREF_MAX_AGE, applyAuthCookiePolicy } from "./auth-cookies";
@@ -24,6 +24,10 @@ export function createBrowserClient() {
   // "remember me" lifetime (@supabase/ssr otherwise always writes a long-lived
   // cookie). The remember choice lives in the REMEMBER_COOKIE so the server agrees.
   browserClient = createSSRBrowserClient(url, key, {
+    // Use an in-process lock instead of the Web Locks API. navigator.locks
+    // coordinates across tabs and can deadlock / be "stolen", which was blocking
+    // login in a second tab. processLock serializes auth calls within each tab.
+    auth: { lock: processLock },
     cookies: {
       getAll() {
         if (typeof document === "undefined") return [];
