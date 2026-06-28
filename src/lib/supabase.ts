@@ -4,11 +4,7 @@ import { parse, serialize } from "cookie";
 import { REMEMBER_COOKIE, REMEMBER_PREF_MAX_AGE, applyAuthCookiePolicy } from "./auth-cookies";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-// New publishable key (sb_publishable_…), falling back to the legacy anon key.
-const SUPABASE_ANON_KEY =
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  "";
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
 
 function isValidUrl(url: string): boolean {
   return url.startsWith("http://") || url.startsWith("https://");
@@ -79,12 +75,9 @@ export function createServerClient(accessToken: string) {
 }
 
 // Admin client — server-side only, bypasses RLS. NEVER expose to client.
-// New secret key (sb_secret_…), falling back to the legacy service-role key.
 export function createAdminClient() {
   const url = isValidUrl(SUPABASE_URL) ? SUPABASE_URL : "https://placeholder.supabase.co";
-  const secret =
-    process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder";
-  return createClient(url, secret);
+  return createClient(url, process.env.SUPABASE_SECRET_KEY || "placeholder");
 }
 
 // Extract and verify JWT from request Authorization header

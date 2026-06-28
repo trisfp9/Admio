@@ -8,8 +8,7 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)!
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
     );
 
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
@@ -18,7 +17,7 @@ export async function GET(request: Request) {
       // Create profile row using admin client (bypasses RLS)
       const adminClient = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)!
+        process.env.SUPABASE_SECRET_KEY!
       );
 
       const { data: existing } = await adminClient
