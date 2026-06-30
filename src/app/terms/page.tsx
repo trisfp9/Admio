@@ -77,10 +77,14 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-text-primary font-semibold text-lg mb-3">6. Subscriptions &amp; Payments</h2>
               <p>
-                Admio offers both free and paid (Pro) subscription tiers. Pro subscriptions are billed
-                through our third-party payment provider. You may cancel your subscription at any time. Refunds are governed by our{" "}
-                <Link href="/refund" className="text-purple hover:underline">Refund Policy</Link>. We reserve
-                the right to change pricing with reasonable notice.
+                Admio offers both free and paid (Pro) subscription tiers. Pro subscriptions are sold and
+                processed by our authorized reseller and Merchant of Record,{" "}
+                <span className="text-text-primary">Dodo Payments</span>, which acts as the seller of record
+                for these transactions and handles payment processing, billing, and applicable sales taxes.
+                Admio does not collect or process your payment details directly. You may cancel your
+                subscription at any time. Refunds are governed by our{" "}
+                <Link href="/refund" className="text-purple hover:underline">Refund Policy</Link> and are
+                issued through Dodo Payments. We reserve the right to change pricing with reasonable notice.
               </p>
             </section>
 

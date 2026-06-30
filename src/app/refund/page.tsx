@@ -24,8 +24,10 @@ export default function RefundPolicyPage() {
               <p>
                 This Refund Policy explains when and how you can request a refund for an Admio Pro
                 subscription. By purchasing a subscription, you agree to this policy together with our{" "}
-                <Link href="/terms" className="text-purple hover:underline">Terms of Service</Link>. Payments
-                are processed securely through our third-party payment provider.
+                <Link href="/terms" className="text-purple hover:underline">Terms of Service</Link>. Pro
+                subscriptions are sold and processed by our Merchant of Record, Dodo Payments, which acts as
+                the seller of record. Admio does not process payments directly, and all refunds are issued
+                through Dodo Payments.
               </p>
             </section>
 
@@ -101,10 +103,10 @@ export default function RefundPolicyPage() {
               <h2 className="text-text-primary font-semibold text-lg mb-3">8. Processing Time</h2>
               <p>
                 We aim to review refund requests within <span className="text-text-primary">5 business
-                days</span>. Approved refunds are issued to your original payment method through our payment provider. The
-                time for funds to appear depends on your bank or payment provider and is outside our
-                control — it typically takes an additional 5–14 business days. Refunds are made in the
-                original currency of the transaction (IDR); we are not responsible for any exchange-rate
+                days</span>. Approved refunds are processed by Dodo Payments and issued to your original
+                payment method. The time for funds to appear depends on your bank or payment provider and is
+                outside our control — it typically takes an additional 5–14 business days. Refunds are made in
+                the original currency of the transaction; we are not responsible for any exchange-rate
                 differences or fees applied by your bank or card issuer.
               </p>
             </section>
