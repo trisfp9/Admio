@@ -211,7 +211,7 @@ function AuthContent() {
                       className="mt-0.5 w-4 h-4 rounded border-white/20 bg-white/5 text-purple focus:ring-purple/50 accent-purple cursor-pointer"
                     />
                     <span className="text-xs text-text-muted leading-relaxed">
-                      I agree to the{" "}
+                      I&apos;m at least 13 years old, and if I&apos;m under 18, my parent or guardian has reviewed and agreed to these terms on my behalf. I agree to the{" "}
                       <Link href="/terms" target="_blank" className="text-purple hover:underline">Terms of Service</Link>,{" "}
                       <Link href="/privacy" target="_blank" className="text-purple hover:underline">Privacy Policy</Link>, and{" "}
                       <Link href="/cookies" target="_blank" className="text-purple hover:underline">Cookie Policy</Link>
