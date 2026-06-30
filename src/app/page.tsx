@@ -120,10 +120,10 @@ const HeroSection = () => {
       )}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-100px)] px-6 text-center">
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-6 leading-tight">
-          Get Into Your
+          Build a Stronger
           <br />
           <span className="bg-gradient-to-r from-[#00B4D8] via-[#8B5CF6] to-[#FFD700] bg-clip-text text-transparent">
-            Dream College
+            College Application
           </span>
         </motion.h1>
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="text-xl md:text-2xl text-white/70 max-w-3xl mb-12">
@@ -163,7 +163,7 @@ const HowItWorks = () => {
   const features: Feature[] = [
     { step: "Step 1", title: "Enter Your Profile", content: "Tell us about your grades, interests, and dream schools. Our AI analyzes your unique profile.", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80" },
     { step: "Step 2", title: "Get Your Personalized Roadmap", content: "Receive a detailed week-by-week plan with extracurriculars, competitions, and projects tailored to your goals.", image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80" },
-    { step: "Step 3", title: "Get Into Your Dream School", content: "Follow your roadmap, track your progress with XP and streaks, and watch your college applications shine.", image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80" },
+    { step: "Step 3", title: "Build a Stronger Application", content: "Follow your roadmap, track your progress with XP and streaks, and strengthen your college applications.", image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80" },
   ]
   const [currentFeature, setCurrentFeature] = useState(0)
   const [progress, setProgress] = useState(0)
@@ -516,7 +516,7 @@ const Footer = () => (
             <div className="w-10 h-10 bg-gradient-to-br from-[#00B4D8] to-[#8B5CF6] rounded-lg flex items-center justify-center"><img src="/logo.png" alt="Admio" className="w-[80%] h-[80%] object-contain" /></div>
             <span className="text-xl font-heading font-bold text-white">Admio</span>
           </div>
-          <p className="text-white/60 text-sm">Your roadmap to the school of your dreams</p>
+          <p className="text-white/60 text-sm">Your roadmap to a stronger college application</p>
         </div>
         <div>
           <h4 className="text-white font-semibold mb-4">Product</h4>
