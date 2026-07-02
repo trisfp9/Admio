@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth-context";
@@ -20,6 +20,7 @@ const fadeUp = {
 
 function PricingContent() {
   const { profile, session, loading, refreshProfile } = useAuth();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -79,8 +80,22 @@ function PricingContent() {
       return;
     }
 
-    // Dodo Payments checkout is being set up — temporarily unavailable.
-    toast("Subscriptions are temporarily unavailable while we finish setting up payments. Please check back soon.", { icon: "🛠️" });
+    setCheckoutLoading(true);
+    try {
+      const res = await fetch("/api/dodo/checkout", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      toast.error(data.error || "Couldn't start checkout. Please try again.");
+    } catch {
+      toast.error("Couldn't start checkout. Please try again.");
+    }
+    setCheckoutLoading(false);
   };
 
   const free = [
@@ -223,7 +238,7 @@ function PricingContent() {
                   Current Plan
                 </Button>
               ) : (
-                <Button variant="purple" className="w-full" size="lg" onClick={handleCheckout}>
+                <Button variant="purple" className="w-full" size="lg" onClick={handleCheckout} loading={checkoutLoading}>
                   <Zap className="w-4 h-4" />
                   Start Pro — $10/mo
                 </Button>
