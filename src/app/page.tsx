@@ -247,8 +247,8 @@ const KeyFeatures = () => {
 
 const PricingSection = () => {
   const plans: PricingTier[] = [
-    { name: "Free", subtitle: "Get started", price: { monthly: 0, yearly: 0 }, description: "Perfect for exploring your college options", icon: Zap, gradient: "from-[#00B4D8]/20 to-[#0096C7]/20", borderGradient: "from-[#00B4D8] to-[#0096C7]", features: ["AI college finder", "Basic scholarship search", "Progress tracking with XP", "Daily streaks", "5 AI counselor messages/month", "Community access"], highlight: false, badge: null },
-    { name: "Pro", subtitle: "Most popular", price: { monthly: 10, yearly: 100 }, description: "Everything you need to get into your dream school", icon: Crown, gradient: "from-[#8B5CF6]/20 to-[#7C3AED]/20", borderGradient: "from-[#8B5CF6] to-[#7C3AED]", features: ["Everything in Free", "Detailed week-by-week roadmap", "Unlimited AI counselor messages", "Real competition names & deadlines", "Custom project ideas", "Essay review & feedback", "Priority support", "Advanced analytics"], highlight: true, badge: "Most Popular" },
+    { name: "Free", subtitle: "Get started", price: { monthly: 0, yearly: 0 }, description: "Perfect for exploring your college options", icon: Zap, gradient: "from-[#00B4D8]/20 to-[#0096C7]/20", borderGradient: "from-[#00B4D8] to-[#0096C7]", features: ["AI college finder", "Basic scholarship search", "Progress tracking with XP", "Daily streaks", "7 AI counselor messages", "Community access"], highlight: false, badge: null },
+    { name: "Pro", subtitle: "Most popular", price: { monthly: 12, yearly: 120 }, description: "Everything you need to get into your dream school", icon: Crown, gradient: "from-[#8B5CF6]/20 to-[#7C3AED]/20", borderGradient: "from-[#8B5CF6] to-[#7C3AED]", features: ["Everything in Free", "Detailed week-by-week roadmap", "200 AI counselor messages/month", "Real competition names & deadlines", "Custom project ideas", "Essay review & feedback", "Priority support", "Advanced analytics"], highlight: true, badge: "Most Popular" },
   ]
   return (
     <section id="pricing" className="bg-[#080E1A] py-24 px-6">
@@ -438,10 +438,10 @@ const TestimonialsSection = () => {
 const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const faqs: FAQ[] = [
-    { question: "Is Admio really free?", answer: "Yes! Our free tier includes AI college finder, basic scholarship search, progress tracking, and 5 AI counselor messages per month. Upgrade to Pro for unlimited access and detailed roadmaps." },
+    { question: "Is Admio really free?", answer: "Yes! Our free tier includes AI college finder, basic scholarship search, progress tracking, and 7 AI counselor messages. Upgrade to Pro for 200 monthly messages and detailed roadmaps." },
     { question: "How does the AI extracurricular planner work?", answer: "Our AI analyzes your profile, target schools, and intended major to recommend specific competitions, projects, and activities. Pro users get detailed timelines with real competition names and deadlines." },
     { question: "Can I use Admio if I'm an international student?", answer: "Absolutely! Admio is designed for students worldwide. Our AI counselor understands international admissions and can help with country-specific questions." },
-    { question: "What makes Admio different from other college prep tools?", answer: "Admio combines AI-powered personalization with gamification to make college prep engaging and effective. Plus, at $10/month, it's accessible to students who can't afford expensive private counselors." },
+    { question: "What makes Admio different from other college prep tools?", answer: "Admio combines AI-powered personalization with gamification to make college prep engaging and effective. Plus, at $12/month, it's accessible to students who can't afford expensive private counselors." },
     { question: "How do XP points and streaks work?", answer: "Earn XP by completing activities, logging in daily, adding awards, and using the AI counselor. Keep your daily streak alive to build momentum. You level up through 6 ranks — Explorer, Builder, Challenger, Contender, Standout, and Trailblazer." },
   ]
   return (

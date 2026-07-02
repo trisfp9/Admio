@@ -147,7 +147,7 @@ function PricingContent() {
           <motion.p variants={fadeUp} custom={2} className="text-text-muted text-lg max-w-xl mx-auto">
             {profile?.is_pro
               ? "Thanks for being a Pro member. You have access to all features."
-              : "Get detailed roadmaps, personalized plans, and unlimited AI guidance."}
+              : "Get detailed roadmaps, personalized plans, and personalized AI guidance."}
           </motion.p>
         </motion.div>
 
@@ -215,7 +215,7 @@ function PricingContent() {
               </h3>
               <p className="text-text-muted text-sm mb-6">Everything you need to get in</p>
               <p className="font-heading font-bold text-5xl text-text-primary mb-8">
-                $10<span className="text-lg text-text-muted font-normal">/month</span>
+                $12<span className="text-lg text-text-muted font-normal">/month</span>
               </p>
               <ul className="space-y-3">
                 {pro.map((p, i) => (
@@ -240,7 +240,7 @@ function PricingContent() {
               ) : (
                 <Button variant="purple" className="w-full" size="lg" onClick={handleCheckout} loading={checkoutLoading}>
                   <Zap className="w-4 h-4" />
-                  Start Pro — $10/mo
+                  Start Pro — $12/mo
                 </Button>
               )}
             </div>
