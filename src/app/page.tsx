@@ -561,7 +561,6 @@ export default function AdmioLandingPage() {
       <HeroSection />
       <HowItWorks />
       <KeyFeatures />
-      <CapabilitiesBanner />
       {/* Hidden until we have real users / testimonials */}
       {/* <ProofSection /> */}
       <PricingSection />
@@ -573,43 +572,3 @@ export default function AdmioLandingPage() {
   )
 }
 
-const CapabilitiesBanner = () => {
-  const stats = [
-    { number: "500+", label: "Colleges in our database" },
-    { number: "1,200+", label: "Extracurriculars analyzed" },
-    { number: "24/7", label: "AI college counselor" },
-    { number: "$50M+", label: "In scholarships matched" },
-  ]
-  return (
-    <section className="bg-gradient-to-b from-[#0A1628] to-[#080E1A] py-20 px-6 border-y border-white/[0.06]">
-      <div className="max-w-7xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#8B5CF6]/15 border border-[#8B5CF6]/25 backdrop-blur-sm mb-4">
-            <Sparkles className="h-4 w-4 text-[#FFD700]" />
-            <span className="text-sm font-medium text-white/80">Built to help students get into top colleges</span>
-          </div>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-white">
-            Everything you need, in one place
-          </h2>
-        </motion.div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.08 }}
-              className="text-center"
-            >
-              <div className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-[#00B4D8] to-[#8B5CF6] bg-clip-text text-transparent mb-2">
-                {stat.number}
-              </div>
-              <div className="text-white/60 text-sm md:text-base">{stat.label}</div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
