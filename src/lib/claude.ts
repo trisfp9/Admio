@@ -1,9 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { Profile } from "@/types";
 
-// Single source of truth for the Claude model, so every route stays in sync
+// Single source of truth for the Claude models, so every route stays in sync
 // and can't drift onto a retired snapshot.
-export const CLAUDE_MODEL = "claude-sonnet-4-6";
+export const CLAUDE_MODEL = "claude-sonnet-4-6"; // main model — counselor, essays, roadmaps, etc.
+export const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5"; // cheap model — daily tips, activity polish
 
 function getAnthropicClient() {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -178,7 +179,7 @@ export async function callClaudeHaiku(
     const timeout = setTimeout(() => controller.abort(), 30000);
     const response = await anthropic.messages.create(
       {
-        model: CLAUDE_MODEL,
+        model: CLAUDE_HAIKU_MODEL,
         max_tokens: maxTokens,
         system: systemPrompt,
         messages: [{ role: "user", content: sanitize(userMessage) }],
