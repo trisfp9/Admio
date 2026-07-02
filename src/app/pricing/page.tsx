@@ -108,7 +108,7 @@ function PricingContent() {
   ];
 
   const pro = [
-    "400 AI messages per month",
+    "200 AI messages per month",
     "Full extracurricular roadmaps",
     "Real competition names & deadlines",
     "Week-by-week action plans",

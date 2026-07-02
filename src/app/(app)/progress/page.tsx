@@ -222,7 +222,7 @@ export default function ProgressPage() {
   ];
 
   const messagesUsed = profile.is_pro ? (profile.ai_messages_this_month ?? 0) : (profile.ai_messages_used ?? 0);
-  const messagesMax = profile.is_pro ? 400 : 7;
+  const messagesMax = profile.is_pro ? 200 : 7;
   const limitReached = messagesUsed >= messagesMax;
 
   return (
@@ -627,7 +627,7 @@ export default function ProgressPage() {
             </div>
 
             {/* Message limit warning */}
-            {messagesUsed >= 320 && messagesUsed < 400 && (
+            {messagesUsed >= 160 && messagesUsed < 200 && (
               <div className="bg-amber-500/10 border border-amber-500/20 rounded-button p-3 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
                 <p className="text-amber-400 text-sm">

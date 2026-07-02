@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   // Check message limits (server-side enforcement)
   const isProUser = profile.is_pro;
   const messagesUsed = isProUser ? profile.ai_messages_this_month : profile.ai_messages_used;
-  const messagesMax = isProUser ? 400 : 7;
+  const messagesMax = isProUser ? 200 : 7;
 
   if (messagesUsed >= messagesMax) {
     return NextResponse.json({ error: "Message limit reached" }, { status: 403 });

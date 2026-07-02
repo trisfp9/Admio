@@ -45,7 +45,7 @@ export default function CounselorPage() {
   }, [roadmapId]);
 
   const messagesUsed = profile?.is_pro ? (profile?.ai_messages_this_month ?? 0) : (profile?.ai_messages_used ?? 0);
-  const messagesMax = profile?.is_pro ? 400 : 7;
+  const messagesMax = profile?.is_pro ? 200 : 7;
   const limitReached = messagesUsed >= messagesMax;
 
   // Load chat history
@@ -247,11 +247,11 @@ export default function CounselorPage() {
       )}
 
       {/* Pro warning at 320/400 */}
-      {profile.is_pro && messagesUsed >= 320 && messagesUsed < 400 && (
+      {profile.is_pro && messagesUsed >= 160 && messagesUsed < 200 && (
         <div className="bg-amber-500/10 border border-amber-500/20 rounded-button p-3 mb-4 flex items-center gap-2 flex-shrink-0">
           <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
           <p className="text-amber-400 text-sm">
-            You&apos;ve used {messagesUsed} of your 400 monthly messages.
+            You&apos;ve used {messagesUsed} of your 200 monthly messages.
           </p>
         </div>
       )}
@@ -329,8 +329,8 @@ export default function CounselorPage() {
                 </h3>
                 <p className="text-text-muted text-sm mb-6">
                   {profile.is_pro
-                    ? "Your 400 monthly messages will reset on your next billing cycle."
-                    : "Upgrade to Pro for 400 messages per month and full roadmaps."}
+                    ? "Your 200 monthly messages will reset on your next billing cycle."
+                    : "Upgrade to Pro for 200 messages per month and full roadmaps."}
                 </p>
                 {!profile.is_pro && (
                   <Link href="/pricing">

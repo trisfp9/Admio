@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
     const messagesUsed = profile.is_pro ? profile.ai_messages_this_month : profile.ai_messages_used;
-    const messagesMax = profile.is_pro ? 400 : 7;
+    const messagesMax = profile.is_pro ? 200 : 7;
     if (messagesUsed >= messagesMax) {
       return NextResponse.json({ error: "Message limit reached" }, { status: 403 });
     }
