@@ -227,6 +227,13 @@ export default function ProgressPage() {
 
   const messagesUsed = profile.is_pro ? (profile.ai_messages_this_month ?? 0) : (profile.ai_messages_used ?? 0);
   const messagesMax = profile.is_pro ? 200 : 7;
+
+  // Profile-strength recalculation cooldown (5 hours since last computation).
+  const scoreCooldownMin = profile.profile_strength_updated_at
+    ? Math.max(0, Math.ceil(5 * 60 - (Date.now() - new Date(profile.profile_strength_updated_at).getTime()) / 60_000))
+    : 0;
+  const scoreOnCooldown = scoreCooldownMin > 0;
+  const scoreCooldownLabel = scoreCooldownMin >= 60 ? `${Math.ceil(scoreCooldownMin / 60)}h` : `${scoreCooldownMin}m`;
   const limitReached = messagesUsed >= messagesMax;
 
   return (
@@ -280,9 +287,14 @@ export default function ProgressPage() {
                     <Info className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <Button variant="purple" size="sm" onClick={recalculateStrength} loading={recalculating}>
-                  <Sparkles className="w-4 h-4" /> {recalculating ? "Scoring..." : "Recalculate"}
-                </Button>
+                <div className="flex flex-col items-end gap-1">
+                  <Button variant="purple" size="sm" onClick={recalculateStrength} loading={recalculating} disabled={recalculating || scoreOnCooldown}>
+                    <Sparkles className="w-4 h-4" /> {recalculating ? "Scoring..." : "Recalculate"}
+                  </Button>
+                  {scoreOnCooldown && (
+                    <p className="text-text-muted/60 text-[10px]">Once every 5h · next in {scoreCooldownLabel}</p>
+                  )}
+                </div>
               </div>
               <p className="text-text-muted/50 text-[11px] mb-3">Recalculates at most once every 5 hours (and only when your profile has changed).</p>
 

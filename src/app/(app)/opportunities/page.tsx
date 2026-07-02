@@ -719,7 +719,9 @@ function StrengthForCollegeList({
   // Pro users: always.
   const strengthUpdatedSinceList =
     strengthUpdatedAt && lastListGenAt && new Date(strengthUpdatedAt) > new Date(lastListGenAt);
-  const canRegenerate = isPro || !hasList || !!strengthUpdatedSinceList;
+  const listCooldownH = cooldownHours(lastListGenAt ?? undefined);
+  const onListCooldown = listCooldownH > 0;
+  const canRegenerate = (isPro || !hasList || !!strengthUpdatedSinceList) && !onListCooldown;
 
   return (
     <div className="glass-card p-5 border-purple/20 relative overflow-hidden">
@@ -749,10 +751,13 @@ function StrengthForCollegeList({
         </div>
       </div>
       <ProgressBar value={strength} variant={strength >= 70 ? "pop" : strength >= 40 ? "accent" : "purple"} />
+      {hasList && onListCooldown && (
+        <p className="text-text-muted/60 text-[10px] mt-2">Once every 24h · next in {listCooldownH}h</p>
+      )}
       {hasList && canRegenerate && (
         <p className="text-text-muted/40 text-[10px] mt-2">Regenerates at most once every 24 hours.</p>
       )}
-      {hasList && !canRegenerate && (
+      {hasList && !canRegenerate && !onListCooldown && (
         <p className="text-text-muted/70 text-xs mt-3">
           Update your grades or mark activities complete in{" "}
           <Link href="/progress" className="text-purple hover:underline">Progress</Link>{" "}
