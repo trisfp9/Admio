@@ -27,7 +27,7 @@ export default function DashboardPage() {
   const [savedCount, setSavedCount] = useState<number | null>(null);
   const checkoutHandled = useRef(false);
 
-  // After returning from Paddle checkout, the webhook activates Pro asynchronously.
+  // After returning from checkout, the webhook activates Pro asynchronously.
   // Refresh the profile a few times so the UI reflects it without a manual reload.
   useEffect(() => {
     if (checkoutHandled.current) return;

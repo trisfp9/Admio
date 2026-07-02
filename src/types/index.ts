@@ -14,8 +14,6 @@ export interface Profile {
   biggest_concern: string | null;
   is_pro: boolean;
   subscription_start: string | null;
-  paddle_customer_id: string | null;
-  paddle_subscription_id: string | null;
   dodo_customer_id: string | null;
   dodo_subscription_id: string | null;
   subscription_status: string | null;

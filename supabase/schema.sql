@@ -58,8 +58,8 @@ alter table profiles add column if not exists roadmaps jsonb;
 -- Payment provider migration: remove legacy providers, add Paddle subscription fields
 alter table profiles drop column if exists doku_pending_invoice;
 alter table profiles drop column if exists stripe_customer_id;
-alter table profiles add column if not exists paddle_customer_id text;
-alter table profiles add column if not exists paddle_subscription_id text;
+alter table profiles drop column if exists paddle_customer_id;
+alter table profiles drop column if exists paddle_subscription_id;
 alter table profiles add column if not exists subscription_status text; -- active, on_hold, cancelled, expired, etc.
 alter table profiles add column if not exists subscription_renews_at timestamp with time zone; -- next billing date
 -- Dodo Payments subscription fields

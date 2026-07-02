@@ -8,7 +8,6 @@ import Button from "@/components/ui/Button";
 import Navbar from "@/components/landing/Navbar";
 import { Check, Crown, Sparkles, Zap, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
-import { openProCheckout } from "@/lib/paddle-client";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -80,12 +79,8 @@ function PricingContent() {
       return;
     }
 
-    try {
-      await openProCheckout({ email: session.user?.email, userId: profile.id });
-    } catch {
-      // Paddle not configured yet (missing client token / price id) — fail gracefully.
-      toast("Subscriptions are temporarily unavailable while we finish setting up payments. Please check back soon.", { icon: "🛠️" });
-    }
+    // Dodo Payments checkout is being set up — temporarily unavailable.
+    toast("Subscriptions are temporarily unavailable while we finish setting up payments. Please check back soon.", { icon: "🛠️" });
   };
 
   const free = [
