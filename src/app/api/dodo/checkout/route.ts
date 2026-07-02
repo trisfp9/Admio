@@ -26,7 +26,10 @@ export async function POST(request: Request) {
   if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
   if (profile.is_pro) return NextResponse.json({ error: "Already subscribed" }, { status: 400 });
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://admio.io";
+  // Prefer the real request origin (the domain the user is on) so the return URL
+  // never points at a stale deployment. Fall back to configured/hardcoded prod URL.
+  const appUrl =
+    request.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL || "https://admio.io";
 
   try {
     const res = await dodoFetch("/checkouts", {

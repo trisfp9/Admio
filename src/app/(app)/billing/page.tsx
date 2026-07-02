@@ -22,9 +22,20 @@ export default function BillingPage() {
 
   const openPortal = async () => {
     if (!session?.access_token) return;
-    // Customer portal is being set up with our new payment provider.
+    setLoading(true);
     try {
-      toast("Subscription management is being set up. Contact support@admio.io for any billing changes in the meantime.");
+      // Open the Dodo-hosted customer portal (cancel, update payment, invoices).
+      const res = await fetch("/api/dodo/portal", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      toast.error(data.error || "Couldn't open the billing portal. Please try again.");
+      setLoading(false);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       toast.error(message);
