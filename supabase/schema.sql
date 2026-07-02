@@ -60,8 +60,11 @@ alter table profiles drop column if exists doku_pending_invoice;
 alter table profiles drop column if exists stripe_customer_id;
 alter table profiles add column if not exists paddle_customer_id text;
 alter table profiles add column if not exists paddle_subscription_id text;
-alter table profiles add column if not exists subscription_status text; -- active, past_due, canceled, paused, trialing
-alter table profiles add column if not exists subscription_renews_at timestamp with time zone; -- next billing date from Paddle
+alter table profiles add column if not exists subscription_status text; -- active, on_hold, cancelled, expired, etc.
+alter table profiles add column if not exists subscription_renews_at timestamp with time zone; -- next billing date
+-- Dodo Payments subscription fields
+alter table profiles add column if not exists dodo_customer_id text;
+alter table profiles add column if not exists dodo_subscription_id text;
 
 -- Saved items table
 create table if not exists saved_items (
