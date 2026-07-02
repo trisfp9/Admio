@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/supabase";
 import { checkRateLimit } from "@/lib/ratelimit";
 import { callClaude, buildProfilePrompt } from "@/lib/claude";
+import crypto from "crypto";
 
 export const maxDuration = 60;
 
@@ -20,6 +21,25 @@ export async function POST(request: Request) {
     .single();
 
   if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+
+  // Anti-spam / cost guard: the score only depends on these fields. If nothing
+  // that affects the score has changed since the last computation, return the
+  // cached breakdown WITHOUT calling the AI. This makes repeated "regenerate"
+  // requests free (they can't spam-burn tokens without actually editing data).
+  const scoreInputs = JSON.stringify({
+    gpa: profile.gpa_range, test: profile.test_scores, grade: profile.grade,
+    major: profile.major_interest, dream: profile.dream_college, aim: profile.aiming_level,
+    ec: profile.extracurricular_interests, cur: profile.current_activities,
+    done: profile.completed_activities, awards: profile.awards,
+    essay: profile.essay_score, detail: profile.detailed_profile,
+  });
+  const inputHash = crypto.createHash("sha256").update(scoreInputs).digest("hex");
+  const cachedBreakdown = profile.profile_strength_breakdown as
+    | (Record<string, unknown> & { _input_hash?: string })
+    | null;
+  if (cachedBreakdown && cachedBreakdown._input_hash === inputHash) {
+    return NextResponse.json({ breakdown: cachedBreakdown });
+  }
 
   try {
     const dreamCollege = profile.dream_college || null;
@@ -196,13 +216,13 @@ Return ONLY valid JSON (no markdown, no backticks):
       .from("profiles")
       .update({
         profile_strength: overall,
-        profile_strength_breakdown: finalBreakdown,
+        profile_strength_breakdown: { ...finalBreakdown, _input_hash: inputHash },
         profile_strength_updated_at: new Date().toISOString(),
         xp: (profile.xp || 0) + 5,
       })
       .eq("id", user.id);
 
-    return NextResponse.json({ breakdown: finalBreakdown });
+    return NextResponse.json({ breakdown: { ...finalBreakdown, _input_hash: inputHash } });
   } catch (err) {
     console.error("Profile strength error:", err);
     const message = err instanceof Error ? err.message : "Calculation failed";
