@@ -59,6 +59,13 @@ export function setRememberPreference(remember: boolean): void {
   });
 }
 
+// Clear the "remember me" preference (on sign-out), so the next sign-in starts
+// fresh — no persistence unless the user checks the box again.
+export function clearRememberPreference(): void {
+  if (typeof document === "undefined") return;
+  document.cookie = serialize(REMEMBER_COOKIE, "", { path: "/", maxAge: 0 });
+}
+
 // Server-side Supabase client with user's JWT (RLS enforced per user)
 export function createServerClient(accessToken: string) {
   const url = isValidUrl(SUPABASE_URL) ? SUPABASE_URL : "https://placeholder.supabase.co";

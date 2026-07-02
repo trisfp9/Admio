@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
-import { createBrowserClient } from "@/lib/supabase";
+import { createBrowserClient, clearRememberPreference } from "@/lib/supabase";
 import { Profile } from "@/types";
 import { User, Session } from "@supabase/supabase-js";
 
@@ -83,6 +83,9 @@ export function AuthProvider({
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
+    // Clear the remember-me preference so persistence resets until the user
+    // explicitly checks the box again on the next sign-in.
+    clearRememberPreference();
     setUser(null);
     setSession(null);
     setProfile(null);
