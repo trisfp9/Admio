@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/supabase";
 import { checkRateLimit } from "@/lib/ratelimit";
-import { buildProfilePrompt } from "@/lib/claude";
+import { buildProfilePrompt, CLAUDE_MODEL } from "@/lib/claude";
 import Anthropic from "@anthropic-ai/sdk";
 
 // Allow up to 60s for streaming AI responses (Vercel Hobby max)
@@ -119,7 +119,7 @@ If they want to modify the roadmap itself (swap project, add/remove tasks, reord
 
     const stream = await anthropic.messages.stream(
       {
-        model: "claude-sonnet-4-6",
+        model: CLAUDE_MODEL,
         max_tokens: 1500,
         system: systemBlocks,
         messages: sanitizedMessages,
