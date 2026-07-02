@@ -126,7 +126,11 @@ export default function ProgressPage() {
         headers: { Authorization: `Bearer ${session.access_token}` },
         signal: abortController.signal,
       });
-      if (res.status === 429) { toast.error("Slow down — try again in a minute."); return; }
+      if (res.status === 429) {
+        const d = await res.json().catch(() => ({}));
+        toast.error(d.error || "Please wait before recalculating again.");
+        return;
+      }
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.error || `Failed with status ${res.status}`);
@@ -280,6 +284,7 @@ export default function ProgressPage() {
                   <Sparkles className="w-4 h-4" /> {recalculating ? "Scoring..." : "Recalculate"}
                 </Button>
               </div>
+              <p className="text-text-muted/50 text-[11px] mb-3">Recalculates at most once every 5 hours (and only when your profile has changed).</p>
 
               {/* Info dropdown */}
               {strengthInfoOpen && (

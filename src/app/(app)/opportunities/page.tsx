@@ -101,7 +101,7 @@ export default function OpportunitiesPage() {
         headers: { Authorization: `Bearer ${session.access_token}` },
         signal: abortController.signal,
       });
-      if (res.status === 429) { toast.error("You're going too fast — please wait a moment."); return; }
+      if (res.status === 429) { const d = await res.json().catch(() => ({})); toast.error(d.error || "You can regenerate once every 24 hours."); return; }
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.error || `Request failed with status ${res.status}`);
@@ -152,7 +152,7 @@ export default function OpportunitiesPage() {
         method: "POST",
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
-      if (res.status === 429) { toast.error("Too many requests — wait a moment."); return; }
+      if (res.status === 429) { const d = await res.json().catch(() => ({})); toast.error(d.error || "You can regenerate once every 24 hours."); return; }
       if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.error || "Generation failed"); }
       const data = await res.json();
       setAiScholarships(data);
@@ -172,7 +172,7 @@ export default function OpportunitiesPage() {
         method: "POST",
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
-      if (res.status === 429) { toast.error("Too many requests — wait a moment."); return; }
+      if (res.status === 429) { const d = await res.json().catch(() => ({})); toast.error(d.error || "You can regenerate once every 24 hours."); return; }
       if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.error || "Generation failed"); }
       const data = await res.json();
       setAiCompetitions(data);
@@ -439,9 +439,11 @@ export default function OpportunitiesPage() {
                     <Sparkles className="w-3.5 h-3.5" />
                     {aiScholarships ? "Regenerate" : "Generate My Picks"}
                   </Button>
-                  {cooldownHours(aiScholarships?.generated_at) > 0 && (
-                    <p className="text-text-muted/60 text-[10px]">Next in {cooldownHours(aiScholarships?.generated_at)}h</p>
-                  )}
+                  {cooldownHours(aiScholarships?.generated_at) > 0 ? (
+                    <p className="text-text-muted/60 text-[10px]">Once every 24h · next in {cooldownHours(aiScholarships?.generated_at)}h</p>
+                  ) : aiScholarships ? (
+                    <p className="text-text-muted/40 text-[10px]">Regenerates once every 24h</p>
+                  ) : null}
                 </div>
               </div>
               <p className="text-text-muted text-xs mb-4">
@@ -541,9 +543,11 @@ export default function OpportunitiesPage() {
                     <Sparkles className="w-3.5 h-3.5" />
                     {aiCompetitions ? "Regenerate" : "Generate My Picks"}
                   </Button>
-                  {cooldownHours(aiCompetitions?.generated_at) > 0 && (
-                    <p className="text-text-muted/60 text-[10px]">Next in {cooldownHours(aiCompetitions?.generated_at)}h</p>
-                  )}
+                  {cooldownHours(aiCompetitions?.generated_at) > 0 ? (
+                    <p className="text-text-muted/60 text-[10px]">Once every 24h · next in {cooldownHours(aiCompetitions?.generated_at)}h</p>
+                  ) : aiCompetitions ? (
+                    <p className="text-text-muted/40 text-[10px]">Regenerates once every 24h</p>
+                  ) : null}
                 </div>
               </div>
               <p className="text-text-muted text-xs mb-4">
@@ -745,6 +749,9 @@ function StrengthForCollegeList({
         </div>
       </div>
       <ProgressBar value={strength} variant={strength >= 70 ? "pop" : strength >= 40 ? "accent" : "purple"} />
+      {hasList && canRegenerate && (
+        <p className="text-text-muted/40 text-[10px] mt-2">Regenerates at most once every 24 hours.</p>
+      )}
       {hasList && !canRegenerate && (
         <p className="text-text-muted/70 text-xs mt-3">
           Update your grades or mark activities complete in{" "}

@@ -41,6 +41,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ breakdown: cachedBreakdown });
   }
 
+  // 5-hour cooldown between actual recomputations (inputs changed but recomputed
+  // recently → return cached with a cooldown notice). First computation is always allowed.
+  if (cachedBreakdown && profile.profile_strength_updated_at) {
+    const hoursSince =
+      (Date.now() - new Date(profile.profile_strength_updated_at).getTime()) / 3_600_000;
+    if (hoursSince < 5) {
+      const minutesLeft = Math.ceil((5 - hoursSince) * 60);
+      return NextResponse.json({
+        breakdown: cachedBreakdown,
+        cooldown: true,
+        retryInMinutes: minutesLeft,
+        error: `Your profile strength can be recalculated once every 5 hours. Try again in ${minutesLeft >= 60 ? `${Math.ceil(minutesLeft / 60)} hour${minutesLeft >= 120 ? "s" : ""}` : `${minutesLeft} minute${minutesLeft === 1 ? "" : "s"}`}.`,
+      }, { status: 429 });
+    }
+  }
+
   try {
     const dreamCollege = profile.dream_college || null;
 
