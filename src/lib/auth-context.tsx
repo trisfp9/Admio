@@ -82,7 +82,9 @@ export function AuthProvider({
   }, [user, fetchProfile]);
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
+    // scope: "local" clears the session locally without a slow server-side
+    // global revoke round-trip — makes sign-out instant.
+    await supabase.auth.signOut({ scope: "local" });
     // Clear the remember-me preference so persistence resets until the user
     // explicitly checks the box again on the next sign-in.
     clearRememberPreference();

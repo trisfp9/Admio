@@ -42,9 +42,13 @@ export default async function RootLayout({
   let initialProfile = null;
   try {
     const supabase = getServerSupabase();
+    // getSession() reads the (middleware-refreshed) cookie locally — no network
+    // round-trip. The middleware already validated the session for route
+    // protection; here we only need it to seed the UI, so this is safe and fast.
     const {
-      data: { user },
-    } = await supabase.auth.getUser();
+      data: { session },
+    } = await supabase.auth.getSession();
+    const user = session?.user ?? null;
     if (user) {
       initialUser = user;
       const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
