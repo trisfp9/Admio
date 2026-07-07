@@ -9,7 +9,6 @@ import {
   Star,
   ArrowRight,
   Sparkles,
-  Brain,
   Globe,
   Target,
   Trophy,
@@ -19,9 +18,13 @@ import {
   MessageSquare,
   Mail,
   Quote,
-  ArrowLeft
+  ArrowLeft,
+  PenLine,
+  Map,
+  TrendingUp
 } from "lucide-react"
 import dynamic from "next/dynamic"
+import { Component as FeatureSection } from "@/components/ui/feature-section"
 
 const StarField = dynamic(() => import("@/components/landing/StarField"), { ssr: false })
 
@@ -217,31 +220,21 @@ const HowItWorks = () => {
 
 const KeyFeatures = () => {
   const features = [
-    { icon: Brain, title: "AI Extracurricular Planner", description: "Get personalized recommendations for competitions, projects, and activities that match your target school and major.", gradient: "from-[#00B4D8]/20 to-[#0096C7]/20" },
-    { icon: MessageSquare, title: "AI College Counselor", description: "24/7 access to personalized college advice. Ask anything about applications, essays, or admissions strategy.", gradient: "from-[#8B5CF6]/20 to-[#7C3AED]/20" },
-    { icon: Target, title: "Smart College Finder", description: "Discover your perfect fit with AI-generated lists of Reach, Target, and Safety schools based on your profile.", gradient: "from-[#FFD700]/20 to-[#FFA500]/20" },
-    { icon: Trophy, title: "Gamified Progress", description: "Level up from Explorer to Trailblazer with XP points, daily streaks, and progress tracking that keeps you motivated.", gradient: "from-[#FF8C42]/20 to-[#FF6B35]/20" },
+    { icon: MessageSquare, title: "AI College Counselor", description: "Chat 24/7 with an AI counselor that knows your full profile — grades, activities, essays, and dream schools — and answers admissions questions grounded in your real situation.", span: "wide" as const },
+    { icon: PenLine, title: "Essay Review & Scoring", description: "Get your essays scored 0–100 with specific strengths, weaknesses, and rewrite suggestions." },
+    { icon: Map, title: "Extracurricular Roadmaps", description: "Personalized week-by-week action plans with real competitions, project ideas, and deadlines to build a standout profile.", span: "tall" as const },
+    { icon: Target, title: "Smart College List", description: "AI-matched reach, target, and safety schools with fit scores based on your actual profile." },
+    { icon: Trophy, title: "Scholarships & Competitions", description: "Discover scholarships and contests matched to your major, country, and profile — not a generic list." },
+    { icon: TrendingUp, title: "Progress & Profile Strength", description: "Track a universal profile-strength score, plus XP, levels, and streaks that keep you moving toward your goal.", span: "wide" as const },
   ]
   return (
-    <section id="features" className="bg-gradient-to-b from-[#080E1A] to-[#0A1628] py-24 px-6">
-      <div className="max-w-7xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-          <h2 className="text-4xl md:text-6xl font-heading font-bold text-white mb-4">Everything You Need to Succeed</h2>
-          <p className="text-xl text-white/60 max-w-3xl mx-auto">Powerful AI tools designed specifically for high school students aiming for top colleges</p>
-        </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {features.map((feature, index) => (
-            <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }} whileHover={{ scale: 1.05, y: -5 }} className={`p-8 rounded-2xl bg-gradient-to-br ${feature.gradient} border border-white/10 backdrop-blur-sm`}>
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#00B4D8] to-[#8B5CF6] flex items-center justify-center mb-6">
-                <feature.icon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">{feature.title}</h3>
-              <p className="text-white/70 text-lg">{feature.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <div id="features" className="bg-gradient-to-b from-[#080E1A] to-[#0A1628]">
+      <FeatureSection
+        title="Everything You Need to Succeed"
+        subtitle="Purpose-built AI tools for high schoolers aiming at top colleges — grounded in your real profile."
+        features={features}
+      />
+    </div>
   )
 }
 

@@ -33,3 +33,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*
+
+# Business-sensitive — keep out of the public repo
+docs/COST_ANALYSIS.md
+
+# Business docs — keep out of the public repo
+*.docx
