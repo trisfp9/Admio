@@ -37,6 +37,7 @@ interface Feature {
   title?: string
   content: string
   image: string
+  collage?: string[]
 }
 
 interface PricingTier {
@@ -164,9 +165,9 @@ const HeroSection = () => {
 
 const HowItWorks = () => {
   const features: Feature[] = [
-    { step: "Step 1", title: "Enter Your Profile", content: "Tell us about your grades, interests, and dream schools. Our AI analyzes your unique profile.", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80" },
-    { step: "Step 2", title: "Get Your Personalized Roadmap", content: "Receive a detailed week-by-week plan with extracurriculars, competitions, and projects tailored to your goals.", image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80" },
-    { step: "Step 3", title: "Build a Stronger Application", content: "Follow your roadmap, track your progress with XP and streaks, and strengthen your college applications.", image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80" },
+    { step: "Step 1", title: "Enter Your Profile", content: "Tell us about your grades, interests, and dream schools. Our AI analyzes your unique profile.", image: "/how-it-works/onb-1.png", collage: ["/how-it-works/onb-1.png", "/how-it-works/onb-4.png", "/how-it-works/onb-5.png"] },
+    { step: "Step 2", title: "Get Your Personalized Roadmap", content: "Receive a detailed week-by-week plan with extracurriculars, competitions, and projects tailored to your goals.", image: "/how-it-works/step-2.png" },
+    { step: "Step 3", title: "Build a Stronger Application", content: "Follow your roadmap, track your progress with XP and streaks, and strengthen your college applications.", image: "/how-it-works/step-3.png" },
   ]
   const [currentFeature, setCurrentFeature] = useState(0)
   const [progress, setProgress] = useState(0)
@@ -202,12 +203,43 @@ const HowItWorks = () => {
               </motion.div>
             ))}
           </div>
-          <div className="order-1 md:order-2 relative h-[300px] md:h-[400px] overflow-hidden rounded-2xl">
+          <div className="order-1 md:order-2 relative h-[340px] md:h-[420px] overflow-hidden rounded-2xl">
             <AnimatePresence mode="wait">
               {features.map((feature, index) => index === currentFeature && (
-                <motion.div key={index} className="absolute inset-0 rounded-2xl overflow-hidden" initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -100, opacity: 0 }} transition={{ duration: 0.5 }}>
-                  <img src={feature.image} alt={feature.step} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#080E1A] via-[#080E1A]/50 to-transparent" />
+                <motion.div key={index} className={cn("absolute inset-0 rounded-2xl", !feature.collage && "overflow-hidden")} initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -100, opacity: 0 }} transition={{ duration: 0.5 }}>
+                  {feature.collage ? (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      {/* soft radial glow behind the fanned cards */}
+                      <div className="absolute w-[70%] h-[65%] rounded-full bg-[#8B5CF6]/25 blur-[90px]" />
+                      {feature.collage.map((src, i) => {
+                        const rot = [-10, 0, 10][i] ?? 0
+                        const tx = [-62, 0, 62][i] ?? 0
+                        const ty = [20, -6, 20][i] ?? 0
+                        const z = [10, 20, 10][i] ?? 10
+                        const isCenter = i === 1
+                        return (
+                          <motion.img
+                            key={src}
+                            src={src}
+                            alt={`${feature.step} screen ${i + 1}`}
+                            className={cn(
+                              "absolute rounded-xl border shadow-2xl shadow-black/70 w-[210px] md:w-[236px] h-[236px] md:h-[264px] object-cover object-top",
+                              isCenter ? "border-white/15 ring-1 ring-white/10" : "border-white/10 brightness-[0.82]"
+                            )}
+                            style={{ zIndex: z }}
+                            initial={{ opacity: 0, y: 40, rotate: rot, scale: 0.9 }}
+                            animate={{ opacity: 1, x: `${tx}%`, y: `${ty}%`, rotate: rot, scale: isCenter ? 1.04 : 0.9 }}
+                            transition={{ duration: 0.6, delay: 0.12 + i * 0.12, ease: [0.32, 0.72, 0, 1] }}
+                          />
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    <div className="absolute inset-0 rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
+                      <img src={feature.image} alt={feature.step} className="w-full h-full object-cover object-top" />
+                      <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-[#080E1A]/70 to-transparent" />
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </AnimatePresence>
