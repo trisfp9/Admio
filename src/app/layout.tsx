@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter, Caveat } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/lib/auth-context";
 import { getServerSupabase } from "@/lib/supabase-server";
 import "./globals.css";
@@ -64,6 +65,7 @@ export default async function RootLayout({
         <AuthProvider initialUser={initialUser} initialProfile={initialProfile}>
           {children}
         </AuthProvider>
+        <Analytics />
         <SpeedInsights />
         <Toaster
           position="bottom-right"
