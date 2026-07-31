@@ -27,11 +27,12 @@ const navItems = [
 ];
 
 function AppLayoutInner({ children }: { children: ReactNode }) {
-  const { user, profile, loading, signOut } = useAuth();
+  const { user, profile, loading, profileError, refreshProfile, signOut } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showUpdateBanner, setShowUpdateBanner] = useState(false);
+  const [retrying, setRetrying] = useState(false);
 
   // Streak check on mount
   useEffect(() => {
@@ -70,6 +71,45 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
   }
 
   if (!user) return null;
+
+  // The profile couldn't be loaded (offline, blocked request, or a failed
+  // self-heal). Every page below gates on `profile`, so without this the app
+  // would sit on a skeleton indefinitely with no way out.
+  if (profileError && !profile) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+        <div className="glass-card p-8 max-w-md w-full text-center">
+          <h1 className="font-heading font-bold text-xl text-text-primary mb-2">
+            Couldn&apos;t load your profile
+          </h1>
+          <p className="text-text-muted text-sm mb-6">
+            This is usually a weak connection. Check your network and try again — signing
+            out and back in also fixes it.
+          </p>
+          <div className="flex gap-2 justify-center">
+            <button
+              onClick={async () => {
+                setRetrying(true);
+                await refreshProfile();
+                setRetrying(false);
+              }}
+              disabled={retrying}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-button bg-accent hover:bg-accent/90 disabled:opacity-60 text-white text-sm font-medium transition-colors"
+            >
+              <RefreshCw className={`w-4 h-4 ${retrying ? "animate-spin" : ""}`} />
+              {retrying ? "Retrying..." : "Try again"}
+            </button>
+            <button
+              onClick={() => void signOut()}
+              className="px-4 py-2.5 rounded-button text-text-muted hover:text-text-primary text-sm font-medium transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex">

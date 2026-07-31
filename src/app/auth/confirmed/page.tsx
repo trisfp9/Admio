@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
@@ -20,30 +21,30 @@ export default function EmailConfirmedPage() {
         return;
       }
 
-      // Paint the success state immediately after verification — don't gate the
-      // largest-contentful paint behind the profile write + sign-out round-trips.
+      // Ensure the profile row exists BEFORE showing "you can close this tab".
+      // This write must not be backgrounded: users close this tab immediately
+      // (especially on mobile), which would cancel an in-flight request and
+      // leave an account with no profile row. ignoreDuplicates avoids a
+      // separate SELECT and never clobbers an existing profile.
+      await supabase.from("profiles").upsert(
+        {
+          id: session.user.id,
+          onboarding_completed: false,
+          xp: 0,
+          streak: 0,
+          ai_messages_used: 0,
+          ai_messages_this_month: 0,
+          profile_strength: 0,
+          is_pro: false,
+        },
+        { onConflict: "id", ignoreDuplicates: true }
+      );
+
       setStatus("success");
 
-      // Background: ensure a profile row exists (ignoreDuplicates avoids a
-      // separate SELECT and never clobbers an existing profile), then sign out
-      // so the user signs in fresh on the original tab.
-      const userId = session.user.id;
-      void (async () => {
-        await supabase.from("profiles").upsert(
-          {
-            id: userId,
-            onboarding_completed: false,
-            xp: 0,
-            streak: 0,
-            ai_messages_used: 0,
-            ai_messages_this_month: 0,
-            profile_strength: 0,
-            is_pro: false,
-          },
-          { onConflict: "id", ignoreDuplicates: true }
-        );
-        await supabase.auth.signOut();
-      })();
+      // Sign out so the user signs in fresh on the original tab. Safe to leave
+      // in the background — nothing depends on it completing.
+      void supabase.auth.signOut();
     };
 
     handleConfirmation();
@@ -64,11 +65,23 @@ export default function EmailConfirmedPage() {
         {status === "error" && (
           <>
             <p className="text-text-primary font-heading font-bold text-xl mb-3">
-              Verification failed
+              Almost there — just sign in
             </p>
-            <p className="text-text-muted text-sm">
-              The link may have expired. Go back and try signing up again.
+            {/* Reaching this page at all means Supabase already confirmed the
+                email server-side; only the client-side session pickup failed
+                (link opened on a different device, or a mail scanner clicked it
+                first). Telling people to sign up again sends them into an
+                "account already exists" dead end. */}
+            <p className="text-text-muted text-sm mb-6">
+              Your email is confirmed. We just couldn&apos;t finish signing you in on this
+              device — head to the sign-in page and log in with your email and password.
             </p>
+            <Link
+              href="/auth?mode=signin"
+              className="inline-block px-5 py-2.5 rounded-button bg-accent hover:bg-accent/90 text-white text-sm font-medium transition-colors"
+            >
+              Go to sign in
+            </Link>
           </>
         )}
 
