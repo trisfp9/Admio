@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth-context";
 import { createBrowserClient } from "@/lib/supabase";
@@ -29,6 +29,9 @@ const fadeUp = {
 };
 
 type MainTab = "active" | "completed" | "roadmaps";
+
+// How many focus categories a user can have selected at once.
+const MAX_CATEGORIES = 3;
 
 // Minimal id helper — crypto.randomUUID is available in modern browsers
 function makeId() {
@@ -63,16 +66,19 @@ export default function ExtracurricularsPage() {
   const [adjustInstruction, setAdjustInstruction] = useState("");
   const [adjusting, setAdjusting] = useState(false);
 
+  // Seed local state from the saved profile ONCE. `profile` is a new object on
+  // every refreshProfile() (and on the tab-focus refetch), so re-running this
+  // would overwrite an in-progress selection and yank the user back to step 3
+  // mid-edit.
+  const hydratedRef = useRef(false);
   useEffect(() => {
-    if (profile?.extracurricular_recommendations) {
-      setRecommendations(profile.extracurricular_recommendations);
-      if (profile.selected_extracurricular_categories?.length) {
-        setSelectedCategories(profile.selected_extracurricular_categories);
-        setStep(3);
-      } else {
-        setStep(2);
-      }
-    }
+    if (!profile?.extracurricular_recommendations) return;
+    setRecommendations(profile.extracurricular_recommendations);
+    if (hydratedRef.current) return;
+    hydratedRef.current = true;
+    const saved = profile.selected_extracurricular_categories || [];
+    setSelectedCategories(saved);
+    setStep(saved.length ? 3 : 2);
   }, [profile]);
 
   const runAnalysis = async () => {
@@ -114,13 +120,20 @@ export default function ExtracurricularsPage() {
   };
 
   const confirmSelection = async () => {
-    if (!session?.access_token || selectedCategories.length === 0) return;
+    // Deliberately NOT gated on `session`: this writes through the Supabase
+    // client, which authenticates from cookies and needs no access token. The
+    // layout seeds `user`/`profile` from the server but not `session`, so
+    // requiring a token here made the button silently do nothing.
+    if (!profile || selectedCategories.length === 0) return;
     try {
-      await supabase.from("profiles").update({
+      const { error } = await supabase.from("profiles").update({
         selected_extracurricular_categories: selectedCategories,
-      }).eq("id", profile!.id);
-      await refreshProfile();
+      }).eq("id", profile.id);
+      // .update() resolves with an error object rather than throwing, so a
+      // failed write used to look like success and advance the step anyway.
+      if (error) throw error;
       setStep(3);
+      await refreshProfile();
     } catch {
       toast.error("Failed to save selection.");
     }
@@ -158,6 +171,8 @@ export default function ExtracurricularsPage() {
       }
 
       setSelectedCategories(newSelected);
+      // Nothing left to show on step 3 — send them back to pick new focus areas.
+      if (newSelected.length === 0) setStep(2);
       await refreshProfile();
       toast.success("Nice! Moved to Completed and updating strength...");
     } catch {
@@ -168,9 +183,17 @@ export default function ExtracurricularsPage() {
   };
 
   const toggleCategory = (cat: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : prev.length < 3 ? [...prev, cat] : prev
-    );
+    if (selectedCategories.includes(cat)) {
+      setSelectedCategories((prev) => prev.filter((c) => c !== cat));
+      return;
+    }
+    // Previously this silently ignored the click at the cap, which read as a
+    // broken button — say why nothing happened.
+    if (selectedCategories.length >= MAX_CATEGORIES) {
+      toast.error(`You can focus on ${MAX_CATEGORIES} at a time — tap a selected one to swap it out.`);
+      return;
+    }
+    setSelectedCategories((prev) => [...prev, cat]);
   };
 
   // ---------- Roadmap actions ----------
@@ -582,7 +605,7 @@ export default function ExtracurricularsPage() {
                 onClick={confirmSelection}
                 disabled={selectedCategories.length === 0}
               >
-                Confirm Selection ({selectedCategories.length}/3)
+                Confirm Selection ({selectedCategories.length}/{MAX_CATEGORIES})
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
