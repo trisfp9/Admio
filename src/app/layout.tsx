@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/lib/auth-context";
 import { getServerSupabase } from "@/lib/supabase-server";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -26,10 +27,45 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Admio — Your AI Admission Counselor",
-  description:
-    "AI-powered college admissions assistant for high school students. Get personalized guidance on extracurriculars, college selection, and applications.",
-  keywords: ["college admissions", "high school", "extracurriculars", "AI counselor"],
+  // metadataBase makes every relative URL below (canonical, OG image) resolve
+  // to the production origin instead of the current deployment URL.
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Admio — Your AI College Admissions Counselor",
+    // Sub-pages set only their own title; Next appends the brand.
+    template: "%s | Admio",
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    "AI college counselor",
+    "college admissions",
+    "extracurricular planner",
+    "college list builder",
+    "college essay review",
+    "scholarship finder",
+    "high school students",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: "Admio — Your AI College Admissions Counselor",
+    description: SITE_DESCRIPTION,
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Admio — AI college admissions counselor" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Admio — Your AI College Admissions Counselor",
+    description: SITE_DESCRIPTION,
+    images: ["/og.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
 };
 
 export default async function RootLayout({
@@ -62,6 +98,46 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${plusJakarta.variable} ${inter.variable} ${caveat.variable}`}>
       <body className="font-body antialiased">
+        {/* Structured data: tells Google which logo and site name belong to the
+            brand, which is what powers the icon/name shown next to results. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "@id": `${SITE_URL}/#organization`,
+                name: SITE_NAME,
+                url: SITE_URL,
+                logo: `${SITE_URL}/icon.png`,
+                description: SITE_DESCRIPTION,
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "@id": `${SITE_URL}/#website`,
+                name: SITE_NAME,
+                url: SITE_URL,
+                publisher: { "@id": `${SITE_URL}/#organization` },
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                name: SITE_NAME,
+                applicationCategory: "EducationalApplication",
+                operatingSystem: "Web",
+                url: SITE_URL,
+                description: SITE_DESCRIPTION,
+                offers: {
+                  "@type": "Offer",
+                  price: "12",
+                  priceCurrency: "USD",
+                },
+              },
+            ]),
+          }}
+        />
         <AuthProvider initialUser={initialUser} initialProfile={initialProfile}>
           {children}
         </AuthProvider>
