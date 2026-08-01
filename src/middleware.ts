@@ -25,6 +25,27 @@ export async function middleware(request: NextRequest) {
   // If Supabase isn't configured (e.g. local placeholder), don't block anything.
   if (!url.startsWith("http") || !key) return response;
 
+  const path = request.nextUrl.pathname;
+  const isProtectedPath = (p: string) =>
+    PROTECTED_PREFIXES.some((prefix) => p === prefix || p.startsWith(`${prefix}/`));
+
+  // A signed-in user always carries a Supabase auth cookie. Without one there
+  // is no session to validate, so skip creating the client entirely — that
+  // getUser() call is a network round-trip to Supabase on every request, paid
+  // by first-time visitors and crawlers who can never benefit from it.
+  const hasAuthCookie = request.cookies
+    .getAll()
+    .some((c) => c.name.startsWith("sb-") && c.name.includes("auth-token"));
+
+  if (!hasAuthCookie) {
+    if (isProtectedPath(path)) {
+      const redirectUrl = new URL("/auth", request.url);
+      redirectUrl.searchParams.set("redirect", path);
+      return NextResponse.redirect(redirectUrl);
+    }
+    return response;
+  }
+
   const supabase = createServerClient(url, key, {
     cookies: {
       getAll() {
@@ -48,18 +69,13 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const path = request.nextUrl.pathname;
-
   // Logged-in users hitting the landing page or auth page go straight to the app.
   if (user && (path === "/" || path === "/auth")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  const isProtected = PROTECTED_PREFIXES.some(
-    (p) => path === p || path.startsWith(`${p}/`)
-  );
-
-  if (isProtected && !user) {
+  // The cookie was present but didn't resolve to a user (expired or revoked).
+  if (isProtectedPath(path) && !user) {
     const redirectUrl = new URL("/auth", request.url);
     redirectUrl.searchParams.set("redirect", path);
     return NextResponse.redirect(redirectUrl);
