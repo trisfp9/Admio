@@ -74,11 +74,17 @@ export default function ExtracurricularsPage() {
   useEffect(() => {
     if (!profile?.extracurricular_recommendations) return;
     setRecommendations(profile.extracurricular_recommendations);
-    if (hydratedRef.current) return;
-    hydratedRef.current = true;
     const saved = profile.selected_extracurricular_categories || [];
-    setSelectedCategories(saved);
-    setStep(saved.length ? 3 : 2);
+    if (!hydratedRef.current) {
+      hydratedRef.current = true;
+      setSelectedCategories(saved);
+      setStep(saved.length ? 3 : 2);
+      return;
+    }
+    // Already hydrated: never clobber an in-progress selection. But if we're
+    // still parked on the intro step while recommendations exist, move on —
+    // otherwise a remount can strand the user on "Analyze my profile".
+    setStep((s) => (s === 1 ? (saved.length ? 3 : 2) : s));
   }, [profile]);
 
   const runAnalysis = async () => {
@@ -146,22 +152,46 @@ export default function ExtracurricularsPage() {
     try {
       const rec = recommendations?.find((r) => r.category === category);
 
-      const newCompleted: CompletedActivity[] = [
-        ...(profile.completed_activities || []),
-        {
-          category,
-          name: rec?.example || category,
-          description: rec?.explanation,
-          completed_at: new Date().toISOString(),
-        },
-      ];
-      const newSelected = (profile.selected_extracurricular_categories || []).filter((c) => c !== category);
+      // Read the row back first. `profile` can be several seconds stale (the
+      // refresh after the previous completion may not have landed yet), and
+      // building the new arrays from a stale copy resurrects categories that
+      // were already removed — which is why completing three in a row used to
+      // leave the picker stuck at 3/3.
+      const { data: fresh } = await supabase
+        .from("profiles")
+        .select("completed_activities, selected_extracurricular_categories, roadmaps, xp")
+        .eq("id", profile.id)
+        .maybeSingle();
+      const base = (fresh ?? profile) as Pick<
+        typeof profile,
+        "completed_activities" | "selected_extracurricular_categories" | "roadmaps" | "xp"
+      >;
 
-      await supabase.from("profiles").update({
+      const priorCompleted = base.completed_activities || [];
+      const alreadyLogged = priorCompleted.some((a) => a.category === category);
+      const newCompleted: CompletedActivity[] = alreadyLogged
+        ? priorCompleted
+        : [
+            ...priorCompleted,
+            {
+              category,
+              name: rec?.example || category,
+              description: rec?.explanation,
+              completed_at: new Date().toISOString(),
+            },
+          ];
+      const newSelected = (base.selected_extracurricular_categories || []).filter((c) => c !== category);
+      // A finished activity shouldn't keep a live roadmap hanging around.
+      const newRoadmaps = (base.roadmaps || []).filter((r) => r.category !== category);
+      const droppedRoadmap = (base.roadmaps || []).length !== newRoadmaps.length;
+
+      const { error } = await supabase.from("profiles").update({
         completed_activities: newCompleted,
         selected_extracurricular_categories: newSelected,
-        xp: (profile.xp || 0) + 25,
+        roadmaps: newRoadmaps,
+        xp: (base.xp || 0) + (alreadyLogged ? 0 : 25),
       }).eq("id", profile.id);
+      if (error) throw error;
 
       if (session?.access_token) {
         fetch("/api/profile-strength", {
@@ -171,10 +201,15 @@ export default function ExtracurricularsPage() {
       }
 
       setSelectedCategories(newSelected);
+      if (activeRoadmapId && !newRoadmaps.some((r) => r.id === activeRoadmapId)) setActiveRoadmapId(null);
       // Nothing left to show on step 3 — send them back to pick new focus areas.
       if (newSelected.length === 0) setStep(2);
       await refreshProfile();
-      toast.success("Nice! Moved to Completed and updating strength...");
+      toast.success(
+        droppedRoadmap
+          ? "Nice! Moved to Completed and its roadmap was cleared."
+          : "Nice! Moved to Completed and updating strength..."
+      );
     } catch {
       toast.error("Failed to mark complete.");
     } finally {
@@ -200,6 +235,12 @@ export default function ExtracurricularsPage() {
 
   const startCreatingRoadmap = async (category: string) => {
     if (!session?.access_token || !profile?.is_pro) return;
+    // Belt-and-braces: the UI hides completed categories, but this burns an AI
+    // call so don't let a stale render start one anyway.
+    if ((profile.completed_activities || []).some((a) => a.category === category)) {
+      toast.error("You've already completed this category.");
+      return;
+    }
     setCreatingFor(category);
     setRoadmapLoading(true);
     setDraftRoadmap(null);
@@ -330,8 +371,19 @@ export default function ExtracurricularsPage() {
     if (!profile) return;
     if (!confirm(`Mark "${roadmap.category}" roadmap as completed? It'll move to your completed activities.`)) return;
     try {
+      // Same stale-read hazard as markComplete — read the row back first.
+      const { data: fresh } = await supabase
+        .from("profiles")
+        .select("completed_activities, selected_extracurricular_categories, roadmaps, xp")
+        .eq("id", profile.id)
+        .maybeSingle();
+      const base = (fresh ?? profile) as Pick<
+        typeof profile,
+        "completed_activities" | "selected_extracurricular_categories" | "roadmaps" | "xp"
+      >;
+
       const newCompleted: CompletedActivity[] = [
-        ...(profile.completed_activities || []),
+        ...(base.completed_activities || []),
         {
           category: roadmap.category,
           name: roadmap.project_idea,
@@ -339,13 +391,20 @@ export default function ExtracurricularsPage() {
           completed_at: new Date().toISOString(),
         },
       ];
-      const nextRoadmaps = (profile.roadmaps || []).filter((r) => r.id !== roadmap.id);
+      const nextRoadmaps = (base.roadmaps || []).filter((r) => r.id !== roadmap.id);
+      // The activity is done, so it shouldn't stay in the active focus list.
+      const nextSelected = (base.selected_extracurricular_categories || []).filter(
+        (c) => c !== roadmap.category
+      );
 
-      await supabase.from("profiles").update({
+      const { error } = await supabase.from("profiles").update({
         completed_activities: newCompleted,
+        selected_extracurricular_categories: nextSelected,
         roadmaps: nextRoadmaps,
-        xp: (profile.xp || 0) + 50,
+        xp: (base.xp || 0) + 50,
       }).eq("id", profile.id);
+      if (error) throw error;
+      setSelectedCategories(nextSelected);
 
       if (session?.access_token) {
         fetch("/api/profile-strength", {
@@ -401,6 +460,12 @@ export default function ExtracurricularsPage() {
   if (!profile) return <div className="space-y-4"><CardSkeleton /><CardSkeleton /></div>;
 
   const completedActivities: CompletedActivity[] = profile.completed_activities || [];
+  // Finished categories drop out of the picker and out of roadmap creation, so
+  // a category can't be completed twice (which used to create duplicates).
+  const completedCategories = new Set(completedActivities.map((a) => a.category));
+  const availableRecommendations = (recommendations || []).filter(
+    (r) => !completedCategories.has(r.category)
+  );
   const roadmaps: SavedRoadmap[] = profile.roadmaps || [];
   const messagesUsed = profile.is_pro ? (profile.ai_messages_this_month || 0) : (profile.ai_messages_used || 0);
   const messagesMax = profile.is_pro ? 200 : 7;
@@ -501,6 +566,7 @@ export default function ExtracurricularsPage() {
           adjustRoadmap={adjustRoadmap}
           adjusting={adjusting}
           selectedCategories={selectedCategories}
+          completedCategories={completedCategories}
           messagesLeft={messagesLeft}
           messagesUsed={messagesUsed}
           messagesMax={messagesMax}
@@ -553,15 +619,47 @@ export default function ExtracurricularsPage() {
                 <h2 className="font-heading font-semibold text-xl text-text-primary">Recommended for you</h2>
                 <p className="text-text-muted text-sm">Select 2-3 categories to focus on.</p>
               </div>
-              {profile.is_pro && (
+              {profile.is_pro ? (
                 <Button variant="ghost" size="sm" onClick={runAnalysis} loading={analyzing}>
                   <RotateCw className="w-4 h-4" /> Regenerate
                 </Button>
+              ) : (
+                <Link href="/pricing" className="text-xs text-text-muted hover:text-pop transition-colors flex items-center gap-1.5 flex-shrink-0">
+                  <Lock className="w-3.5 h-3.5" />
+                  Upgrade to Pro to regenerate this list
+                </Link>
               )}
             </div>
 
+            {completedCategories.size > 0 && (
+              <p className="text-text-muted/70 text-xs">
+                {completedCategories.size} completed {completedCategories.size === 1 ? "category is" : "categories are"} hidden — find {completedCategories.size === 1 ? "it" : "them"} in the Completed tab.
+              </p>
+            )}
+
+            {availableRecommendations.length === 0 && (
+              <div className="glass-card p-8 text-center">
+                <CheckCircle2 className="w-10 h-10 text-pop/60 mx-auto mb-3" />
+                <h3 className="font-heading font-semibold text-text-primary mb-1">
+                  You&apos;ve completed every suggestion
+                </h3>
+                <p className="text-text-muted text-sm mb-5 max-w-md mx-auto">
+                  {profile.is_pro
+                    ? "Regenerate to get a fresh set that builds on what you've already finished."
+                    : "Upgrade to Pro to generate a new set of recommendations that build on what you've finished."}
+                </p>
+                {profile.is_pro ? (
+                  <Button variant="primary" size="sm" onClick={runAnalysis} loading={analyzing}>
+                    <RotateCw className="w-4 h-4" /> Regenerate
+                  </Button>
+                ) : (
+                  <Link href="/pricing"><Button variant="pop" size="sm">Upgrade to Pro</Button></Link>
+                )}
+              </div>
+            )}
+
             <div className="grid md:grid-cols-2 gap-4">
-              {recommendations.map((rec, i) => {
+              {availableRecommendations.map((rec, i) => {
                 const selected = selectedCategories.includes(rec.category);
                 return (
                   <motion.button
@@ -749,6 +847,7 @@ interface RoadmapsTabProps {
   adjustRoadmap: (roadmap: SavedRoadmap) => void;
   adjusting: boolean;
   selectedCategories: string[];
+  completedCategories: Set<string>;
   messagesLeft: number;
   messagesUsed: number;
   messagesMax: number;
@@ -761,7 +860,7 @@ function RoadmapsTab(props: RoadmapsTabProps) {
     chosenIdea, setChosenIdea, customIdea, setCustomIdea,
     startCreatingRoadmap, saveRoadmap, toggleTask, deleteRoadmap, completeRoadmap,
     adjustInstruction, setAdjustInstruction, adjustRoadmap, adjusting,
-    selectedCategories, messagesLeft, messagesUsed, messagesMax,
+    selectedCategories, completedCategories, messagesLeft, messagesUsed, messagesMax,
   } = props;
 
   // Pro paywall for non-Pro
@@ -912,7 +1011,7 @@ function RoadmapsTab(props: RoadmapsTabProps) {
             </p>
           ) : (
             <div className="flex flex-wrap gap-2 justify-center">
-              {selectedCategories.map((cat) => (
+              {selectedCategories.filter((cat) => !completedCategories.has(cat)).map((cat) => (
                 <Button
                   key={cat}
                   variant="primary"
@@ -932,7 +1031,7 @@ function RoadmapsTab(props: RoadmapsTabProps) {
             <div className="glass-card p-4 flex items-center gap-3 flex-wrap">
               <p className="text-text-muted text-sm flex-1 min-w-[180px]">Generate a new roadmap for:</p>
               {selectedCategories
-                .filter((cat) => !roadmaps.some((r) => r.category === cat))
+                .filter((cat) => !roadmaps.some((r) => r.category === cat) && !completedCategories.has(cat))
                 .map((cat) => (
                   <Button
                     key={cat}

@@ -21,8 +21,37 @@ export async function POST(request: Request) {
 
   if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
+  // Categories the student already finished, plus whatever was suggested last
+  // time. Regenerating should move them forward, not hand back the same list.
+  const completedCategories: string[] = Array.from(
+    new Set(
+      (profile.completed_activities || [])
+        .map((a: { category?: string }) => a.category)
+        .filter(Boolean) as string[]
+    )
+  );
+  const previousCategories: string[] = Array.from(
+    new Set(
+      (profile.extracurricular_recommendations || [])
+        .map((r: { category?: string }) => r.category)
+        .filter(Boolean) as string[]
+    )
+  ).filter((c) => !completedCategories.includes(c));
+
+  const freshnessRules = `
+
+FRESHNESS RULES — these override everything else when they conflict:
+${completedCategories.length
+  ? `- ALREADY COMPLETED (never suggest these again, in any rewording): ${completedCategories.join(", ")}.
+- Instead propose the natural NEXT STEP up from that work: bigger scope, leadership rather than participation, regional/national reach rather than local, creating rather than consuming. If they finished a local research project, suggest publishing or competing nationally — not another local project.`
+  : "- The student has not completed anything through Admio yet."}
+${previousCategories.length
+  ? `- PREVIOUSLY SUGGESTED (avoid repeating unless one is genuinely the strongest remaining fit; if you keep one, materially raise its ambition and say in the explanation how it differs): ${previousCategories.join(", ")}.`
+  : ""}
+- Aim for at least half the list to be categories the student has not seen before.`;
+
   try {
-    const systemPrompt = buildProfilePrompt(profile) + `
+    const systemPrompt = buildProfilePrompt(profile) + freshnessRules + `
 
 You are analyzing this student's profile to recommend extracurricular categories.
 
