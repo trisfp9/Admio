@@ -21,6 +21,20 @@ export async function POST(request: Request) {
 
   if (!profile) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
+  // Categories the user has already committed to. These are carried over
+  // verbatim so a regenerate never invalidates the current selection.
+  const body = await request.json().catch(() => ({} as { keep?: unknown }));
+  const requestedKeep = Array.isArray((body as { keep?: unknown }).keep)
+    ? ((body as { keep: unknown[] }).keep.filter((c) => typeof c === "string") as string[])
+    : [];
+  const existingRecs = (profile.extracurricular_recommendations || []) as {
+    category?: string;
+  }[];
+  const keptRecs = existingRecs.filter(
+    (r) => r.category && requestedKeep.includes(r.category)
+  );
+  const keptCategories = keptRecs.map((r) => r.category as string);
+
   // Categories the student already finished, plus whatever was suggested last
   // time. Regenerating should move them forward, not hand back the same list.
   const completedCategories: string[] = Array.from(
@@ -36,11 +50,19 @@ export async function POST(request: Request) {
         .map((r: { category?: string }) => r.category)
         .filter(Boolean) as string[]
     )
-  ).filter((c) => !completedCategories.includes(c));
+  ).filter((c) => !completedCategories.includes(c) && !keptCategories.includes(c));
+
+  // Kept categories occupy slots in the final list, so only ask for the rest.
+  const wanted = Math.max(3, 8 - keptRecs.length);
+
+  const keepRule = keptCategories.length
+    ? `
+- KEEPING (the student is actively working on these; they stay in the list and you must NOT return them again, nor a near-duplicate of them): ${keptCategories.join(", ")}. Suggest categories that COMPLEMENT these rather than overlap.`
+    : "";
 
   const freshnessRules = `
 
-FRESHNESS RULES — these override everything else when they conflict:
+FRESHNESS RULES — these override everything else when they conflict:${keepRule}
 ${completedCategories.length
   ? `- ALREADY COMPLETED (never suggest these again, in any rewording): ${completedCategories.join(", ")}.
 - Instead propose the natural NEXT STEP up from that work: bigger scope, leadership rather than participation, regional/national reach rather than local, creating rather than consuming. If they finished a local research project, suggest publishing or competing nationally — not another local project.`
@@ -55,7 +77,7 @@ ${previousCategories.length
 
 You are analyzing this student's profile to recommend extracurricular categories.
 
-Return ONLY valid JSON (no markdown, no backticks) as an array of 5-8 objects with this exact shape:
+Return ONLY valid JSON (no markdown, no backticks) as an array of exactly ${wanted} objects with this exact shape:
 [
   {
     "category": "Category Name",
@@ -84,13 +106,25 @@ Tailor categories to the student's major interest and goals. Be specific about W
       return NextResponse.json({ error: "Failed to parse AI response. Please try again." }, { status: 500 });
     }
 
+    // Put the kept categories back at the front, and drop any the model
+    // returned that duplicate them (or each other) despite being told not to.
+    const seen = new Set(keptCategories);
+    const freshRecs = (Array.isArray(recommendations) ? recommendations : []).filter(
+      (r: { category?: string }) => {
+        if (!r?.category || seen.has(r.category)) return false;
+        seen.add(r.category);
+        return true;
+      }
+    );
+    const merged = [...keptRecs, ...freshRecs];
+
     // Save to profile
     await supabase
       .from("profiles")
-      .update({ extracurricular_recommendations: recommendations })
+      .update({ extracurricular_recommendations: merged })
       .eq("id", user.id);
 
-    return NextResponse.json({ recommendations });
+    return NextResponse.json({ recommendations: merged });
   } catch (err) {
     console.error("EC analysis error:", err);
     const message = err instanceof Error ? err.message : "Analysis failed";

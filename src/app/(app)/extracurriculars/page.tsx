@@ -99,6 +99,11 @@ export default function ExtracurricularsPage() {
           Authorization: `Bearer ${session.access_token}`,
           "Content-Type": "application/json",
         },
+        // Categories the user has already committed to are carried over
+        // untouched; only the rest get regenerated. Otherwise a regenerate
+        // wipes the cards backing the current selection, leaving the picker
+        // pinned at its cap with nothing left to deselect.
+        body: JSON.stringify({ keep: selectedCategories }),
         signal: abortController.signal,
       });
       if (res.status === 429) {
@@ -110,7 +115,20 @@ export default function ExtracurricularsPage() {
         throw new Error(errorData.error || `Analysis failed with status ${res.status}`);
       }
       const data = await res.json();
-      setRecommendations(data.recommendations);
+      const nextRecs: ExtracurricularRecommendation[] = data.recommendations || [];
+      setRecommendations(nextRecs);
+      // Safety net: never keep a selection that has no card to click.
+      const availableNow = new Set(nextRecs.map((r) => r.category));
+      const prunedSelection = selectedCategories.filter((c) => availableNow.has(c));
+      if (prunedSelection.length !== selectedCategories.length) {
+        setSelectedCategories(prunedSelection);
+        if (profile) {
+          await supabase
+            .from("profiles")
+            .update({ selected_extracurricular_categories: prunedSelection })
+            .eq("id", profile.id);
+        }
+      }
       await refreshProfile();
       setStep(2);
     } catch (err) {
