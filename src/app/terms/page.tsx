@@ -62,7 +62,31 @@ export default function TermsOfServicePage() {
             </section>
 
             <section>
-              <h2 className="text-text-primary font-semibold text-lg mb-3">5. Acceptable Use</h2>
+              <h2 className="text-text-primary font-semibold text-lg mb-3">5. Emails We Send</h2>
+              <p className="mb-2">
+                When you create an account, you agree to receive email from us at the address you signed up with.
+                These fall into two groups:
+              </p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>
+                  <span className="text-text-primary">Service and account emails.</span> Email confirmation, password
+                  resets, receipts, subscription and billing notices, and important changes to the service. These are
+                  part of your account and cannot be turned off while your account is open.
+                </li>
+                <li>
+                  <span className="text-text-primary">Weekly progress emails.</span> A short check in, normally once a
+                  week, with your own progress figures such as your profile strength score, your streak and the next
+                  step we suggest. These are optional. Every one contains an unsubscribe link, and unsubscribing takes
+                  effect immediately without affecting the rest of your account.
+                </li>
+              </ul>
+              <p className="mt-2">
+                We do not sell your email address, and we do not send you marketing on behalf of anyone else.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-text-primary font-semibold text-lg mb-3">6. Acceptable Use</h2>
               <p className="mb-2">You agree not to:</p>
               <ul className="list-disc pl-5 space-y-1">
                 <li>Use the Service for any unlawful purpose</li>
@@ -75,7 +99,7 @@ export default function TermsOfServicePage() {
             </section>
 
             <section>
-              <h2 className="text-text-primary font-semibold text-lg mb-3">6. Subscriptions &amp; Payments</h2>
+              <h2 className="text-text-primary font-semibold text-lg mb-3">7. Subscriptions &amp; Payments</h2>
               <p>
                 Admio offers both free and paid (Pro) subscription tiers. Pro subscriptions are sold and
                 processed by our authorized reseller and Merchant of Record,{" "}
@@ -89,7 +113,7 @@ export default function TermsOfServicePage() {
             </section>
 
             <section>
-              <h2 className="text-text-primary font-semibold text-lg mb-3">7. Intellectual Property</h2>
+              <h2 className="text-text-primary font-semibold text-lg mb-3">8. Intellectual Property</h2>
               <p>
                 The Service, including its design, features, and content (excluding user-submitted data),
                 is owned by Admio. AI-generated content created for you through the Service may be used by
@@ -99,7 +123,7 @@ export default function TermsOfServicePage() {
             </section>
 
             <section>
-              <h2 className="text-text-primary font-semibold text-lg mb-3">8. Limitation of Liability</h2>
+              <h2 className="text-text-primary font-semibold text-lg mb-3">9. Limitation of Liability</h2>
               <p>
                 Admio is provided &quot;as is&quot; without warranties of any kind. We are not liable for any
                 damages arising from your use of the Service, including but not limited to: college
@@ -109,7 +133,7 @@ export default function TermsOfServicePage() {
             </section>
 
             <section>
-              <h2 className="text-text-primary font-semibold text-lg mb-3">9. Termination</h2>
+              <h2 className="text-text-primary font-semibold text-lg mb-3">10. Termination</h2>
               <p>
                 We may terminate or suspend your access to the Service at any time for violation of these
                 terms. You may delete your account at any time by contacting us. Upon termination, your
@@ -118,7 +142,7 @@ export default function TermsOfServicePage() {
             </section>
 
             <section>
-              <h2 className="text-text-primary font-semibold text-lg mb-3">10. Changes to Terms</h2>
+              <h2 className="text-text-primary font-semibold text-lg mb-3">11. Changes to Terms</h2>
               <p>
                 We may update these Terms from time to time. Continued use of the Service after changes
                 constitutes acceptance of the updated terms. We will notify users of material changes.
@@ -126,7 +150,7 @@ export default function TermsOfServicePage() {
             </section>
 
             <section>
-              <h2 className="text-text-primary font-semibold text-lg mb-3">11. Governing Law</h2>
+              <h2 className="text-text-primary font-semibold text-lg mb-3">12. Governing Law</h2>
               <p>
                 These Terms shall be governed by and construed in accordance with the laws of the Republic
                 of Indonesia, without regard to its conflict-of-law provisions. Any disputes arising from
@@ -136,7 +160,7 @@ export default function TermsOfServicePage() {
             </section>
 
             <section>
-              <h2 className="text-text-primary font-semibold text-lg mb-3">12. Contact Us</h2>
+              <h2 className="text-text-primary font-semibold text-lg mb-3">13. Contact Us</h2>
               <p>
                 If you have questions about these Terms, please contact PT Multitritama Persada at{" "}
                 <a href="mailto:support@admio.io" className="text-purple hover:underline">support@admio.io</a>.

@@ -119,3 +119,8 @@ drop policy if exists "Users can delete own messages" on chat_messages;
 create policy "Users can view own messages" on chat_messages for select using (auth.uid() = user_id);
 create policy "Users can insert own messages" on chat_messages for insert with check (auth.uid() = user_id);
 create policy "Users can delete own messages" on chat_messages for delete using (auth.uid() = user_id);
+
+-- Weekly encouragement email: opt-out flag and the ISO week of the last send
+-- (used to make the cron idempotent so a retry cannot double send).
+alter table profiles add column if not exists email_opt_out boolean default false;
+alter table profiles add column if not exists last_weekly_email_week integer;
