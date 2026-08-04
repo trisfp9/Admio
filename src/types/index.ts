@@ -44,6 +44,8 @@ export interface Profile {
   essay_last_reviewed_at: string | null;
   roadmaps: SavedRoadmap[] | null;
   profile_last_edited_at: string | null;
+  email_opt_out: boolean | null;
+  last_weekly_email_week: number | null;
   onboarding_completed: boolean;
   created_at: string;
 }

@@ -76,10 +76,27 @@ export default function TermsOfServicePage() {
                 <li>
                   <span className="text-text-primary">Weekly progress emails.</span> A short check in, normally once a
                   week, with your own progress figures such as your profile strength score, your streak and the next
-                  step we suggest. These are optional. Every one contains an unsubscribe link, and unsubscribing takes
-                  effect immediately without affecting the rest of your account.
+                  step we suggest. These are optional and you can stop them at any time.
                 </li>
               </ul>
+
+              <p className="mt-3 mb-2 text-text-primary">How to stop weekly emails</p>
+              <p className="mb-2">You can turn weekly progress emails off in either of these ways:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>
+                  Go to <Link href="/profile" className="text-purple hover:underline">Profile</Link>, open Account
+                  Settings, and switch off <span className="text-text-primary">Weekly progress emails</span>.
+                </li>
+                <li>
+                  Click the <span className="text-text-primary">Unsubscribe from weekly emails</span> link at the
+                  bottom of any weekly email. This works without signing in and applies straight away.
+                </li>
+              </ul>
+              <p className="mt-2">
+                Either method takes effect immediately and does not affect the rest of your account. You can turn them
+                back on at any time from your Profile page. If you would rather email us, write to{" "}
+                <span className="text-text-primary">support@admio.io</span> and we will action it for you.
+              </p>
               <p className="mt-2">
                 We do not sell your email address, and we do not send you marketing on behalf of anyone else.
               </p>

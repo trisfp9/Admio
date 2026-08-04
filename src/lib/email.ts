@@ -4,7 +4,7 @@ import crypto from "crypto";
 // and this keeps the bundle (and the dependency surface) small.
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
 
-export const EMAIL_FROM = process.env.EMAIL_FROM || "Admio <hello@admio.io>";
+export const EMAIL_FROM = process.env.EMAIL_FROM || "Admio <noreply@admio.io>";
 
 export function emailConfigured(): boolean {
   return Boolean(process.env.RESEND_API_KEY);
