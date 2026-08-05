@@ -45,8 +45,20 @@ export async function GET(request: Request) {
   // this cannot be used to blast email from outside.
   const secret = process.env.CRON_SECRET;
   const auth = request.headers.get("authorization");
-  if (!secret || auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Distinguish the two failure modes. Neither response reveals the secret,
+  // but "not configured" vs "bad token" is the difference between a missing
+  // Vercel env var and a shell variable that expanded to nothing.
+  if (!secret) {
+    return NextResponse.json(
+      { error: "CRON_SECRET is not set on the server. Add it in Vercel and redeploy." },
+      { status: 401 }
+    );
+  }
+  if (auth !== `Bearer ${secret}`) {
+    return NextResponse.json(
+      { error: "Bad or missing bearer token. Check the Authorization header actually contains the secret." },
+      { status: 401 }
+    );
   }
 
   // Test controls, both requiring the secret above:

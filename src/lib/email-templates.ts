@@ -115,12 +115,25 @@ function chooseNudge(p: WeeklyEmailProfile): Nudge {
     };
   }
 
-  if (!p.essay_score) {
+  // Essay review is a Pro feature, so only point Pro users at it. Sending a
+  // free user to a locked page is a dead end, not a nudge.
+  if (!p.essay_score && p.is_pro) {
     return {
       title: "Get a second read on your essay",
       body: "Your personal statement is one of the few parts of the application you fully control. Paste a draft and get it scored with specific fixes.",
       ctaLabel: "Review my essay",
       ctaPath: "/essay",
+    };
+  }
+
+  // Free users: point at things that actually raise their score and cost
+  // nothing, rather than at a locked feature.
+  if (!p.is_pro && (p.awards?.length ?? 0) === 0) {
+    return {
+      title: "Add any awards you have won",
+      body: "Achievements are weighted heavily in your profile strength, and most students forget to log the ones they already have. Even school level awards count.",
+      ctaLabel: "Add my awards",
+      ctaPath: "/progress",
     };
   }
 
