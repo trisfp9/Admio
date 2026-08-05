@@ -43,8 +43,11 @@ export async function GET(request: Request) {
 
   // Vercel signs cron invocations with CRON_SECRET. Reject anything else so
   // this cannot be used to blast email from outside.
-  const secret = process.env.CRON_SECRET;
-  const auth = request.headers.get("authorization");
+  // Trim both sides: env values pasted into a dashboard routinely pick up a
+  // trailing newline or a leading tab, and an untrimmed compare turns that
+  // into a silent 401 that looks like a wrong secret.
+  const secret = process.env.CRON_SECRET?.trim();
+  const auth = request.headers.get("authorization")?.trim();
   // Distinguish the two failure modes. Neither response reveals the secret,
   // but "not configured" vs "bad token" is the difference between a missing
   // Vercel env var and a shell variable that expanded to nothing.
