@@ -7,6 +7,14 @@ import { SITE_URL } from "@/lib/site";
 export const maxDuration = 60;
 // Never prerender or cache: this has side effects and reads live data.
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+// Next caches fetch() inside route handlers, and supabase-js reads go through
+// fetch. Without this the cron happily served a stale snapshot, which meant it
+// would mail people who had already unsubscribed. Force every Supabase request
+// to bypass the data cache.
+const noStoreFetch: typeof fetch = (input, init) =>
+  fetch(input, { ...init, cache: "no-store" });
 
 /**
  * Weekly encouragement email. Triggered by the Vercel cron entry in
@@ -77,7 +85,7 @@ export async function GET(request: Request) {
   const admin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SECRET_KEY!,
-    { auth: { persistSession: false } }
+    { auth: { persistSession: false }, global: { fetch: noStoreFetch } }
   );
 
   const weekIndex = weekIndexFor();

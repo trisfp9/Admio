@@ -41,7 +41,7 @@ export async function GET(request: Request) {
 
   return page(
     "You are unsubscribed",
-    "You will not get weekly encouragement emails any more. Account and billing notices will still be sent, since those are part of your account."
+    "You will not get weekly progress emails any more. Account and billing notices will still be sent, since those are part of your account. Changed your mind? Turn them back on any time under Email Preferences on your profile page."
   , true);
 }
 

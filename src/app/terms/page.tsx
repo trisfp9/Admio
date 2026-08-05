@@ -84,8 +84,8 @@ export default function TermsOfServicePage() {
               <p className="mb-2">You can turn weekly progress emails off in either of these ways:</p>
               <ul className="list-disc pl-5 space-y-1">
                 <li>
-                  Go to <Link href="/profile" className="text-purple hover:underline">Profile</Link>, open Account
-                  Settings, and switch off <span className="text-text-primary">Weekly progress emails</span>.
+                  Go to <Link href="/profile" className="text-purple hover:underline">Profile</Link> and switch off{" "}
+                  <span className="text-text-primary">Weekly progress email</span> under Email Preferences.
                 </li>
                 <li>
                   Click the <span className="text-text-primary">Unsubscribe from weekly emails</span> link at the

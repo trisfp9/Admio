@@ -416,6 +416,42 @@ export default function ProfilePage() {
       </div>
 
       {/* Editable fields */}
+      {/* Email preferences. Also the only way back in after using the
+          unsubscribe link in an email, so it must toggle both directions. */}
+      <div className="glass-card p-6">
+        <h2 className="font-heading font-semibold text-text-primary flex items-center gap-2 mb-4">
+          <Mail className="w-5 h-5 text-purple" /> Email Preferences
+        </h2>
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-text-primary text-sm font-medium">Weekly progress email</p>
+            <p className="text-text-muted text-xs mt-1 leading-relaxed">
+              A short Monday check in with your profile strength, streak and one suggested next step.
+              You can turn this back on any time.
+            </p>
+            <p className="text-text-muted/60 text-[11px] mt-2">
+              Account emails such as sign in, password resets and billing are always sent.
+            </p>
+          </div>
+          <button
+            role="switch"
+            aria-checked={!emailOptOut}
+            aria-label="Weekly progress email"
+            disabled={savingEmailPref}
+            onClick={toggleWeeklyEmails}
+            className={`relative w-12 h-7 rounded-full flex-shrink-0 transition-colors disabled:opacity-50 ${
+              !emailOptOut ? "bg-accent" : "bg-white/15"
+            }`}
+          >
+            <span
+              className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${
+                !emailOptOut ? "left-6" : "left-1"
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+
       <div className="glass-card p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="font-heading font-semibold text-text-primary flex items-center gap-2">
