@@ -282,37 +282,6 @@ export default function ProfilePage() {
           <Settings className="w-5 h-5 text-purple" /> Account Settings
         </h2>
 
-        {/* Weekly email opt in/out. Mirrors the unsubscribe link in the emails
-            themselves, so users can change their mind without digging through
-            their inbox. */}
-        <div className="flex items-center justify-between py-3 border-b border-white/8 gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <Mail className="w-4 h-4 text-text-muted flex-shrink-0" />
-            <div className="min-w-0">
-              <p className="text-sm text-text-primary">Weekly progress emails</p>
-              <p className="text-xs text-text-muted mt-0.5">
-                A short check in with your score, streak and next step. Account and billing emails are always sent.
-              </p>
-            </div>
-          </div>
-          <button
-            role="switch"
-            aria-checked={!emailOptOut}
-            aria-label="Weekly progress emails"
-            disabled={savingEmailPref}
-            onClick={toggleWeeklyEmails}
-            className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 disabled:opacity-50 ${
-              emailOptOut ? "bg-white/15" : "bg-accent"
-            }`}
-          >
-            <span
-              className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                emailOptOut ? "translate-x-1" : "translate-x-6"
-              }`}
-            />
-          </button>
-        </div>
-
         {/* Current email (read-only display) */}
         <div className="flex items-center justify-between py-3 border-b border-white/8">
           <div className="flex items-center gap-3">
