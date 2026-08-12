@@ -123,13 +123,14 @@ const HeroSection = () => {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-100px)] px-6 text-center">
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-6 leading-tight">
           Build a{" "}
-          {/* Script face on the emphasis word. Breaks the single-typeface
-              uniformity that makes generated hero sections read the same. */}
-          <span className="font-handwritten font-normal text-[1.15em] text-[#FFD700]">
-            Stronger
-          </span>
+          {/* Editorial italic serif on the emphasis word. Contrast against the
+              geometric sans reads deliberate; a script face read as informal
+              and undercut the credibility this page has to establish. */}
+          <span className="font-editorial font-normal italic">Stronger</span>
           <br />
-          <span className="bg-gradient-to-r from-[#00B4D8] via-[#8B5CF6] to-[#FFD700] bg-clip-text text-transparent">
+          {/* Two brand stops rather than a three-colour rainbow. The extra gold
+              stop competed with the serif accent above and read decorative. */}
+          <span className="bg-gradient-to-r from-[#00B4D8] to-[#8B5CF6] bg-clip-text text-transparent">
             College Application
           </span>
         </motion.h1>

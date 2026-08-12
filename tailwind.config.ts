@@ -29,6 +29,7 @@ const config: Config = {
         heading: ["var(--font-plus-jakarta)", "sans-serif"],
         body: ["var(--font-inter)", "sans-serif"],
         handwritten: ["var(--font-caveat)", "cursive"],
+        editorial: ["var(--font-instrument-serif)", "Georgia", "serif"],
       },
       borderRadius: {
         card: "16px",

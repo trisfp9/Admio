@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Inter, Caveat } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter, Caveat, Instrument_Serif } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
@@ -17,6 +17,16 @@ const plusJakarta = Plus_Jakarta_Sans({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+// Editorial italic serif used for the emphasis word in the hero. Contrast
+// against the geometric sans reads deliberate rather than decorative.
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
   display: "swap",
 });
 
@@ -96,7 +106,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${inter.variable} ${caveat.variable}`}>
+    <html lang="en" className={`${plusJakarta.variable} ${inter.variable} ${caveat.variable} ${instrumentSerif.variable}`}>
       <body className="font-body antialiased">
         {/* Structured data: tells Google which logo and site name belong to the
             brand, which is what powers the icon/name shown next to results. */}
