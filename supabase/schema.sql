@@ -91,7 +91,7 @@ create table if not exists chat_messages (
 create index if not exists idx_saved_items_user_id on saved_items(user_id);
 create index if not exists idx_chat_messages_user_created on chat_messages(user_id, created_at);
 
--- Row Level Security (idempotent — drop-then-create so this file can be re-run safely)
+-- Row Level Security (idempotent, drop-then-create so this file can be re-run safely)
 alter table profiles enable row level security;
 drop policy if exists "Users can view own profile" on profiles;
 drop policy if exists "Users can update own profile" on profiles;
