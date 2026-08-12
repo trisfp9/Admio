@@ -42,7 +42,7 @@ export default function EssayPage() {
         return;
       }
       await refreshProfile();
-      toast.success(`Essay reviewed — score ${data.score}/100. +30 XP`);
+      toast.success(`Essay reviewed. Score ${data.score}/100. +30 XP`);
     } catch {
       toast.error("Review failed.");
     } finally {
@@ -91,7 +91,7 @@ export default function EssayPage() {
           </div>
           <h2 className="font-heading font-bold text-2xl text-text-primary">Unlock AI Essay Review</h2>
           <p className="text-text-muted text-sm max-w-md mx-auto leading-relaxed">
-            Submit a personal statement or supplement and get a brutally honest, detailed AI critique every week —
+            Submit a personal statement or supplement and get a brutally honest, detailed AI critique every week,
             the kind of feedback that actually lifts your essay score. Includes strengths, weaknesses, and
             concrete rewrite suggestions.
           </p>

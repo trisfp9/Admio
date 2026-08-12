@@ -62,10 +62,10 @@ export async function POST(request: Request) {
 
   const freshnessRules = `
 
-FRESHNESS RULES — these override everything else when they conflict:${keepRule}
+FRESHNESS RULES, these override everything else when they conflict:${keepRule}
 ${completedCategories.length
   ? `- ALREADY COMPLETED (never suggest these again, in any rewording): ${completedCategories.join(", ")}.
-- Instead propose the natural NEXT STEP up from that work: bigger scope, leadership rather than participation, regional/national reach rather than local, creating rather than consuming. If they finished a local research project, suggest publishing or competing nationally — not another local project.`
+- Instead propose the natural NEXT STEP up from that work: bigger scope, leadership rather than participation, regional/national reach rather than local, creating rather than consuming. If they finished a local research project, suggest publishing or competing nationally, not another local project.`
   : "- The student has not completed anything through Admio yet."}
 ${previousCategories.length
   ? `- PREVIOUSLY SUGGESTED (avoid repeating unless one is genuinely the strongest remaining fit; if you keep one, materially raise its ambition and say in the explanation how it differs): ${previousCategories.join(", ")}.`
@@ -89,7 +89,7 @@ Return ONLY valid JSON (no markdown, no backticks) as an array of exactly ${want
   }
 ]
 
-Tailor categories to the student's major interest and goals. Be specific about WHY each category matters for their application. The estimated_time should reflect how long it typically takes to build a presentable body of work in this category for a college application — not how long a single task takes.`;
+Tailor categories to the student's major interest and goals. Be specific about WHY each category matters for their application. The estimated_time should reflect how long it typically takes to build a presentable body of work in this category for a college application, not how long a single task takes.`;
 
     const result = await callClaude(systemPrompt, "Analyze my profile and recommend extracurricular categories.");
 

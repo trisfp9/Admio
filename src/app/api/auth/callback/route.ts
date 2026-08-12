@@ -39,7 +39,7 @@ export async function GET(request: Request) {
         });
       }
 
-      // Redirect to confirmed page — user will close this tab and sign in
+      // Redirect to confirmed page. User will close this tab and sign in
       return NextResponse.redirect(`${origin}/auth/confirmed`);
     }
   }

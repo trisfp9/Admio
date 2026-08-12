@@ -10,7 +10,7 @@ function isValidUrl(url: string): boolean {
   return url.startsWith("http://") || url.startsWith("https://");
 }
 
-// Singleton browser client — one instance shared across the whole app.
+// Singleton browser client, one instance shared across the whole app.
 // Uses @supabase/ssr so the session is stored in cookies (readable by the
 // server + middleware), instead of localStorage. This keeps auth state
 // consistent across tabs and lets middleware refresh/guard sessions server-side.
@@ -60,7 +60,7 @@ export function setRememberPreference(remember: boolean): void {
 }
 
 // Clear the "remember me" preference (on sign-out), so the next sign-in starts
-// fresh — no persistence unless the user checks the box again.
+// fresh, with no persistence unless the user checks the box again.
 export function clearRememberPreference(): void {
   if (typeof document === "undefined") return;
   document.cookie = serialize(REMEMBER_COOKIE, "", { path: "/", maxAge: 0 });
@@ -81,7 +81,7 @@ export function createServerClient(accessToken: string) {
   );
 }
 
-// Admin client — server-side only, bypasses RLS. NEVER expose to client.
+// Admin client, server-side only, bypasses RLS. NEVER expose to client.
 export function createAdminClient() {
   const url = isValidUrl(SUPABASE_URL) ? SUPABASE_URL : "https://placeholder.supabase.co";
   return createClient(url, process.env.SUPABASE_SECRET_KEY || "placeholder");
@@ -94,7 +94,7 @@ export function getTokenFromRequest(request: Request): string | null {
   return authHeader.substring(7);
 }
 
-// Get authenticated user from request — returns null if invalid
+// Get authenticated user from request, returns null if invalid
 export async function getAuthenticatedUser(request: Request) {
   const token = getTokenFromRequest(request);
   if (!token) return null;

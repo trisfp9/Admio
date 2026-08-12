@@ -62,16 +62,16 @@ export async function POST(request: Request) {
 
     const systemPrompt = buildProfilePrompt(profile) + `
 
-You are computing a UNIVERSAL US college admissions profile strength score (0–100). This score is NOT tied to any specific school — it measures the student's raw competitiveness across all US universities. The same student with 4.0 GPA and 1600 SAT should receive the same score each time, regardless of their dream school.
+You are computing a UNIVERSAL US college admissions profile strength score (0–100). This score is NOT tied to any specific school. It measures the student's raw competitiveness across all US universities. The same student with 4.0 GPA and 1600 SAT should receive the same score each time, regardless of their dream school.
 
 ═══════════════════════════════════════
-SCORING RUBRIC — FOLLOW THIS EXACTLY
+SCORING RUBRIC: FOLLOW THIS EXACTLY
 ═══════════════════════════════════════
 
 ──────────────────────────────
 ACADEMICS (0–100)
 ──────────────────────────────
-Step 1 — GPA component (0–70 pts):
+Step 1: GPA component (0–70 pts):
   "4.0+" or "3.8–4.0" → 65–70 pts
   "3.5–3.8"           → 50–62 pts
   "3.0–3.5"           → 35–48 pts
@@ -79,7 +79,7 @@ Step 1 — GPA component (0–70 pts):
   "Below 2.5"         → 5–18 pts
   Not provided        → 20 pts
 
-Step 2 — Test score component (0–30 pts):
+Step 2: Test score component (0–30 pts):
   SAT 1550–1600 / ACT 35–36 → 27–30 pts
   SAT 1450–1540 / ACT 32–34 → 22–26 pts
   SAT 1300–1440 / ACT 28–31 → 14–21 pts
@@ -94,19 +94,19 @@ ACTIVITIES (0–100)
 ──────────────────────────────
 Count ALL activities across current_activities AND completed_activities.
 
-Step 1 — Base score:
+Step 1: Base score:
   0 activities → 0–5 pts
   1–2          → 12–22 pts
   3–4          → 28–42 pts
   5–6          → 46–58 pts
   7+           → 60–68 pts
 
-Step 2 — Quality modifiers (additive):
+Step 2: Quality modifiers (additive):
   Has clear leadership role (Captain, President, Founder, Editor, etc.) in ≥1 activity → +8 pts
   Founded or built something original (nonprofit, app, publication, etc.) → +12 pts
   Multi-year commitment noted for ≥2 activities → +5 pts
 
-Step 3 — Thematic coherence bonus:
+Step 3: Thematic coherence bonus:
   3+ activities cluster around a single theme matching the student's major interest → +8 pts
   2 activities with clear thematic focus → +4 pts
   Activities are scattered with no clear theme → +0 pts
@@ -119,27 +119,27 @@ ACHIEVEMENTS (0–100)
 Score each award then sum (cap at 100). Use ONLY the awards listed in the Awards section.
 
 Per-award point values by prestige tier:
-  TIER 5 — International olympiad / top US national competition:
+  TIER 5: International olympiad / top US national competition:
     Examples: IMO, IOI, USAMO, USABO, USNCO, Intel ISEF grand prize, Regeneron STS Top 10, Google Code Jam finalist, IPhO, IChO
     Points: +55–80 pts each. A single Tier 5 award can push achievements to 75–100.
 
-  TIER 4 — Strong national (US or home country):
+  TIER 4: Strong national (US or home country):
     Examples: AMC/AIME qualifier, USACO Platinum, national science fair finalist, national debate champion, national robotics champion, nationally recognized award
     Points: +30–50 pts each.
 
-  TIER 3 — State/provincial:
+  TIER 3: State/provincial:
     Examples: State science fair winner, state math olympiad, state debate champion
     Points: +18–28 pts each.
 
-  TIER 2 — Regional/local:
+  TIER 2: Regional/local:
     Examples: Regional science fair, city/district competition winner
     Points: +8–15 pts each.
 
-  TIER 1 — School-level:
+  TIER 1: School-level:
     Examples: Valedictorian, school award, honor roll, school club award
     Points: +4–8 pts each.
 
-  SPECIAL NOTE — World Scholar's Cup (WSC):
+  SPECIAL NOTE: World Scholar's Cup (WSC):
     WSC is a participation-based debate/trivia competition. Despite its "Global" round branding, it is NOT equivalent to a math or science olympiad. Treat WSC awards as TIER 2 (Regional, +8–15 pts) regardless of the round level. Do not give it Tier 4 or Tier 5 treatment.
 
   No awards at all → 0–3 pts.
@@ -150,7 +150,7 @@ achievements = sum of all award points (cap at 100)
 ESSAYS (0–100)
 ──────────────────────────────
   Essay submitted and AI-scored → use essay_score directly (0–100)
-  No essay submitted yet       → 0 (mandatory — always 0 with no exceptions)
+  No essay submitted yet       → 0 (mandatory, always 0 with no exceptions)
 
 ──────────────────────────────
 OVERALL FORMULA

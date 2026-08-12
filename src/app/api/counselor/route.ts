@@ -103,7 +103,7 @@ export async function POST(request: Request) {
     if (focusedRoadmap) {
       systemBlocks.push({
         type: "text",
-        text: `The student is currently asking about this specific roadmap. Ground your answer in it — reference their project, tasks, and timeline.
+        text: `The student is currently asking about this specific roadmap. Ground your answer in it, referencing their project, tasks, and timeline.
 
 Roadmap: ${focusedRoadmap.category}
 Project idea: ${focusedRoadmap.project_idea}
@@ -113,7 +113,7 @@ Tasks (with done state):
 ${focusedRoadmap.tasks.map((t: { week: number; description: string; done: boolean }) => `- [week ${t.week}] ${t.done ? "✓" : "○"} ${t.description}`).join("\n")}
 Common App tip: ${focusedRoadmap.common_app_tip}
 
-If they want to modify the roadmap itself (swap project, add/remove tasks, reorder weeks), tell them to use the "Ask AI to adjust" button on the roadmap page — that's the channel that edits the roadmap. Here, answer questions and give advice.`,
+If they want to modify the roadmap itself (swap project, add/remove tasks, reorder weeks), tell them to use the "Ask AI to adjust" button on the roadmap page, that's the channel that edits the roadmap. Here, answer questions and give advice.`,
       });
     }
 
@@ -157,7 +157,7 @@ If they want to modify the roadmap itself (swap project, add/remove tasks, reord
             .update({ [updateField]: messagesUsed + 1 })
             .eq("id", user.id);
 
-          // Award XP (+2 per counselor message — matches XP_SOURCES)
+          // Award XP (+2 per counselor message, matches XP_SOURCES)
           await supabase
             .from("profiles")
             .update({ xp: profile.xp + 2 })

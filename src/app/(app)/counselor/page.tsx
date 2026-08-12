@@ -100,7 +100,7 @@ export default function CounselorPage() {
       });
 
       if (res.status === 429) {
-        toast.error("You're going too fast — please wait a moment.");
+        toast.error("You're going too fast, please wait a moment.");
         setMessages((prev) => prev.slice(0, -1)); // Remove placeholder
         setStreaming(false);
         return;
@@ -138,10 +138,10 @@ export default function CounselorPage() {
 
       await refreshProfile();
     } catch (err) {
-      let message = "Something went wrong — please try again.";
+      let message = "Something went wrong, please try again.";
       if (err instanceof Error) {
         message = err.name === "AbortError"
-          ? "Request timed out after 60 seconds. The server may be overloaded — please try again."
+          ? "Request timed out after 60 seconds. The server may be overloaded, please try again."
           : err.message;
       }
       toast.error(message);
@@ -169,7 +169,7 @@ export default function CounselorPage() {
     if (!session?.access_token) return;
     if (messages.length === 0) return;
     const ok = confirm(
-      "Clear all chat history?\n\nThis only deletes the messages — your message quota will NOT be refilled."
+      "Clear all chat history?\n\nThis only deletes the messages. Your message quota will NOT be refilled."
     );
     if (!ok) return;
     try {
@@ -177,7 +177,7 @@ export default function CounselorPage() {
       const supabase = createBrowserClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      // Delete chat history only — does NOT touch ai_messages_used / ai_messages_this_month
+      // Delete chat history only. Does NOT touch ai_messages_used / ai_messages_this_month
       const { error } = await supabase
         .from("chat_messages")
         .delete()
@@ -201,7 +201,7 @@ export default function CounselorPage() {
             <Sparkles className="w-6 h-6 text-purple" />
             AI Counselor
           </h1>
-          <p className="text-text-muted text-sm">AI-powered guidance — informational, not a substitute for a school counselor.</p>
+          <p className="text-text-muted text-sm">AI-powered guidance, informational and not a substitute for a school counselor.</p>
         </div>
         <Badge variant={messagesUsed >= messagesMax * 0.8 ? "warning" : "muted"}>
           {messagesUsed}/{messagesMax} messages

@@ -43,7 +43,7 @@ export default function EmailConfirmedPage() {
       setStatus("success");
 
       // Sign out so the user signs in fresh on the original tab. Safe to leave
-      // in the background — nothing depends on it completing.
+      // in the background, nothing depends on it completing.
       void supabase.auth.signOut();
     };
 
@@ -65,7 +65,7 @@ export default function EmailConfirmedPage() {
         {status === "error" && (
           <>
             <p className="text-text-primary font-heading font-bold text-xl mb-3">
-              Almost there — just sign in
+              Almost there, just sign in
             </p>
             {/* Reaching this page at all means Supabase already confirmed the
                 email server-side; only the client-side session pickup failed
@@ -74,7 +74,7 @@ export default function EmailConfirmedPage() {
                 "account already exists" dead end. */}
             <p className="text-text-muted text-sm mb-6">
               Your email is confirmed. We just couldn&apos;t finish signing you in on this
-              device — head to the sign-in page and log in with your email and password.
+              device. Head to the sign-in page and log in with your email and password.
             </p>
             <Link
               href="/auth?mode=signin"

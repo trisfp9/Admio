@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   // to the production origin instead of the current deployment URL.
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Admio — Your AI College Admissions Counselor",
+    default: "Admio: Your AI College Admissions Counselor",
     // Sub-pages set only their own title; Next appends the brand.
     template: "%s | Admio",
   },
@@ -51,13 +51,13 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "Admio — Your AI College Admissions Counselor",
+    title: "Admio: Your AI College Admissions Counselor",
     description: SITE_DESCRIPTION,
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Admio — AI college admissions counselor" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Admio, AI college admissions counselor" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Admio — Your AI College Admissions Counselor",
+    title: "Admio: Your AI College Admissions Counselor",
     description: SITE_DESCRIPTION,
     images: ["/og.png"],
   },
@@ -79,7 +79,7 @@ export default async function RootLayout({
   let initialProfile = null;
   try {
     const supabase = getServerSupabase();
-    // getSession() reads the (middleware-refreshed) cookie locally — no network
+    // getSession() reads the (middleware-refreshed) cookie locally, no network
     // round-trip. The middleware already validated the session for route
     // protection; here we only need it to seed the UI, so this is safe and fast.
     const {
@@ -92,7 +92,7 @@ export default async function RootLayout({
       initialProfile = data ?? null;
     }
   } catch {
-    // Supabase not reachable/configured — fall back to client-side resolution.
+    // Supabase not reachable/configured, so fall back to client-side resolution.
   }
 
   return (

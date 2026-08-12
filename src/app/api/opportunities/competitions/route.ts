@@ -56,10 +56,10 @@ Return ONLY valid JSON (no markdown, no backticks) with this exact shape:
   ]
 }
 
-Selection criteria — pick competitions that match:
-1. Student's major interest (${profile.major_interest}) — at least 5 should be directly in this field
+Selection criteria, pick competitions that match:
+1. Student's major interest (${profile.major_interest}): at least 5 should be directly in this field
 2. Student's country / internationally accessible (${profile.country})
-3. Appropriate difficulty for grade ${profile.grade} — include a spread from Beginner to Advanced
+3. Appropriate difficulty for grade ${profile.grade}: include a spread from Beginner to Advanced
 4. Student's extracurricular interests (${(profile.extracurricular_interests || []).join(", ")})
 5. Competitions that look excellent on college applications for ${profile.target_country} admissions
 

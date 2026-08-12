@@ -32,7 +32,7 @@ export default function VerifyEmailPage() {
 
         <p className="text-text-muted text-sm mb-8">
           Click the link in the email to verify your account, then come back and sign in.
-          It may take a minute — check your spam folder too.
+          It may take a minute, and check your spam folder too.
         </p>
 
         <div className="space-y-3">

@@ -90,8 +90,6 @@ const HeroSection = () => {
   }, [color])
 
   const backgroundImage = useMotionTemplate`radial-gradient(125% 125% at 50% 0%, #080E1A 50%, ${color})`
-  const border = useMotionTemplate`1px solid ${color}`
-  const boxShadow = useMotionTemplate`0px 4px 24px ${color}`
 
   return (
     <motion.section style={{ backgroundImage }} className="relative min-h-screen overflow-hidden text-white">
@@ -124,7 +122,12 @@ const HeroSection = () => {
       )}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-100px)] px-6 text-center">
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-6 leading-tight">
-          Build a Stronger
+          Build a{" "}
+          {/* Script face on the emphasis word. Breaks the single-typeface
+              uniformity that makes generated hero sections read the same. */}
+          <span className="font-handwritten font-normal text-[1.15em] text-[#FFD700]">
+            Stronger
+          </span>
           <br />
           <span className="bg-gradient-to-r from-[#00B4D8] via-[#8B5CF6] to-[#FFD700] bg-clip-text text-transparent">
             College Application
@@ -135,7 +138,10 @@ const HeroSection = () => {
         </motion.p>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
           <Link href="/auth">
-            <motion.button style={{ border, boxShadow }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="group relative flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF8C42] to-[#FF6B35] px-8 py-4 text-lg font-semibold text-white transition-all hover:shadow-2xl">
+            {/* No animated purple glow or border. A cycling coloured halo on an
+                orange button is a generated-UI tell, and it fought the brand
+                colour. The gradient fill carries the button on its own. */}
+            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="group relative flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF8C42] to-[#FF6B35] px-8 py-4 text-lg font-semibold text-white transition-shadow hover:shadow-lg hover:shadow-[#FF6B35]/25">
               Get Started Free
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </motion.button>
@@ -252,18 +258,18 @@ const HowItWorks = () => {
 
 const KeyFeatures = () => {
   const features = [
-    { icon: MessageSquare, title: "AI College Counselor", description: "Chat 24/7 with an AI counselor that knows your full profile — grades, activities, essays, and dream schools — and answers admissions questions grounded in your real situation.", span: "wide" as const },
+    { icon: MessageSquare, title: "AI College Counselor", description: "Chat 24/7 with an AI counselor that knows your full profile, including grades, activities, essays and dream schools, and answers admissions questions grounded in your real situation.", span: "wide" as const },
     { icon: PenLine, title: "Essay Review & Scoring", description: "Get your essays scored 0–100 with specific strengths, weaknesses, and rewrite suggestions." },
     { icon: Map, title: "Extracurricular Roadmaps", description: "Personalized week-by-week action plans with real competitions, project ideas, and deadlines to build a standout profile.", span: "tall" as const },
     { icon: Target, title: "Smart College List", description: "AI-matched reach, target, and safety schools with fit scores based on your actual profile." },
-    { icon: Trophy, title: "Scholarships & Competitions", description: "Discover scholarships and contests matched to your major, country, and profile — not a generic list." },
+    { icon: Trophy, title: "Scholarships & Competitions", description: "Discover scholarships and contests matched to your major, country and profile, not a generic list." },
     { icon: TrendingUp, title: "Progress & Profile Strength", description: "Track a universal profile-strength score, plus XP, levels, and streaks that keep you moving toward your goal.", span: "wide" as const },
   ]
   return (
     <div id="features" className="bg-gradient-to-b from-[#080E1A] to-[#0A1628]">
       <FeatureSection
         title="Everything You Need to Succeed"
-        subtitle="Purpose-built AI tools for high schoolers aiming at top colleges — grounded in your real profile."
+        subtitle="Purpose-built AI tools for high schoolers aiming at top colleges, grounded in your real profile."
         features={features}
       />
     </div>
@@ -467,7 +473,7 @@ const FAQSection = () => {
     { question: "How does the AI extracurricular planner work?", answer: "Our AI analyzes your profile, target schools, and intended major to recommend specific competitions, projects, and activities. Pro users get detailed timelines with real competition names and deadlines." },
     { question: "Can I use Admio if I'm an international student?", answer: "Absolutely! Admio is designed for students worldwide. Our AI counselor understands international admissions and can help with country-specific questions." },
     { question: "What makes Admio different from other college prep tools?", answer: "Admio combines AI-powered personalization with gamification to make college prep engaging and effective. Plus, at $12/month, it's accessible to students who can't afford expensive private counselors." },
-    { question: "How do XP points and streaks work?", answer: "Earn XP by completing activities, logging in daily, adding awards, and using the AI counselor. Keep your daily streak alive to build momentum. You level up through 6 ranks — Explorer, Builder, Challenger, Contender, Standout, and Trailblazer." },
+    { question: "How do XP points and streaks work?", answer: "Earn XP by completing activities, logging in daily, adding awards, and using the AI counselor. Keep your daily streak alive to build momentum. You level up through 6 ranks: Explorer, Builder, Challenger, Contender, Standout and Trailblazer." },
   ]
   return (
     <section id="faq" className="bg-gradient-to-b from-[#080E1A] to-[#0A1628] py-24 px-6">

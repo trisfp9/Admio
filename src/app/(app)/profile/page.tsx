@@ -243,7 +243,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Profile Strength summary — details + recalculation live in the Progress tab */}
+      {/* Profile Strength summary. Details and recalculation live in the Progress tab */}
       <Link href="/progress" className="block">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -257,7 +257,7 @@ export default function ProfilePage() {
               <h2 className="font-heading font-semibold text-text-primary">Profile Strength</h2>
             </div>
             <span className="font-heading font-bold text-2xl text-text-primary">
-              {localProfile.profile_strength_updated_at ? `${localProfile.profile_strength}%` : "—"}
+              {localProfile.profile_strength_updated_at ? `${localProfile.profile_strength}%` : "-"}
             </span>
           </div>
           <ProgressBar
@@ -495,7 +495,7 @@ export default function ProfilePage() {
           </div>
           <p className="text-text-muted text-sm mb-4">
             Unlock the detailed profile form to give the AI counselor deeper knowledge about your activities,
-            achievements, leadership experience, and personal story — resulting in much more specific and useful advice.
+            achievements, leadership experience, and personal story, resulting in much more specific and useful advice.
           </p>
           <Link href="/pricing">
             <Button variant="purple" size="sm">
@@ -612,7 +612,7 @@ import { FileText } from "lucide-react";
 const DETAILED_FIELDS: { key: string; label: string; placeholder: string; hint: string }[] = [
   // Activities, achievements, leadership, work experience, and community service
   // now live in the Progress tab as structured data (with role, hours, duration,
-  // prestige level) — removed from here to avoid duplication.
+  // prestige level), removed from here to avoid duplication.
   { key: "strengths", label: "Personal Strengths", placeholder: "e.g., Strong analytical thinking, good at public speaking...", hint: "What are you genuinely good at? Be honest." },
   { key: "weaknesses", label: "Areas for Improvement", placeholder: "e.g., Need to improve time management, limited research experience...", hint: "The AI will help you address these specifically." },
   { key: "personal_story", label: "Personal Story / Essay Topics", placeholder: "e.g., Overcame language barrier as an immigrant, started a business at 14...", hint: "What makes you unique? Any challenges you've overcome?" },
@@ -718,7 +718,7 @@ function DetailedProfileForm({ profile, session, refreshProfile }: {
       </div>
       <p className="text-text-muted text-sm">
         The more you fill in, the more personalized and specific the AI counselor&apos;s advice will be.
-        {savedIsEmpty && " First-time setup — no cooldown."}
+        {savedIsEmpty && " First-time setup, no cooldown."}
       </p>
       {DETAILED_FIELDS.map((field) => (
         <TextAreaField

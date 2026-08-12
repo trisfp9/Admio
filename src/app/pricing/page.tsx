@@ -60,7 +60,7 @@ function PricingContent() {
       return;
     }
 
-    // Logged in but profile didn't load — refresh and retry rather than
+    // Logged in but profile didn't load, so refresh and retry rather than
     // wrongly assuming the user hasn't onboarded.
     if (!profile) {
       await refreshProfile();
@@ -240,7 +240,7 @@ function PricingContent() {
               ) : (
                 <Button variant="purple" className="w-full" size="lg" onClick={handleCheckout} loading={checkoutLoading}>
                   <Zap className="w-4 h-4" />
-                  Start Pro — $12/mo
+                  Start Pro, $12/mo
                 </Button>
               )}
             </div>

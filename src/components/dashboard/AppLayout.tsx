@@ -83,7 +83,7 @@ function AppLayoutInner({ children }: { children: ReactNode }) {
             Couldn&apos;t load your profile
           </h1>
           <p className="text-text-muted text-sm mb-6">
-            This is usually a weak connection. Check your network and try again — signing
+            This is usually a weak connection. Check your network and try again, and signing
             out and back in also fixes it.
           </p>
           <div className="flex gap-2 justify-center">

@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 // Dodo Payments server helpers.
-// API key + webhook secret are server-only secrets — never expose to the client.
+// API key + webhook secret are server-only secrets. Never expose to the client.
 
 export const DODO_API_BASE =
   process.env.DODO_ENV === "live"

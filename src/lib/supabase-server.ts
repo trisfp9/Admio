@@ -6,7 +6,7 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || ""
 
 // Server-side Supabase client that reads the auth session from cookies.
 // Used in Server Components (e.g. the root layout) to render the correct
-// logged-in state on the first paint. Cookie writes are no-ops here —
+// logged-in state on the first paint. Cookie writes are no-ops here,
 // the middleware is responsible for refreshing auth cookies.
 export function getServerSupabase() {
   const cookieStore = cookies();

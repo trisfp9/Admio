@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 
 // Signed-in app routes hold per-user data and have no SEO value, so keep
 // crawlers on the marketing pages. Everything here is already auth-gated by
-// middleware — this just avoids wasting crawl budget on redirects.
+// middleware, so this just avoids wasting crawl budget on redirects.
 const APP_ONLY_ROUTES = [
   "/api/",
   "/dashboard",

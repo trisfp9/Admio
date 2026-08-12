@@ -280,7 +280,7 @@ export default function OpportunitiesPage() {
                   <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                 </svg>
                 <p className="text-amber-200/80 text-xs leading-relaxed">
-                  AI-generated suggestions — this is a starting point, not a complete list. Many great schools may not appear here. Acceptance rates and stats may be outdated or approximate. Always verify on each school&apos;s official site and consult a counselor before making decisions.
+                  AI-generated suggestions. This is a starting point, not a complete list. Many great schools may not appear here. Acceptance rates and stats may be outdated or approximate. Always verify on each school&apos;s official site and consult a counselor before making decisions.
                 </p>
               </div>
 
@@ -322,7 +322,7 @@ export default function OpportunitiesPage() {
                           <Badge variant="muted"><BarChart3 className="w-3 h-3 mr-1" /> {college.acceptance_rate}</Badge>
                         </div>
 
-                        {/* Scores panel — always show all 3 columns */}
+                        {/* Scores panel, always show all 3 columns */}
                         {(college.fit_score != null || college.profile_strength_needed != null) && (() => {
                           const hasMeasured = !!profile.profile_strength_updated_at;
                           const odds = (college.profile_strength_needed != null && hasMeasured)
@@ -341,7 +341,7 @@ export default function OpportunitiesPage() {
                                 <div className="text-center px-2">
                                   <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Fit</p>
                                   <p className={`font-heading font-bold text-xl ${fitColor}`}>
-                                    {fitScore != null ? `${fitScore}%` : "—"}
+                                    {fitScore != null ? `${fitScore}%` : "-"}
                                   </p>
                                   <p className="text-text-muted text-[10px]">{fitScore != null ? "match" : "regen list"}</p>
                                 </div>
@@ -349,7 +349,7 @@ export default function OpportunitiesPage() {
                                 <div className="text-center px-2">
                                   <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Odds</p>
                                   <p className={`font-heading font-bold text-xl ${oddsColor}`}>
-                                    {odds != null ? `${odds}%` : "—"}
+                                    {odds != null ? `${odds}%` : "-"}
                                   </p>
                                   <p className="text-text-muted text-[10px]">{hasMeasured ? "admission" : "needs score"}</p>
                                 </div>
@@ -357,7 +357,7 @@ export default function OpportunitiesPage() {
                                 <div className="text-center px-2">
                                   <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Required</p>
                                   <p className={`font-heading font-bold text-xl ${needed != null ? "text-text-primary" : "text-text-muted/40"}`}>
-                                    {needed != null ? `${needed}%` : "—"}
+                                    {needed != null ? `${needed}%` : "-"}
                                   </p>
                                   <p className="text-text-muted text-[10px]">profile strength</p>
                                 </div>
@@ -376,11 +376,11 @@ export default function OpportunitiesPage() {
                                     </li>
                                   )}
                                   <li className="flex gap-2">
-                                    <span className={`font-bold shrink-0 ${fitColor}`}>Odds {odds != null ? `${odds}%` : "—"}</span>
+                                    <span className={`font-bold shrink-0 ${fitColor}`}>Odds {odds != null ? `${odds}%` : "-"}</span>
                                     <span className="text-text-muted">Estimated admission probability combining your profile strength and fit score. {!hasMeasured && "Calculate your profile strength first."}</span>
                                   </li>
                                   <li className="flex gap-2">
-                                    <span className="font-bold text-text-primary shrink-0">Required {needed != null ? `${needed}%` : "—"}</span>
+                                    <span className="font-bold text-text-primary shrink-0">Required {needed != null ? `${needed}%` : "-"}</span>
                                     <span className="text-text-muted">Minimum profile strength competitive applicants typically have. Your profile strength: {hasMeasured ? `${profile.profile_strength}%` : "not measured yet"}.</span>
                                   </li>
                                 </ul>
@@ -447,7 +447,7 @@ export default function OpportunitiesPage() {
                 </div>
               </div>
               <p className="text-text-muted text-xs mb-4">
-                Scholarships matched to your major, country, and profile — not a generic list.
+                Scholarships matched to your major, country and profile, not a generic list.
                 {aiScholarships?.generated_at && (
                   <span className="ml-1 text-text-muted/50">Generated {timeAgo(aiScholarships.generated_at)}.</span>
                 )}
@@ -482,7 +482,7 @@ export default function OpportunitiesPage() {
           {/* Browse all */}
           <div>
             <p className="text-text-muted text-xs font-medium uppercase tracking-wide mb-1">Browse All Scholarships</p>
-            <p className="text-text-muted/50 text-xs mb-3">This is a curated starting point — not a complete list. Do your own research to find additional scholarships that may fit you.</p>
+            <p className="text-text-muted/50 text-xs mb-3">This is a curated starting point, not a complete list. Do your own research to find additional scholarships that may fit you.</p>
             <div className="flex gap-2 flex-wrap mb-2">
               {["all", "need-based", "merit", "STEM", "arts", "first-gen"].map((tag) => (
                 <button key={tag} onClick={() => setScholarshipFilter(tag)}
@@ -551,7 +551,7 @@ export default function OpportunitiesPage() {
                 </div>
               </div>
               <p className="text-text-muted text-xs mb-4">
-                Competitions in your field and country — with difficulty spread so you can start now.
+                Competitions in your field and country, with difficulty spread so you can start now.
                 {aiCompetitions?.generated_at && (
                   <span className="ml-1 text-text-muted/50">Generated {timeAgo(aiCompetitions.generated_at)}.</span>
                 )}
@@ -586,7 +586,7 @@ export default function OpportunitiesPage() {
           {/* Browse all */}
           <div>
             <p className="text-text-muted text-xs font-medium uppercase tracking-wide mb-1">Browse All Competitions</p>
-            <p className="text-text-muted/50 text-xs mb-3">This is a curated starting point — not a complete list. Do your own research to find additional competitions relevant to your field.</p>
+            <p className="text-text-muted/50 text-xs mb-3">This is a curated starting point, not a complete list. Do your own research to find additional competitions relevant to your field.</p>
             <div className="flex gap-2 flex-wrap mb-2">
               {["all", ...Array.from(new Set(allCompetitions.map((c) => c.field)))].map((f) => (
                 <button key={f} onClick={() => setCompetitionFilter(f)}
@@ -632,7 +632,7 @@ function RequirementsChecklist() {
 
   const items = [
     { label: "Language requirements", detail: "Schools may require proof of proficiency in their instruction language (e.g. IELTS/TOEFL for English, TestDaF for German, DELF for French). Minimum scores vary by school and program." },
-    { label: "Standardised tests", detail: "Check each school's entrance exam policy — SAT/ACT for US schools, or country-specific exams elsewhere. Some schools are test-optional; others require their own admissions test." },
+    { label: "Standardised tests", detail: "Check each school's entrance exam policy: SAT/ACT for US schools, or country-specific exams elsewhere. Some schools are test-optional; others require their own admissions test." },
     { label: "Application deadlines", detail: "Early Decision, Early Action, Regular Decision, and Rolling deadlines differ by school and year." },
     { label: "Required materials", detail: "Transcripts, letters of recommendation, personal statement / essays, CV or activities list." },
     { label: "Country-specific requirements", detail: "Some countries require national exams or qualifications (A-Levels, IB, Gaokao, Abitur, etc.) or credential evaluations (WES, NACES) for foreign applicants." },
@@ -650,7 +650,7 @@ function RequirementsChecklist() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400 flex-shrink-0">
             <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
           </svg>
-          <p className="text-blue-200/90 text-xs font-medium">Before you apply — check these requirements yourself</p>
+          <p className="text-blue-200/90 text-xs font-medium">Before you apply, check these requirements yourself</p>
         </div>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`text-blue-400 flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}>
           <path d="M6 9l6 6 6-6" />
@@ -659,7 +659,7 @@ function RequirementsChecklist() {
       {open && (
         <div className="px-4 pb-4 space-y-2 border-t border-blue-500/15 pt-3">
           <p className="text-blue-200/60 text-[11px] mb-3">
-            Admio doesn&apos;t verify admission requirements — they change every cycle and vary by school and nationality. Visit each school&apos;s official admissions page to confirm what applies to you.
+            Admio doesn&apos;t verify admission requirements. They change every cycle and vary by school and nationality. Visit each school&apos;s official admissions page to confirm what applies to you.
           </p>
           <ul className="space-y-3">
             {items.map((item) => (
@@ -766,7 +766,7 @@ function StrengthForCollegeList({
       )}
       {strength === 0 && (
         <p className="text-text-muted/70 text-xs mt-3">
-          No score yet — head to{" "}
+          No score yet. Head to{" "}
           <Link href="/progress" className="text-purple hover:underline">Progress</Link>{" "}
           and click Recalculate for an honest AI assessment.
         </p>

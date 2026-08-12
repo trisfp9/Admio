@@ -29,7 +29,7 @@ const spanClasses = {
 // tokens like bg-card / text-foreground).
 export function Component({
   title = "Everything you need",
-  subtitle = "Powerful features to help you build, ship, and scale — without the complexity.",
+  subtitle = "Powerful features to help you build, ship and scale without the complexity.",
   features,
   className,
 }: FeatureSectionProps) {

@@ -62,11 +62,11 @@ export default function OnboardingPage() {
       if (profile) {
         const currentAct = Array.isArray(profile.current_activities) ? profile.current_activities : [];
         const raw = currentAct.map((a: { name?: string; role?: string; description?: string }) =>
-          `${a.name || ""}${a.role ? ` (${a.role})` : ""}${a.description ? ` — ${a.description}` : ""}`
+          `${a.name || ""}${a.role ? ` (${a.role})` : ""}${a.description ? `, ${a.description}` : ""}`
         ).filter(Boolean).join("\n");
         const existingAwards = Array.isArray(profile.awards) ? profile.awards : [];
         const awardsRaw = existingAwards.map((a: { name?: string; level?: string; year?: string; description?: string }) =>
-          `${a.name || ""}${a.level ? ` [${a.level}]` : ""}${a.year ? ` (${a.year})` : ""}${a.description ? ` — ${a.description}` : ""}`
+          `${a.name || ""}${a.level ? ` [${a.level}]` : ""}${a.year ? ` (${a.year})` : ""}${a.description ? `, ${a.description}` : ""}`
         ).filter(Boolean).join("\n");
         setData((d) => ({
           ...d,
@@ -134,12 +134,12 @@ export default function OnboardingPage() {
               xp: 50,
               last_active: new Date().toISOString().split("T")[0],
               streak: 1,
-              // Profile strength starts at 0 — the AI will compute the real score
+              // Profile strength starts at 0. The AI will compute the real score
               // based on grades, activities, awards, and essays. Filling out
               // fields doesn't make you strong; doing things does.
               profile_strength: 0,
             }).eq("id", user.id);
-            // Kick off AI profile strength calculation in the background —
+            // Kick off AI profile strength calculation in the background,
             // don't block onboarding on it. We need a fresh session.
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.access_token) {
@@ -155,7 +155,7 @@ export default function OnboardingPage() {
       }
       setStep((s) => s + 1);
     } catch {
-      toast.error("Failed to save — please try again.");
+      toast.error("Failed to save, please try again.");
     } finally {
       setLoading(false);
     }
@@ -204,7 +204,7 @@ export default function OnboardingPage() {
                     Welcome to <span className="text-gradient">Admio</span>
                   </h2>
                   <p className="text-text-muted text-sm leading-relaxed">
-                    Your AI-powered college admissions counselor. We&apos;ll help you build the strongest application possible — step by step.
+                    Your AI-powered college admissions counselor. We&apos;ll help you build the strongest application possible, step by step.
                   </p>
                 </div>
 
@@ -294,7 +294,7 @@ export default function OnboardingPage() {
             {step === 2 && (
               <div className="space-y-5">
                 <h2 className="font-heading font-bold text-2xl text-text-primary">Dream school?</h2>
-                <p className="text-text-muted text-sm">No pressure — you can always change this later.</p>
+                <p className="text-text-muted text-sm">No pressure, you can always change this later.</p>
                 <Input label="Dream college (optional)" value={data.dream_college} onChange={(v) => setData({...data, dream_college: v})} placeholder="e.g. MIT, Stanford, Harvard" />
               </div>
             )}
@@ -361,10 +361,10 @@ export default function OnboardingPage() {
                 <div className="space-y-2">
                   <label className="block text-sm text-text-muted font-medium">Activities</label>
                   <p className="text-text-muted/70 text-xs">
-                    Clubs, leadership roles, jobs, projects, volunteer work — one per line.
+                    Clubs, leadership roles, jobs, projects, volunteer work, one per line.
                   </p>
                   <p className="text-text-muted/50 text-xs">
-                    Example: <span className="italic">Math team captain — 2 years</span> · <span className="italic">Volunteered at food bank — 80 hours</span>
+                    Example: <span className="italic">Math team captain, 2 years</span> · <span className="italic">Volunteered at food bank, 80 hours</span>
                   </p>
                   <textarea
                     value={data.current_activities_raw}
@@ -379,10 +379,10 @@ export default function OnboardingPage() {
                 <div className="space-y-2">
                   <label className="block text-sm text-text-muted font-medium">Awards &amp; Honors</label>
                   <p className="text-text-muted/70 text-xs">
-                    Competitions, honors, certificates — one per line. Optionally add level and year.
+                    Competitions, honors, certificates, one per line. Optionally add level and year.
                   </p>
                   <p className="text-text-muted/50 text-xs">
-                    Example: <span className="italic">AMC 10 — Distinguished Honor Roll (2025)</span> · <span className="italic">Science Fair 1st Place — Regional (2024)</span>
+                    Example: <span className="italic">AMC 10, Distinguished Honor Roll (2025)</span> · <span className="italic">Science Fair 1st Place, Regional (2024)</span>
                   </p>
                   <textarea
                     value={data.awards_raw}
@@ -394,7 +394,7 @@ export default function OnboardingPage() {
                 </div>
 
                 <p className="text-text-muted/60 text-xs">
-                  Both are optional — leave blank if starting from scratch. You can edit anytime in your Progress tab.
+                  Both are optional, so leave blank if starting from scratch. You can edit anytime in your Progress tab.
                 </p>
                 <div className="flex items-start gap-2 p-3 rounded-button bg-amber-500/8 border border-amber-500/20">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400 flex-shrink-0 mt-0.5">
@@ -402,7 +402,7 @@ export default function OnboardingPage() {
                     <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                   </svg>
                   <p className="text-amber-200/80 text-xs leading-relaxed">
-                    <span className="font-medium">Be honest.</span> The AI gives better, more useful advice when it knows the truth. Inflating activities or awards won&apos;t help you — colleges verify these on the actual application.
+                    <span className="font-medium">Be honest.</span> The AI gives better, more useful advice when it knows the truth. Inflating activities or awards won&apos;t help you. Colleges verify these on the actual application.
                   </p>
                 </div>
               </div>
@@ -511,7 +511,7 @@ function canProceed(step: number, data: OnboardingData): boolean {
     case 5: return !!data.gpa_range;
     case 6: return data.extracurricular_interests.length > 0;
     case 7: return !!data.time_available;
-    case 8: return true; // current activities is optional — starting from scratch is fine
+    case 8: return true; // current activities is optional, starting from scratch is fine
     case 9: return !!data.biggest_concern;
     default: return true;
   }
@@ -524,7 +524,9 @@ function parseCurrentActivities(raw: string): { name: string; description?: stri
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => {
-      // Split on " — " or " - " to separate name from description if present
+      // Split on " - " or an em dash to separate name from description.
+      // Admio never writes em dashes, but students paste text that contains
+      // them, so the parser still has to recognise one.
       const sep = line.match(/\s[—-]\s/);
       if (sep && sep.index !== undefined) {
         return {

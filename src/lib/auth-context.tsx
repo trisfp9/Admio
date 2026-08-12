@@ -61,7 +61,7 @@ export function AuthProvider({
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
   // The server already resolved auth state from cookies, so don't start in a
-  // loading/skeleton state — render the correct logged-in/out UI immediately.
+  // loading/skeleton state, render the correct logged-in/out UI immediately.
   const [loading, setLoading] = useState(false);
   const [profileError, setProfileError] = useState(false);
 
@@ -137,7 +137,7 @@ export function AuthProvider({
 
   const signOut = useCallback(async () => {
     // scope: "local" clears the session locally without a slow server-side
-    // global revoke round-trip — makes sign-out instant.
+    // global revoke round-trip, which makes sign-out instant.
     await supabase.auth.signOut({ scope: "local" });
     // Clear the remember-me preference so persistence resets until the user
     // explicitly checks the box again on the next sign-in.
@@ -206,7 +206,7 @@ export function AuthProvider({
           await fetchProfile(data.session.user.id);
         }
       } catch {
-        // refresh failed — onAuthStateChange will fire SIGNED_OUT if the session is truly dead
+        // refresh failed, onAuthStateChange will fire SIGNED_OUT if the session is truly dead
       }
     };
     document.addEventListener("visibilitychange", onVisible);

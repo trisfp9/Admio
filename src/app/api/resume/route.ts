@@ -66,13 +66,13 @@ Return ONLY valid JSON (no markdown, no backticks) with this exact shape:
 }
 
 Instructions:
-- Pull activities from the student's current_activities list — write a polished description for each
-- Pull awards from the student's awards list — describe each concisely
+- Pull activities from the student's current_activities list, writing a polished description for each
+- Pull awards from the student's awards list, describing each concisely
 - Use the student's essay_text (if available) to inform the summary
 - Infer skills from the student's activities, major interest, and achievements
 - If no activities exist, return an empty array for activities
 - If no awards exist, return an empty array for awards
-- The summary must be compelling and accurate to this specific student — not generic`;
+- The summary must be compelling and accurate to this specific student, not generic`;
 
     const result = await callClaude(systemPrompt, "Generate my college application resume.", 2, 3000);
 

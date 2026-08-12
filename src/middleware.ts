@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
     PROTECTED_PREFIXES.some((prefix) => p === prefix || p.startsWith(`${prefix}/`));
 
   // A signed-in user always carries a Supabase auth cookie. Without one there
-  // is no session to validate, so skip creating the client entirely — that
+  // is no session to validate, so skip creating the client entirely, that
   // getUser() call is a network round-trip to Supabase on every request, paid
   // by first-time visitors and crawlers who can never benefit from it.
   const hasAuthCookie = request.cookies

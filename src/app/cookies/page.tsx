@@ -35,8 +35,8 @@ export default function CookiePolicyPage() {
                 <p className="text-text-primary font-medium mb-1">Essential Cookies</p>
                 <p>Required for the Service to function. These cannot be disabled.</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                  <li><span className="text-text-primary">Authentication session cookies</span> — Keep you signed in to your account across pages and tabs (set by Supabase). When you choose &quot;Remember me for 30 days&quot; at sign-in, this cookie persists for up to 30 days; otherwise it clears when you close your browser.</li>
-                  <li><span className="text-text-primary">Session data</span> — Maintain your active session and refresh your login securely</li>
+                  <li><span className="text-text-primary">Authentication session cookies</span>: keep you signed in to your account across pages and tabs (set by Supabase). When you choose &quot;Remember me for 30 days&quot; at sign-in, this cookie persists for up to 30 days; otherwise it clears when you close your browser.</li>
+                  <li><span className="text-text-primary">Session data</span>: maintain your active session and refresh your login securely</li>
                 </ul>
               </div>
 
@@ -44,9 +44,9 @@ export default function CookiePolicyPage() {
                 <p className="text-text-primary font-medium mb-1">Functional Storage</p>
                 <p>Used to remember your preferences and improve your experience.</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                  <li><span className="text-text-primary">admio_version</span> — Tracks the app version to notify you of updates (localStorage)</li>
-                  <li><span className="text-text-primary">admio_remember</span> — Remembers your &quot;Remember me for 30 days&quot; choice so your session cookie uses the right lifetime (cookie)</li>
-                  <li><span className="text-text-primary">Theme/UI preferences</span> — Remembers your display settings</li>
+                  <li><span className="text-text-primary">admio_version</span>: tracks the app version to notify you of updates (localStorage)</li>
+                  <li><span className="text-text-primary">admio_remember</span>: remembers your &quot;Remember me for 30 days&quot; choice so your session cookie uses the right lifetime (cookie)</li>
+                  <li><span className="text-text-primary">Theme/UI preferences</span>: remembers your display settings</li>
                 </ul>
               </div>
 
@@ -54,8 +54,8 @@ export default function CookiePolicyPage() {
                 <p className="text-text-primary font-medium mb-1">Third-Party Cookies</p>
                 <p>Set by services we use to operate Admio.</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                  <li><span className="text-text-primary">Supabase</span> — Authentication and session management</li>
-                  <li><span className="text-text-primary">Vercel</span> — Hosting and performance analytics</li>
+                  <li><span className="text-text-primary">Supabase</span>: authentication and session management</li>
+                  <li><span className="text-text-primary">Vercel</span>: hosting and performance analytics</li>
                 </ul>
               </div>
             </section>

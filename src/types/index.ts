@@ -257,7 +257,7 @@ export interface ResumeCache {
   generated_at: string;
 }
 
-// Grade-agnostic progression levels — tied to engagement/accomplishments, not grade
+// Grade-agnostic progression levels, tied to engagement/accomplishments, not grade
 export const XP_LEVELS = [
   { name: "Explorer", xp: 0 },
   { name: "Builder", xp: 100 },
@@ -267,7 +267,7 @@ export const XP_LEVELS = [
   { name: "Trailblazer", xp: 2000 },
 ] as const;
 
-// How users earn XP — keep in sync with actual code that grants XP
+// How users earn XP, keep in sync with actual code that grants XP
 export const XP_SOURCES = [
   { action: "Complete onboarding", xp: 50, note: "One-time" },
   { action: "Log in daily (streak)", xp: 10, note: "Each day" },

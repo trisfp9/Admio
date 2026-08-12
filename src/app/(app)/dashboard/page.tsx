@@ -35,7 +35,7 @@ export default function DashboardPage() {
     if (params.get("checkout") !== "success") return;
     checkoutHandled.current = true;
 
-    toast.success("Thanks for subscribing! Activating Pro — this can take a few seconds.");
+    toast.success("Thanks for subscribing! Activating Pro, this can take a few seconds.");
     const timers = [2000, 5000, 9000].map((ms) => setTimeout(() => { void refreshProfile(); }, ms));
     window.history.replaceState({}, "", "/dashboard");
     return () => timers.forEach(clearTimeout);
@@ -195,7 +195,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-3 gap-4">
         {[
           { label: "Profile Strength", value: profile.profile_strength_updated_at ? `${profile.profile_strength}%` : "Unmeasured", icon: TrendingUp, color: "text-accent", href: "/progress" },
-          { label: "Items Saved", value: savedCount === null ? "—" : String(savedCount), icon: BookmarkCheck, color: "text-pop", href: "/saved" },
+          { label: "Items Saved", value: savedCount === null ? "-" : String(savedCount), icon: BookmarkCheck, color: "text-pop", href: "/saved" },
           { label: "Messages Used", value: `${messagesUsed}/${messagesMax}`, icon: MessageSquare, color: "text-orange-400", href: "/counselor" },
         ].map((stat, i) => (
           <motion.div key={stat.label} initial="hidden" animate="visible" variants={fadeUp} custom={4 + i}>

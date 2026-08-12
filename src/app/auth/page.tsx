@@ -44,7 +44,7 @@ function AuthContent() {
         });
         if (error) throw error;
 
-        // Redirect to verification page — profile will be created after email confirm
+        // Redirect to verification page. Profile is created after email confirm
         router.push("/auth/verify");
       } else {
         // Record the "remember me" choice (in a cookie) BEFORE signing in, so the
@@ -80,7 +80,7 @@ function AuthContent() {
   return (
     <main className="min-h-screen bg-background flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-12 items-center">
-        {/* Left — Branding */}
+        {/* Left: Branding */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -108,7 +108,7 @@ function AuthContent() {
           </div>
         </motion.div>
 
-        {/* Right — Auth Form */}
+        {/* Right: Auth Form */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}

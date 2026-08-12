@@ -58,7 +58,7 @@ export default function RefundPolicyPage() {
               <p>
                 Admio Pro is billed on a recurring monthly basis unless you cancel. Renewal charges are
                 generally <span className="text-text-primary">non-refundable</span>. To avoid being charged
-                for the next billing cycle, cancel your subscription before your renewal date — you will
+                for the next billing cycle, cancel your subscription before your renewal date, and you will
                 keep Pro access until the end of the period you already paid for. If a renewal was charged
                 due to a genuine error (for example, a failure to process a timely cancellation on our
                 side), contact us and we will make it right.
@@ -105,7 +105,7 @@ export default function RefundPolicyPage() {
                 We aim to review refund requests within <span className="text-text-primary">5 business
                 days</span>. Approved refunds are processed by Dodo Payments and issued to your original
                 payment method. The time for funds to appear depends on your bank or payment provider and is
-                outside our control — it typically takes an additional 5–14 business days. Refunds are made in
+                outside our control, and it typically takes an additional 5–14 business days. Refunds are made in
                 the original currency of the transaction; we are not responsible for any exchange-rate
                 differences or fees applied by your bank or card issuer.
               </p>

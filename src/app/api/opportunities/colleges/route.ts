@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 Generate a personalized college list for this student.
 The student's current universal profile strength score is ${studentStrength}/100.
 
-CRITICAL — define reach / target / safety so that admission ODDS land in these ranges:
+CRITICAL: define reach / target / safety so that admission ODDS land in these ranges:
   SAFETY  → admission odds 60-100%  (student is clearly above the bar)
   TARGET  → admission odds 30-60%   (competitive but realistic)
   REACH   → admission odds below 30% (student is below typical bar)
@@ -62,12 +62,12 @@ The resulting admission odds MUST fall in the bands above. Double-check each sch
 
 If profile_strength is 0 or very low (student hasn't measured yet), use their GPA and test scores to estimate placement.
 
-STATS ACCURACY — use the most recent publicly available data (Class of 2028/2029 or the most recent admitted class):
+STATS ACCURACY: use the most recent publicly available data (Class of 2028/2029 or the most recent admitted class):
 - avg_gpa: median reported GPA of enrolled/admitted students (e.g. "3.92")
 - avg_sat: midpoint of the middle-50% SAT range of enrolled students (e.g. "1510"). If school is test-optional and doesn't publish SAT data, write "Test-optional".
 - avg_act: midpoint of the middle-50% ACT range (e.g. "34"). If unavailable write "N/A".
 - acceptance_rate: most recently reported acceptance rate (e.g. "4%", "58%")
-Do NOT invent or estimate these numbers — only use figures you are confident are accurate from real published data.
+Do NOT invent or estimate these numbers. Only use figures you are confident are accurate from real published data.
 
 Return ONLY valid JSON (no markdown, no backticks) with this exact shape:
 {
@@ -100,7 +100,7 @@ PROFILE STRENGTH NEEDED reference table (minimum universal score a competitive a
   Regional / less selective universities → 45-60
   Community colleges / open-admission → 20-45
 
-FIT SCORE (0-100) — personalised match score for THIS student. Compute as weighted average:
+FIT SCORE (0-100): personalised match score for THIS student. Compute as weighted average:
 
 1. Academic & Major Fit (40% weight):
    Top-5 program in student's major → 90-100
@@ -121,7 +121,7 @@ FIT SCORE (0-100) — personalised match score for THIS student. Compute as weig
 
 fit_score = round(component1 * 0.40 + component2 * 0.35 + component3 * 0.25)
 
-The fit_reason must explain WHY the fit score is what it is for this specific student — mention their major interest, goals, or location preferences.
+The fit_reason must explain WHY the fit score is what it is for this specific student, mentioning their major interest, goals, or location preferences.
 
 Only use real, verifiable college website URLs.
 Consider the student's GPA, test scores, major interest, dream college, aiming level, and target country. Use real, current data.`;

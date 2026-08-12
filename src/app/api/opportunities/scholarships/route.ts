@@ -56,7 +56,7 @@ Return ONLY valid JSON (no markdown, no backticks) with this exact shape:
   ]
 }
 
-Selection criteria — pick scholarships that match ALL of:
+Selection criteria, pick scholarships that match ALL of:
 1. Student's country of residence or target country (${profile.country} / ${profile.target_country})
 2. Student's major interest (${profile.major_interest})
 3. Student's grade/timeline (${profile.grade})

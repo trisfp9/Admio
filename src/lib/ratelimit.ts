@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
-// Simple in-memory rate limiter — no external dependencies needed
+// Simple in-memory rate limiter, no external dependencies needed
 // For a small app this is perfectly fine. If you scale to multiple server
 // instances behind a load balancer, you'd switch to Redis or a DB-based approach.
 
@@ -9,11 +9,11 @@ type RateLimitConfig = { limit: number; windowMs: number };
 const configs: Record<string, RateLimitConfig> = {
   counselor: { limit: 10, windowMs: 60_000 },        // 10 per minute
   analyze: { limit: 3, windowMs: 3_600_000 },         // 3 per hour
-  polish: { limit: 20, windowMs: 3_600_000 },         // 20 per hour — cheap Haiku calls
+  polish: { limit: 20, windowMs: 3_600_000 },         // 20 per hour, cheap Haiku calls
   colleges: { limit: 3, windowMs: 3_600_000 },        // 3 per hour
   opportunities: { limit: 3, windowMs: 3_600_000 },   // 3 per hour (AI scholarships/competitions)
-  strength: { limit: 10, windowMs: 3_600_000 },       // 10 per hour — cheap, fired on events
-  essay: { limit: 1, windowMs: 7 * 24 * 3_600_000 },   // 1 per week — strict
+  strength: { limit: 10, windowMs: 3_600_000 },       // 10 per hour, cheap and fired on events
+  essay: { limit: 1, windowMs: 7 * 24 * 3_600_000 },   // 1 per week, strict
   auth: { limit: 5, windowMs: 900_000 },               // 5 per 15 min
   general: { limit: 60, windowMs: 60_000 },            // 60 per minute
 };
@@ -42,7 +42,7 @@ export async function checkRateLimit(
         success: false,
         response: new Response(
           JSON.stringify({
-            error: "You're going too fast — please wait a moment.",
+            error: "You're going too fast, please wait a moment.",
           }),
           {
             status: 429,

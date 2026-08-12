@@ -56,7 +56,7 @@ CRITICAL RULES:
 - No filler words, no "I", no passive voice
 - common_app must be ≤150 characters including spaces
 - uc must be ≤350 characters including spaces
-${detailCount <= 1 ? "\n- The student provided very little detail. In tips, tell them EXACTLY what info to add (numbers, role, hours, achievements) to get a stronger result. The descriptions will be generic without more detail — that is OK, do not make things up to compensate." : ""}
+${detailCount <= 1 ? "\n- The student provided very little detail. In tips, tell them EXACTLY what info to add (numbers, role, hours, achievements) to get a stronger result. The descriptions will be generic without more detail. That is OK, do not make things up to compensate." : ""}
 ${profile.dream_college ? `\nStudent is targeting ${profile.dream_college}.` : ""}
 ${profile.major_interest ? `Intended major: ${profile.major_interest}.` : ""}
 

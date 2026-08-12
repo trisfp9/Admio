@@ -33,7 +33,7 @@ type MainTab = "active" | "completed" | "roadmaps";
 // How many focus categories a user can have selected at once.
 const MAX_CATEGORIES = 3;
 
-// Minimal id helper — crypto.randomUUID is available in modern browsers
+// Minimal id helper. crypto.randomUUID is available in modern browsers
 function makeId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
   return `id-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
@@ -82,7 +82,7 @@ export default function ExtracurricularsPage() {
       return;
     }
     // Already hydrated: never clobber an in-progress selection. But if we're
-    // still parked on the intro step while recommendations exist, move on —
+    // still parked on the intro step while recommendations exist, move on,
     // otherwise a remount can strand the user on "Analyze my profile".
     setStep((s) => (s === 1 ? (saved.length ? 3 : 2) : s));
   }, [profile]);
@@ -107,7 +107,7 @@ export default function ExtracurricularsPage() {
         signal: abortController.signal,
       });
       if (res.status === 429) {
-        toast.error("You're going too fast — please wait a moment.");
+        toast.error("You're going too fast, please wait a moment.");
         return;
       }
       if (!res.ok) {
@@ -173,7 +173,7 @@ export default function ExtracurricularsPage() {
       // Read the row back first. `profile` can be several seconds stale (the
       // refresh after the previous completion may not have landed yet), and
       // building the new arrays from a stale copy resurrects categories that
-      // were already removed — which is why completing three in a row used to
+      // were already removed, which is why completing three in a row used to
       // leave the picker stuck at 3/3.
       const { data: fresh } = await supabase
         .from("profiles")
@@ -220,7 +220,7 @@ export default function ExtracurricularsPage() {
 
       setSelectedCategories(newSelected);
       if (activeRoadmapId && !newRoadmaps.some((r) => r.id === activeRoadmapId)) setActiveRoadmapId(null);
-      // Nothing left to show on step 3 — send them back to pick new focus areas.
+      // Nothing left to show on step 3, so send them back to pick new focus areas.
       if (newSelected.length === 0) setStep(2);
       await refreshProfile();
       toast.success(
@@ -241,9 +241,9 @@ export default function ExtracurricularsPage() {
       return;
     }
     // Previously this silently ignored the click at the cap, which read as a
-    // broken button — say why nothing happened.
+    // broken button, so say why nothing happened.
     if (selectedCategories.length >= MAX_CATEGORIES) {
-      toast.error(`You can focus on ${MAX_CATEGORIES} at a time — tap a selected one to swap it out.`);
+      toast.error(`You can focus on ${MAX_CATEGORIES} at a time. Tap a selected one to swap it out.`);
       return;
     }
     setSelectedCategories((prev) => [...prev, cat]);
@@ -324,7 +324,7 @@ export default function ExtracurricularsPage() {
       const { error } = await supabase.from("profiles").update({ roadmaps: next }).eq("id", profile.id);
       if (error) {
         console.error("Roadmap save error:", error);
-        // Common cause: column doesn't exist yet — instruct user to run migration
+        // Common cause: column doesn't exist yet, so instruct user to run migration
         const msg = error.message?.includes("column") || error.code === "PGRST204"
           ? "Run this in Supabase SQL Editor: ALTER TABLE profiles ADD COLUMN IF NOT EXISTS roadmaps jsonb;"
           : `Failed to save: ${error.message}`;
@@ -389,7 +389,7 @@ export default function ExtracurricularsPage() {
     if (!profile) return;
     if (!confirm(`Mark "${roadmap.category}" roadmap as completed? It'll move to your completed activities.`)) return;
     try {
-      // Same stale-read hazard as markComplete — read the row back first.
+      // Same stale-read hazard as markComplete, so read the row back first.
       const { data: fresh } = await supabase
         .from("profiles")
         .select("completed_activities, selected_extracurricular_categories, roadmaps, xp")
@@ -651,7 +651,7 @@ export default function ExtracurricularsPage() {
 
             {completedCategories.size > 0 && (
               <p className="text-text-muted/70 text-xs">
-                {completedCategories.size} completed {completedCategories.size === 1 ? "category is" : "categories are"} hidden — find {completedCategories.size === 1 ? "it" : "them"} in the Completed tab.
+                {completedCategories.size} completed {completedCategories.size === 1 ? "category is" : "categories are"} hidden. Find {completedCategories.size === 1 ? "it" : "them"} in the Completed tab.
               </p>
             )}
 
@@ -1266,7 +1266,7 @@ function RoadmapDetail({
           <h3 className="font-heading font-semibold text-text-primary">Ask AI to adjust this roadmap</h3>
         </div>
         <p className="text-text-muted text-xs mb-1">
-          Tell the AI what to change — swap the project, add tasks, stretch the timeline. Completed tasks stay completed.
+          Tell the AI what to change: swap the project, add tasks, stretch the timeline. Completed tasks stay completed.
         </p>
         <p className="text-text-muted/50 text-xs mb-3">
           Uses 1 AI message · <span className={messagesLeft <= 5 ? "text-amber-400" : ""}>{messagesUsed}/{messagesMax} messages used, {messagesLeft} remaining</span>
@@ -1316,7 +1316,7 @@ function AdjustmentHistory({ adjustments }: { adjustments: { summary: string; at
         <span className="font-medium uppercase tracking-wide">
           {adjustments.length} previous adjustment{adjustments.length === 1 ? "" : "s"}
         </span>
-        {!open && <span className="text-text-muted/40 truncate flex-1 text-left">— latest: {latest.summary}</span>}
+        {!open && <span className="text-text-muted/40 truncate flex-1 text-left">latest: {latest.summary}</span>}
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}>
           <path d="M6 9l6 6 6-6" />
         </svg>

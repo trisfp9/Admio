@@ -302,12 +302,12 @@ export default function ProgressPage() {
               {strengthInfoOpen && (
                 <div className="mb-4 bg-white/5 rounded-button p-4 text-xs text-text-muted space-y-2 border border-white/10">
                   <p className="text-text-primary font-medium">What is the Profile Strength score?</p>
-                  <p>A <strong className="text-text-primary">universal US college admissions score (0–100)</strong> — not tied to any specific school. Same rubric every time:</p>
+                  <p>A <strong className="text-text-primary">universal US college admissions score (0–100)</strong>, not tied to any specific school. Same rubric every time:</p>
                   <ul className="space-y-1 list-disc list-inside pl-1">
-                    <li><span className="text-text-primary">Academics</span> (35%) — GPA + standardised test scores</li>
-                    <li><span className="text-text-primary">Activities</span> (35%) — quantity, leadership, depth, thematic coherence</li>
-                    <li><span className="text-text-primary">Achievements</span> (20%) — prestige-weighted (International › National › State › Regional › School)</li>
-                    <li><span className="text-text-primary">Essays</span> (10%) — based on your AI essay review score (Pro)</li>
+                    <li><span className="text-text-primary">Academics</span> (35%): GPA plus standardised test scores</li>
+                    <li><span className="text-text-primary">Activities</span> (35%): quantity, leadership, depth, thematic coherence</li>
+                    <li><span className="text-text-primary">Achievements</span> (20%): prestige-weighted (International › National › State › Regional › School)</li>
+                    <li><span className="text-text-primary">Essays</span> (10%): based on your AI essay review score (Pro)</li>
                   </ul>
                   <p className="pt-1 border-t border-white/10">Benchmarks: <span className="text-pop font-medium">96–100</span> MIT/Harvard · <span className="text-accent font-medium">88–95</span> Top 20 · <span className="text-purple font-medium">78–88</span> Top 50 · below 78 needs work</p>
                 </div>
@@ -316,7 +316,7 @@ export default function ProgressPage() {
               <div className="mb-4">
                 <div className="flex items-baseline gap-2 mb-2">
                   <span className="font-heading font-bold text-4xl text-text-primary">
-                    {profile.profile_strength_updated_at ? `${strength}%` : "—"}
+                    {profile.profile_strength_updated_at ? `${strength}%` : "-"}
                   </span>
                   <span className="text-text-muted text-sm">
                     {profile.profile_strength_updated_at ? "overall" : "unmeasured"}
@@ -360,7 +360,7 @@ export default function ProgressPage() {
                 </div>
               ) : (
                 <p className="text-text-muted text-sm">
-                  Click Recalculate to get your universal profile strength score — a consistent measure of your competitiveness across all US universities.
+                  Click Recalculate to get your universal profile strength score, a consistent measure of your competitiveness across all US universities.
                 </p>
               )}
             </motion.div>
@@ -414,7 +414,7 @@ export default function ProgressPage() {
                   <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                 </svg>
                 <p className="text-amber-200/80 text-xs leading-relaxed">
-                  <span className="font-medium">Be honest about what you&apos;ve done.</span> The AI&apos;s advice and your profile strength score are only as accurate as the info you give it. Colleges verify activities and awards on the real application — inflating things here won&apos;t help you there.
+                  <span className="font-medium">Be honest about what you&apos;ve done.</span> The AI&apos;s advice and your profile strength score are only as accurate as the info you give it. Colleges verify activities and awards on the real application. Inflating things here won&apos;t help you there.
                 </p>
               </div>
 
@@ -425,7 +425,7 @@ export default function ProgressPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-text-primary text-sm font-medium">
                           {a.name}
-                          {a.role ? <span className="text-text-muted font-normal"> — {a.role}</span> : null}
+                          {a.role ? <span className="text-text-muted font-normal">, {a.role}</span> : null}
                         </p>
                         {a.description && <p className="text-text-muted text-xs mt-0.5">{a.description}</p>}
                         <div className="flex gap-2 mt-1 text-text-muted/70 text-xs">
@@ -499,7 +499,7 @@ export default function ProgressPage() {
               <div className="flex items-center gap-3">
                 <Award className="w-5 h-5 text-pop" />
                 <h2 className="font-heading font-semibold text-text-primary">Awards & Honors</h2>
-                <span className="text-text-muted/60 text-xs">Prestige matters — higher levels weigh much more.</span>
+                <span className="text-text-muted/60 text-xs">Prestige matters, higher levels weigh much more.</span>
               </div>
 
               {awards.length > 0 ? (
@@ -589,7 +589,7 @@ export default function ProgressPage() {
                     <li key={i} className="flex items-center gap-3 bg-white/5 rounded-button p-3">
                       <CheckCircle2 className="w-4 h-4 text-pop flex-shrink-0" />
                       <div className="flex-1">
-                        <p className="text-text-primary text-sm font-medium">{c.category} — {c.name}</p>
+                        <p className="text-text-primary text-sm font-medium">{c.category}: {c.name}</p>
                         {c.description && <p className="text-text-muted text-xs">{c.description}</p>}
                       </div>
                       <span className="text-text-muted/60 text-xs">
@@ -613,7 +613,7 @@ export default function ProgressPage() {
                 <Lock className="w-8 h-8 text-pop mx-auto mb-4" />
                 <h3 className="font-heading font-semibold text-xl text-text-primary mb-2">Common App Writer is Pro</h3>
                 <p className="text-text-muted text-sm mb-6 max-w-md mx-auto">
-                  Get AI-polished activity descriptions ready to paste into Common App (150 chars) and UC applications (350 chars) — with numbers, impact, and strong action verbs.
+                  Get AI-polished activity descriptions ready to paste into Common App (150 chars) and UC applications (350 chars), with numbers, impact and strong action verbs.
                 </p>
                 <Link href="/pricing">
                   <Button variant="pop">Upgrade to Pro</Button>
@@ -630,10 +630,10 @@ export default function ProgressPage() {
                   <div className="space-y-1">
                     <p className="text-text-primary text-sm font-medium">How this works</p>
                     <p className="text-text-muted text-sm leading-relaxed">
-                      The AI rewrites each activity into a punchy, verb-first description that fits the Common App (150 chars) and UC Application (350 chars). It surfaces numbers, impact, and scope — the things admissions officers actually look for.
+                      The AI rewrites each activity into a punchy, verb-first description that fits the Common App (150 chars) and UC Application (350 chars). It surfaces numbers, impact and scope, the things admissions officers actually look for.
                     </p>
                     <p className="text-text-muted text-xs mt-1">
-                      Each polish uses 1 AI message. Shared with AI Counselor — {messagesUsed}/{messagesMax} used this period.
+                      Each polish uses 1 AI message. Shared with AI Counselor. {messagesUsed}/{messagesMax} used this period.
                     </p>
                   </div>
                 </div>
@@ -692,7 +692,7 @@ export default function ProgressPage() {
                         <div className="flex-1 min-w-0">
                           <p className="text-text-primary font-medium">
                             {a.name}
-                            {a.role && <span className="text-text-muted font-normal"> — {a.role}</span>}
+                            {a.role && <span className="text-text-muted font-normal">, {a.role}</span>}
                           </p>
                           <div className="flex gap-2 text-text-muted/70 text-xs mt-0.5">
                             {a.hours_per_week && <span>{a.hours_per_week}/wk</span>}
@@ -704,7 +704,7 @@ export default function ProgressPage() {
                           {hasMinimalDetail && !result && (
                             <p className="text-amber-400/80 text-xs mt-2 flex items-center gap-1">
                               <AlertCircle className="w-3 h-3" />
-                              Low detail — add a role, hours, duration, and achievements in My Profile for a stronger result.
+                              Low detail. Add a role, hours, duration, and achievements in My Profile for a stronger result.
                             </p>
                           )}
                         </div>
@@ -791,7 +791,7 @@ export default function ProgressPage() {
                 <Lock className="w-8 h-8 text-pop mx-auto mb-4" />
                 <h3 className="font-heading font-semibold text-xl text-text-primary mb-2">Resume Export is Pro</h3>
                 <p className="text-text-muted text-sm mb-6 max-w-md mx-auto">
-                  Generate a polished, print-ready college application resume from your profile — AI-written with strong action verbs, quantified impact, and professional formatting.
+                  Generate a polished, print-ready college application resume from your profile, AI-written with strong action verbs, quantified impact, and professional formatting.
                 </p>
                 <Link href="/pricing">
                   <Button variant="pop">Upgrade to Pro</Button>
@@ -899,7 +899,7 @@ export default function ProgressPage() {
                               <li key={i}>
                                 <div className="flex items-baseline justify-between gap-2 flex-wrap">
                                   <span className="font-semibold text-text-primary print:text-black">
-                                    {a.name}{a.role ? ` — ${a.role}` : ""}
+                                    {a.name}{a.role ? `, ${a.role}` : ""}
                                   </span>
                                   <span className="text-text-muted text-xs print:text-gray-500">
                                     {[a.hours_per_week && `${a.hours_per_week}/wk`, a.years].filter(Boolean).join(", ")}

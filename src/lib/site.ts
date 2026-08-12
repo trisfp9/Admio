@@ -6,4 +6,4 @@ export const SITE_URL = "https://admio.io";
 export const SITE_NAME = "Admio";
 
 export const SITE_DESCRIPTION =
-  "Admio is an AI college admissions counselor for high school students. Get a personalized extracurricular roadmap, an AI-matched college list, essay scoring, and scholarship matches — grounded in your real profile.";
+  "Admio is an AI college admissions counselor for high school students. Get a personalized extracurricular roadmap, an AI-matched college list, essay scoring, and scholarship matches, all grounded in your real profile.";
